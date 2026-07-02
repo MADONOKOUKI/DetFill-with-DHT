@@ -1,3 +1,32 @@
+Metadata-Version: 2.4
+Name: hintauc
+Version: 0.1.0
+Summary: Deterministic region-based hint generation (DHT) and Hint-AUC evaluation for line-art colorization
+Author: Koki Madono
+License: MIT
+Project-URL: Repository, https://github.com/MADONOKOUKI/DetFill-with-DHT
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Topic :: Scientific/Engineering :: Image Processing
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: numpy
+Requires-Dist: opencv-python
+Requires-Dist: scikit-image>=0.19
+Requires-Dist: fil_finder>=1.7
+Requires-Dist: astropy
+Requires-Dist: pillow
+Provides-Extra: perceptual
+Requires-Dist: torch; extra == "perceptual"
+Requires-Dist: torchvision; extra == "perceptual"
+Requires-Dist: lpips; extra == "perceptual"
+Requires-Dist: open_clip_torch; extra == "perceptual"
+Requires-Dist: transformers; extra == "perceptual"
+Requires-Dist: dreamsim; extra == "perceptual"
+Requires-Dist: torchmetrics; extra == "perceptual"
+Dynamic: license-file
+
 # DetFill-with-DHT
 
 Official research code for
@@ -43,41 +72,6 @@ conda activate BBDM
 pip install opencv-python scikit-image==0.19.* fil_finder==1.7.2 astropy natsort
 ```
 
-## Python library: `hintauc`
-
-The proposed method is also packaged as a pip-installable library
-(deterministic hint generation + Hint-AUC evaluation; the diffusion model
-itself stays in `detfill/`):
-
-```bash
-pip install git+https://github.com/MADONOKOUKI/DetFill-with-DHT.git
-# with the perceptual metrics (LPIPS / OpenCLIP / DINOv2 / DreamSim):
-pip install "hintauc[perceptual] @ git+https://github.com/MADONOKOUKI/DetFill-with-DHT.git"
-```
-
-```python
-import hintauc
-
-# 1. deterministic hint generation from a color image
-hints = hintauc.generate_hints("illustration.png", size=64)   # Felzenszwalb -> skeleton -> longest path
-color, mask = hints.at_ratio(0.10, hint_type="scribble")      # top-10% regions by area (deterministic)
-hints.save("out/illustration")                                # canonical *_region64 / *_scribble_col64 / ... files
-
-# 2. colorization evaluation (same formulas as the paper pipeline)
-ev = hintauc.Evaluator(metrics=("mse", "psnr", "ssim", "lpips", "dreamsim"))
-scores = ev("colorized.png", "ground_truth.png")
-
-# 3. Hint-AUC over the front-loaded ratio grid
-result = hintauc.evaluate_hint_curve(
-    {a: f"preds/ratio_{a}" for a in hintauc.DEFAULT_ALPHAS}, "gt_dir",
-    metrics=("mse", "lpips", "dreamsim"))
-print(result["hint_auc"])
-```
-
-Command line: `hintauc generate image.png --ratio 0.1` /
-`hintauc eval pred_dir gt_dir --metrics mse psnr ssim`.
-See [examples/basic_usage.py](examples/basic_usage.py).
-
 ## Usage
 
 ### 1. Deterministic hint generation
@@ -114,9 +108,7 @@ with the trapezoidal rule.
 - This is research code: some scripts contain absolute dataset paths from our cluster
   (`/scratch/...`, `/home/madorin/...`) that need to be adapted to your environment
   (`dataset_path` / `scratch_root` in `detfill/configs/*.yaml`).
-- The `hintauc` library re-implements the canonical scripts faithfully (3x3 dilation,
-  region-mean colors, base-255 region-id encoding compatible with the dataloader);
-  region-id colors are assigned deterministically instead of the original random sampling.
+- A pip-installable package of the deterministic hint generation is under preparation.
 
 ## License and acknowledgements
 

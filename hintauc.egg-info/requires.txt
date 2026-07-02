@@ -1,0 +1,15 @@
+numpy
+opencv-python
+scikit-image>=0.19
+fil_finder>=1.7
+astropy
+pillow
+
+[perceptual]
+torch
+torchvision
+lpips
+open_clip_torch
+transformers
+dreamsim
+torchmetrics

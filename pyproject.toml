@@ -1,0 +1,47 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hintauc"
+version = "0.1.0"
+description = "Deterministic region-based hint generation (DHT) and Hint-AUC evaluation for line-art colorization"
+readme = "README.md"
+license = { text = "MIT" }
+authors = [
+  { name = "Koki Madono" },
+]
+requires-python = ">=3.8"
+dependencies = [
+  "numpy",
+  "opencv-python",
+  "scikit-image>=0.19",
+  "fil_finder>=1.7",
+  "astropy",
+  "pillow",
+]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: MIT License",
+  "Topic :: Scientific/Engineering :: Image Processing",
+]
+
+[project.urls]
+Repository = "https://github.com/MADONOKOUKI/DetFill-with-DHT"
+
+[project.optional-dependencies]
+perceptual = [
+  "torch",
+  "torchvision",
+  "lpips",
+  "open_clip_torch",
+  "transformers",
+  "dreamsim",
+  "torchmetrics",
+]
+
+[project.scripts]
+hintauc = "hintauc.cli:main"
+
+[tool.setuptools]
+packages = ["hintauc"]
