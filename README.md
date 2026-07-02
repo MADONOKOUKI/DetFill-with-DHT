@@ -73,10 +73,14 @@ every run and every paper reproduces the identical hint sets:
 DetFill colorizations for one test sketch as the (deterministic scribble) hint ratio grows —
 the colorization converges to the ground truth as more regions are hinted:
 
-| Sketch | α = 1% | α = 10% | α = 50% | α = 100% | Ground truth |
-|:---:|:---:|:---:|:---:|:---:|:---:|
-| ![sketch](assets/readme/ex_sketch.png) | ![h1](assets/readme/ex_hint_r1.png) | ![h10](assets/readme/ex_hint_r10.png) | ![h50](assets/readme/ex_hint_r50.png) | ![h100](assets/readme/ex_hint_r100.png) | ![gt](assets/readme/ex_gt.png) |
-| *hints* → | ![d1](assets/readme/ex_detfill_r1.png) | ![d10](assets/readme/ex_detfill_r10.png) | ![d50](assets/readme/ex_detfill_r50.png) | ![d100](assets/readme/ex_detfill_r100.png) | |
+| Input sketch | Ground truth |
+|:---:|:---:|
+| ![sketch](assets/readme/ex_sketch.png) | ![gt](assets/readme/ex_gt.png) |
+
+| | α = 1% | α = 10% | α = 50% | α = 100% |
+|:--|:---:|:---:|:---:|:---:|
+| **Scribble hints** | ![h1](assets/readme/ex_hint_r1.png) | ![h10](assets/readme/ex_hint_r10.png) | ![h50](assets/readme/ex_hint_r50.png) | ![h100](assets/readme/ex_hint_r100.png) |
+| **DetFill colorization** | ![d1](assets/readme/ex_detfill_r1.png) | ![d10](assets/readme/ex_detfill_r10.png) | ![d50](assets/readme/ex_detfill_r50.png) | ![d100](assets/readme/ex_detfill_r100.png) |
 
 ## Hint-AUC evaluation
 
