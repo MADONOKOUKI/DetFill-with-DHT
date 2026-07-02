@@ -74,18 +74,25 @@ def _load_bgr(image: ImageLike) -> np.ndarray:
     return img
 
 
+_ID_SCRAMBLE = 1000003  # coprime to 255**3 = (3*5*17)**3 -> bijective scrambling
+
+
 def _id_to_color(region_id: int) -> np.ndarray:
     """Encode a region id as a BGR color, bijective under base-255 decoding.
 
     The dataloader (detfill/datasets/custom.py) decodes region colors as
     ``c0*255**2 + c1*255 + c2`` (base 255, a quirk kept for compatibility).
     Restricting every channel to 0..254 makes this decoding collision-free.
+    Sequential ids are scrambled by a constant coprime to 255**3 (still
+    bijective) so that region maps are visually distinguishable instead of
+    near-identical dark shades.
     """
     if region_id >= 255 ** 3:
         raise ValueError("too many regions")
-    c0 = region_id // (255 * 255)
-    c1 = (region_id // 255) % 255
-    c2 = region_id % 255
+    v = (region_id * _ID_SCRAMBLE) % (255 ** 3)
+    c0 = v // (255 * 255)
+    c1 = (v // 255) % 255
+    c2 = v % 255
     return np.array([c0, c1, c2], dtype=np.uint8)
 
 
@@ -236,18 +243,30 @@ def _split_disconnected_regions(region: np.ndarray) -> np.ndarray:
     """Assign fresh unique colors to disconnected components of a same color.
 
     Port of the connected-component split in ``make_scribbling`` (4-conn.);
-    fresh ids are allocated deterministically above the current maximum id.
+    fresh colors are allocated deterministically, skipping any color already
+    present in the map (works for arbitrary user-provided region maps too).
     """
     region = region.copy()
     ids = region_ids(region)
-    next_id = int(ids.max()) + 1
+    used = set(int(v) for v in np.unique(ids))
+    candidate = 0
+
+    def alloc_color() -> np.ndarray:
+        nonlocal candidate
+        while True:
+            col = _id_to_color(candidate)
+            candidate += 1
+            v = int(col[0]) * 255 * 255 + int(col[1]) * 255 + int(col[2])
+            if v not in used:
+                used.add(v)
+                return col
+
     for val in np.unique(ids):
         mask = (ids == val).astype(np.uint8) * 255
         n_labels, labeled = cv2.connectedComponents(mask, connectivity=4)
         # label 0 = background of the mask, label 1 = first (kept) component
         for j in range(2, n_labels):
-            region[labeled == j] = _id_to_color(next_id)
-            next_id += 1
+            region[labeled == j] = alloc_color()
     return region
 
 
