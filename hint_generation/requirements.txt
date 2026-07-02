@@ -1,0 +1,9 @@
+numpy
+opencv-python
+scikit-image==0.19.*
+fil_finder==1.7.2
+astropy==4.3.1
+networkx
+natsort
+tqdm
+matplotlib

@@ -1,0 +1,13 @@
+__pycache__/
+*.pyc
+*.pth
+*.pth.tar
+*.ckpt
+*.pt
+*.zip
+results/
+logs/
+*.log
+nohup.out
+.DS_Store
+eval_out/

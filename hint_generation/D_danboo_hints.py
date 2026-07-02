@@ -1,0 +1,70 @@
+#!/home/madorin/anaconda3/envs/py37/bin/python
+"""
+DanbooRegion Stage 2 (py37 env): DanbooRegion region map + GT -> region64 / scribble_mask64
+/ scribble_col64, using the SAME make_scribbling as the SLIC/Quickshift pipeline. Output
+naming matches felz/SLIC/QS so the dataloader reads it unchanged.
+
+Processes the region maps that are LOCAL on this node (glob), so it composes with the
+per-node sharding of Stage 1. Run one or more instances per node with --shard/--nshards.
+
+Usage (per shard, on a cayenne node):
+  py37 D_danboo_hints.py --shard 0 --nshards 32 \
+     --region_root /scratch/madono/seg_retrain_R2-2/danboo_regions \
+     --src_root /home/.../main_exp_felzenszwalb_fixdot/illust \
+     --out_root /scratch/madono/seg_retrain_R2-2/danbooregion
+"""
+import os
+os.environ.setdefault("OMP_NUM_THREADS", "1")
+import sys, argparse, glob, time, traceback
+import cv2
+SCR = "/home/madorin/gitlab/tog2024/main/tvcg2026_materials/rebuttal/R2/R2-2_segmentation_dependency/scripts"
+sys.path.insert(0, SCR)
+from D_retrain_gen_hints import make_scribbling, SEG_SUBDIR  # reuse exact hint logic + GT layout
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--region_root", required=True)   # local danboo region maps (<dir>/<id>.region.png)
+    ap.add_argument("--src_root", required=True)       # GT root (fixdot illust)
+    ap.add_argument("--out_root", required=True)
+    ap.add_argument("--shard", type=int, default=0)
+    ap.add_argument("--nshards", type=int, default=1)
+    ap.add_argument("--limit", type=int, default=0)
+    args = ap.parse_args()
+
+    regions = sorted(glob.glob(os.path.join(args.region_root, "*", "*.region.png")))
+    mine = [p for i, p in enumerate(regions) if i % args.nshards == args.shard]
+    print(f"[danboo-hints shard {args.shard}/{args.nshards}] {len(mine)}/{len(regions)} region maps", flush=True)
+
+    done = skip = err = 0
+    t0 = time.time()
+    for k, rpath in enumerate(mine):
+        dn = os.path.basename(os.path.dirname(rpath))
+        fn = os.path.basename(rpath).replace(".region.png", "")
+        out_dir = os.path.join(args.out_root, dn)
+        prefix = os.path.join(out_dir, f"{fn}.image")
+        if os.path.isfile(prefix + "_scribble_mask64.png"):
+            skip += 1; continue
+        gt = os.path.join(args.src_root, SEG_SUBDIR, dn, f"{fn}.image.png")
+        img = cv2.imread(gt); region = cv2.imread(rpath)
+        if img is None or region is None:
+            err += 1; print(f"  MISS {gt if img is None else rpath}", flush=True); continue
+        try:
+            region64, mask64, col64 = make_scribbling(img, region)
+            os.makedirs(out_dir, exist_ok=True)
+            cv2.imwrite(prefix + "_region64.png", region64)
+            cv2.imwrite(prefix + "_scribble_mask64.png", mask64.astype('uint8'))
+            cv2.imwrite(prefix + "_scribble_col64.png", col64)
+            done += 1
+        except Exception:
+            err += 1; print(f"  ERR {dn}/{fn}\n{traceback.format_exc()}", flush=True); continue
+        if args.limit and done >= args.limit: break
+        if k % 200 == 0 and k:
+            print(f"  ..{k}/{len(mine)} done={done} skip={skip} err={err} "
+                  f"{done/(time.time()-t0+1e-9):.2f} img/s", flush=True)
+    print(f"[DONE danboo-hints shard {args.shard}/{args.nshards}] done={done} skip={skip} "
+          f"err={err} elapsed={time.time()-t0:.0f}s", flush=True)
+
+
+if __name__ == "__main__":
+    main()
