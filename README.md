@@ -126,10 +126,11 @@ conda env create -f detfill/environment.yml && conda activate BBDM
 # 1. generate the deterministic hint dataset (or use the hintauc library)
 python hint_generation/D_retrain_gen_hints.py --help
 
-# 2. inference over the full hint-ratio grid (x 3 sketch extractors)
-cd detfill
-GPU=0 bash run_inference_mr.sh scribble
-GPU=0 RATIOS="0.10" TYPES="2" bash run_inference_mr.sh scribble   # single cell
+# 2. point the configs at your data, then run inference over the hint-ratio grid
+#    (set data.dataset_config.dataset_path / scratch_root in detfill/configs/*.yaml;
+#     expected directory layout: detfill/README.md)
+(cd detfill && GPU=0 bash run_inference_mr.sh scribble)
+(cd detfill && GPU=0 RATIOS="0.10" TYPES="2" bash run_inference_mr.sh scribble)   # single cell
 
 # 3. per-ratio metrics + Hint-AUC
 python evaluation/dense/B_eval_dense_curve.py --help
@@ -138,9 +139,10 @@ python evaluation/calc_hint_auc_manual.py --help
 
 ## Notes
 
-- This is research code: some scripts contain absolute dataset paths from our cluster
-  (`/scratch/...`, `/home/madorin/...`) that need to be adapted to your environment
-  (`dataset_path` / `scratch_root` in `detfill/configs/*.yaml`).
+- All data locations are user-specified: set `data.dataset_config.dataset_path` /
+  `scratch_root` in `detfill/configs/*.yaml` to your dataset root (the expected
+  directory layout is documented in `detfill/README.md`). Hints default to the paper's
+  64×64 resolution.
 - The `hintauc` library re-implements the canonical scripts faithfully (3x3 dilation,
   region-mean colors, base-255 region-id encoding compatible with the dataloader);
   region-id colors are assigned deterministically instead of the original random sampling.
@@ -166,6 +168,12 @@ behavior of the shipped pipeline**:
   (`hint_dot_generation_20240114_illust_64.py`) and `all_segmentations.py`; the
   ImageNet / 256-px / superpixel-ablation variants differed only in path constants and
   were removed.
+
+A follow-up pass made every data location user-configurable: the config files ship
+with `/path/to/dataset` placeholders, the dataset loaders derive all directories from
+`dataset_path` / `scratch_root` (raising a clear error when unset), script argument
+defaults that pointed at our experiment environment became required arguments, and
+committed build artifacts were removed from version control.
 
 Everything removed remains available in the git history.
 

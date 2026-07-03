@@ -1,2 +1,0 @@
-[console_scripts]
-hintauc = hintauc.cli:main

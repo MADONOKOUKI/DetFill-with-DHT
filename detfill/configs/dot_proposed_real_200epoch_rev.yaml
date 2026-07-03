@@ -15,7 +15,7 @@ data:
   dataset_name: 'dataset_name'
   dataset_type: 'custom_train_our_model'
   dataset_config:
-    dataset_path: '/scratch/madono/main_exp_felzenszwalb/real/'
+    dataset_path: '/path/to/real_dataset'  # set to your data root (layout: detfill/README.md)
     hint_type: 'dot'
     domain: "real"
     image_size: 256

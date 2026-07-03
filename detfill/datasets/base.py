@@ -89,9 +89,12 @@ class HintColorizationDataset(Dataset):
         self.image_size = image_size
         self.image_paths = image_paths
 
-        self.root_sketch =  os.path.join("/scratch/madono/main_exp_felzenszwalb/", domain, "sketch")
-        self.root_scr = os.path.join("/scratch/madono/main_exp_felzenszwalb/", domain, "hint_from_regions", "felzenszwalb")
-        self.root_region =  os.path.join("/scratch/madono/main_exp_felzenszwalb/", domain, "segmentation_regions",  "felzenszwalb")
+        # NOTE: this class is shadowed by datasets.custom.HintColorizationDataset for
+        # the shipped configs; set data_root here only if you use it directly.
+        data_root = os.environ.get("DETFILL_DATA_ROOT", "/path/to/dataset")
+        self.root_sketch = os.path.join(data_root, domain, "sketch")
+        self.root_scr = os.path.join(data_root, domain, "hint_from_regions", "felzenszwalb")
+        self.root_region = os.path.join(data_root, domain, "segmentation_regions", "felzenszwalb")
         self.sketch_cands =  ['pysimp', 'XDoG', 'sketchkeras']
 
         self.transform = self.vtransform = transforms.Compose([

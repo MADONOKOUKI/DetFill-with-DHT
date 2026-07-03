@@ -1,4 +1,4 @@
-#!/home/madorin/anaconda3/envs/py37/bin/python
+#!/usr/bin/env python3
 """
 DanbooRegion Stage 2 (py37 env): DanbooRegion region map + GT -> region64 / scribble_mask64
 / scribble_col64, using the SAME make_scribbling as the SLIC/Quickshift pipeline. Output
@@ -9,16 +9,15 @@ per-node sharding of Stage 1. Run one or more instances per node with --shard/--
 
 Usage (per shard, on a cayenne node):
   py37 D_danboo_hints.py --shard 0 --nshards 32 \
-     --region_root /scratch/madono/seg_retrain_R2-2/danboo_regions \
+     --region_root /path/to/data \
      --src_root /home/.../main_exp_felzenszwalb_fixdot/illust \
-     --out_root /scratch/madono/seg_retrain_R2-2/danbooregion
+     --out_root /path/to/data
 """
 import os
 os.environ.setdefault("OMP_NUM_THREADS", "1")
 import sys, argparse, glob, time, traceback
 import cv2
-SCR = "/home/madorin/gitlab/tog2024/main/tvcg2026_materials/rebuttal/R2/R2-2_segmentation_dependency/scripts"
-sys.path.insert(0, SCR)
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from D_retrain_gen_hints import make_scribbling, SEG_SUBDIR  # reuse exact hint logic + GT layout
 
 

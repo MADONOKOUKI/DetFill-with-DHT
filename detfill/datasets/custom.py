@@ -281,13 +281,13 @@ class HintColorizationDataset(Dataset):
         self.domain = dataset_config.domain
         self.hint_type = dataset_config.hint_type
 
-        # If dataset_config.scratch_root is given, use a flat layout at that root.
-        # This is the layout produced by tvcg_mr/R2-1/migrate_data.py (tvcg26 major
-        # revision data):
+        # Two user-configurable layouts (set the roots in the yaml config):
+        #  A) dataset_config.scratch_root — flat evaluation layout:
         #     <scratch_root>/segmentations/originals/*.image.png
-        #     <scratch_root>/hint_from_regions_256/*.image_*256.png
+        #     <scratch_root>/hint_from_regions_64_rev/  and  hint_from_regions_256/
         #     <scratch_root>/sketch/{XDoG,pysimp,sketchkeras}/*.png
-        # Otherwise fall back to the legacy hardcoded /scratch/madono/main_exp/ layout.
+        #  B) dataset_config.dataset_path — split-based layout with
+        #     {train,valid,test}_paper.txt lists (see detfill/README.md).
         scratch_root = getattr(dataset_config, 'scratch_root', None)
         if scratch_root:
             self.root_sketch = os.path.join(scratch_root, "sketch")
@@ -306,11 +306,15 @@ class HintColorizationDataset(Dataset):
             elif stage == 'test':
                 self.image_paths = list_test_imgs
 
-            self.root_sketch = os.path.join("/scratch/madono/main_exp/", self.domain, "sketch")
-            # self.root_scr = os.path.join("/scratch/madono/main_exp/", self.domain, "hint_from_regions", "felzenszwalb")
-            self.root_scr = os.path.join('/scratch/madono/tvcg26_major_revision/', "hint_from_regions_64_rev")
-            self.root_scr_region = os.path.join('/scratch/madono/tvcg26_major_revision/', "hint_from_regions_256")  # evalfix: region64 files complete here, missing in hint_from_regions_64_rev
-            self.root_region = os.path.join("/scratch/madono/main_exp/", self.domain, "segmentation_regions", "felzenszwalb")
+            dataset_path = getattr(dataset_config, 'dataset_path', None)
+            if not dataset_path or str(dataset_path).startswith('/path/to'):
+                raise ValueError(
+                    "Set data.dataset_config.dataset_path (or scratch_root) in the yaml "
+                    "config to your dataset root; see detfill/README.md for the layout.")
+            self.root_sketch = os.path.join(dataset_path, "sketch")
+            self.root_scr = os.path.join(dataset_path, "hint_from_regions_64_rev")
+            self.root_scr_region = os.path.join(dataset_path, "hint_from_regions_256")
+            self.root_region = os.path.join(dataset_path, "segmentation_regions", "felzenszwalb")
 
 
 
@@ -510,7 +514,6 @@ def init_load_data(domain):
     with open(os.path.join('configs', str(domain), 'train_paper.txt'), "r") as a:
         list_train_imgs = a.readlines()
 
-    # with open('/home/madorin/gitlab/yuan/hint_colorization/train/config/valid_paper.txt', "r") as a:
     with open(os.path.join('configs', str(domain), 'valid_paper.txt'), "r") as a:
 
         list_valid_imgs = a.readlines()

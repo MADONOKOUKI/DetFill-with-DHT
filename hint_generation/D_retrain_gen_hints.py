@@ -1,4 +1,4 @@
-#!/home/madorin/anaconda3/envs/py37/bin/python
+#!/usr/bin/env python3
 """
 R2-2 / R1-3 segmentation-retrain data generation.
 
@@ -9,19 +9,18 @@ felzenszwalb pipeline, and regenerate the deterministic region+scribble hint wit
 SAME make_scribbling logic. Outputs use the felz-identical naming so the BBDM dataloader
 can read them unchanged.
 
-Segmentation params  : ported verbatim from /scratch/madono/all_segmentations.py
+Segmentation params  : ported verbatim from canonical/all_segmentations.py
 Hint (make_scribbling): ported verbatim from
-    /scratch/madono/scripts_fixing/hint_dot_generation_20240114_illust_abl_64.py
+    canonical/hint_dot_generation_20240114_illust_64.py (same logic)
 
 GT/sketch are segmenter-independent and reused from fixdot (NOT regenerated here).
 Only region64 / scribble_mask64 / scribble_col64 are produced (training-needed, 64px).
 
-Env: /home/madorin/anaconda3/envs/py37/bin/python  (cv2, skimage 0.19, astropy 4.3.1,
-     fil_finder 1.7.2). py37 lives on NFS so it is available on cayenne1-4.
+Deps: cv2, scikit-image 0.19, astropy, fil_finder (see requirements.txt).
 
-Usage (single node):
-  py37 D_retrain_gen_hints.py --segmenter slic --split all \
-       --shard 0 --nshards 4 --out_root /scratch/madono/seg_retrain_R2-2
+Usage:
+  python D_retrain_gen_hints.py --segmenter slic --split all \
+       --src_root /path/to/gt_images --txt_dir /path/to/split_lists --out_root /path/to/output
 Resume-safe: skips an id whose _scribble_mask64.png already exists.
 """
 import os, sys, argparse, copy, time, traceback
@@ -36,13 +35,8 @@ import astropy.units as u
 
 SIZE = 64  # hint resolution (training reads *_mask64 / *_col64 / *_region64)
 
-# Source GT images are STAGED to local /scratch (NFS-free generation to spare the
-# fileserver). Staged layout mirrors fixdot: <src_root>/<SEG_SUBDIR>/<dir>/<id>.image.png
-SRC_ROOT_DEFAULT = "/scratch/madono/seg_retrain_R2-2/src"
-NFS_SRC   = "/home/madorin/datasets/tog2024/main_exp_felzenszwalb_fixdot/illust"  # original (NFS)
+# Source layout: <src_root>/<SEG_SUBDIR>/<dir>/<id>.image.png
 SEG_SUBDIR = "segmentation_regions/felzenszwalb"   # GT .image.png lives here, per-dir
-# txt split lists are copied next to the staged source so the txt read is NFS-free too
-TXT_DIR_DEFAULT = "/scratch/madono/seg_retrain_R2-2/configs/illust"
 
 
 # ------------------------- segmentation (verbatim params) -------------------------
@@ -154,8 +148,8 @@ def main():
     ap.add_argument("--shard", type=int, default=0)
     ap.add_argument("--nshards", type=int, default=1)
     ap.add_argument("--out_root", required=True)
-    ap.add_argument("--src_root", default=SRC_ROOT_DEFAULT, help="staged GT root (local /scratch)")
-    ap.add_argument("--txt_dir", default=TXT_DIR_DEFAULT, help="dir with {train,valid,test}_paper.txt")
+    ap.add_argument("--src_root", required=True, help="GT image root (<src_root>/segmentation_regions/felzenszwalb/<dir>/<id>.image.png)")
+    ap.add_argument("--txt_dir", required=True, help="dir with {train,valid,test}_paper.txt (e.g. detfill/configs/illust)")
     ap.add_argument("--limit", type=int, default=0, help="dry-run: process at most N ids")
     # segmentation granularity — tuned on sample so SLIC/QS ~match felz ~290 regions
     #   SLIC n=350 -> ~289 ; Quickshift k5,md12 -> ~305  (felz median ~280)

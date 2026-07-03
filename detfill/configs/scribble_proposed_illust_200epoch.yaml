@@ -16,8 +16,8 @@ data:
   dataset_name: 'dataset_name'
   dataset_type: 'custom_train_our_model'
   dataset_config:
-    dataset_path: '/scratch/madono/main_exp_felzenszwalb/illust/'
-    scratch_root: '/scratch/madono/tvcg26_major_revision/'
+    dataset_path: '/path/to/dataset'  # set to your data root (layout: detfill/README.md)
+    scratch_root: '/path/to/dataset'  # flat evaluation layout root
     hint_type: 'scribble'
     domain: "illust"
     image_size: 256

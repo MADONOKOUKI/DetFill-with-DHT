@@ -11,3 +11,6 @@ logs/
 nohup.out
 .DS_Store
 eval_out/
+build/
+dist/
+*.egg-info/

@@ -1,3 +1,9 @@
+# ---------------------------------------------------------------------------
+# ARCHIVAL COPY (verbatim) of the original dataset-generation script used to
+# build the paper dataset. Kept unmodified for provenance; the paths below
+# refer to the original experiment environment and are not meant to be run
+# as-is. For new data, use the `hintauc` library or ../D_retrain_gen_hints.py.
+# ---------------------------------------------------------------------------
 import cv2
 import skimage
 import numpy as np

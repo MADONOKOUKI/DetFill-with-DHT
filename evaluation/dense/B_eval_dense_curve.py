@@ -14,7 +14,7 @@ Resumable: if per_image.csv exists, rows already present (sketch, ratio, image)
 are skipped on restart.
 
 Reused logic (metric bundle, IO conventions) is adapted from
-  /home/madorin/gitlab/tog2024/main/Evaluation_paper/eval_single_run.py
+  evaluation/eval_single_run.py
 but functions are inlined here because that script runs argparse at import time.
 """
 
@@ -30,8 +30,7 @@ from pathlib import Path
 # ─── arg parse first (set CUDA_VISIBLE_DEVICES before torch import) ────────
 def parse_args():
     p = argparse.ArgumentParser()
-    p.add_argument("--results_root", type=str,
-                   default="/home/madorin/gitlab/tog2024/main/BBDM_region_tvcg2026/tvcg_mr/R2-1/results/illust/scribble",
+    p.add_argument("--results_root", type=str, required=True,
                    help="root containing {0,1,2}/<ratio>/{200,ground_truth}/")
     p.add_argument("--sketches", nargs="+", type=int, default=[0, 1, 2])
     p.add_argument("--ratios", nargs="*", default=None,
