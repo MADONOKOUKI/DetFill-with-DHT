@@ -1,3 +1,0 @@
-python3 main.py --config configs/dot_proposed_illust_200epoch.yaml --resume_model results/dataset_name/BrownianBridge_dot_illust/checkpoint/latest_model_200.pth --sample_to_eval --save_top --gpu_ids 4 --sample_ratio 0.075 --sketch_type 0
-python3 main.py --config configs/dot_proposed_illust_200epoch.yaml --resume_model results/dataset_name/BrownianBridge_dot_illust/checkpoint/latest_model_200.pth --sample_to_eval --save_top --gpu_ids 4 --sample_ratio 0.075 --sketch_type 1
-python3 main.py --config configs/dot_proposed_illust_200epoch.yaml --resume_model results/dataset_name/BrownianBridge_dot_illust/checkpoint/latest_model_200.pth --sample_to_eval --save_top --gpu_ids 4 --sample_ratio 0.075 --sketch_type 2

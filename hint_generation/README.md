@@ -9,9 +9,11 @@ Outputs per image: `*_region64.png`, `*_scribble_mask64.png`, `*_scribble_col64.
 `*_flatten_img64.png`, `*_dot_mask64.png`, `*_dot_col64.png` (and 256px variants).
 
 Files:
-- `canonical/hint_dot_generation_20240114_illust_{64,256,abl_64}.py`, `canonical/hint_dot_generation_20240114_real_abl_64.py`
-  -- the original generation scripts used to build the paper dataset (hardcoded cluster paths;
-  kept verbatim for provenance).
+- `canonical/hint_dot_generation_20240114_illust_64.py`
+  -- the original generation script used to build the paper dataset (hardcoded cluster paths;
+  kept verbatim for provenance). Variants for ImageNet / 256-px hints / the superpixel
+  ablation differed only in path constants and `hint_img_size` and were removed in the
+  2026-07 cleanup (available in the git history).
 - `canonical/all_segmentations.py` -- segmentation stage (Felzenszwalb / SLIC / Quickshift / Watershed).
 - `D_retrain_gen_hints.py` -- cleaned, argparse-based port of the same `make_scribbling` logic
   with SLIC/Quickshift segmenters (used for the supplementary segmenter-robustness study).

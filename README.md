@@ -145,6 +145,30 @@ python evaluation/calc_hint_auc_manual.py --help
   region-mean colors, base-255 region-id encoding compatible with the dataloader);
   region-id colors are assigned deterministically instead of the original random sampling.
 
+## Refactoring note (2026-07)
+
+The initial release (`bfa3a84`) mirrored our internal research tree. It was then
+simplified to the minimal set needed to reproduce the paper, **without changing any
+behavior of the shipped pipeline**:
+
+- `detfill/`: removed ~40 per-ratio `test_*.sh` launchers (superseded by
+  `run_inference_mr.sh`), cluster-specific ops scripts (`10_run_ratio.sh`,
+  `20_launch.sh`, `30_push_and_eval.sh`), an unused alternate entry point
+  (`main_colorization.py`), upstream BBDM evaluation utilities
+  (`preprocess_and_evaluation.py`, `evaluation/` — our Hint-AUC evaluation lives at the
+  repository root), the vendored `dreamsim/` repository (its only reference in the model
+  code was a dead import, now removed; perceptual metrics are provided by the pip
+  packages), the seed-experiment dataset variants, seven unused config variants, and a
+  fully commented-out duplicate dataset class in `datasets/custom.py`.
+- `evaluation/`: removed `eval_single_run_v2.py` (a 9-line near-duplicate of
+  `eval_single_run.py`) and the superseded 4-metric AUC script.
+- `hint_generation/canonical/`: kept the canonical generator
+  (`hint_dot_generation_20240114_illust_64.py`) and `all_segmentations.py`; the
+  ImageNet / 256-px / superpixel-ablation variants differed only in path constants and
+  were removed.
+
+Everything removed remains available in the git history.
+
 ## License and acknowledgements
 
 MIT License. The `detfill/` directory is derived from

@@ -12,7 +12,6 @@ from model.BrownianBridge.base.modules.diffusionmodules.openaimodel import UNetM
 from model.BrownianBridge.base.modules.encoders.modules import SpatialRescaler
 import lpips
 import torchvision.transforms.functional as F
-from dreamsim import dreamsim
 
 
 def compute_total_variation_loss(img, weight):      

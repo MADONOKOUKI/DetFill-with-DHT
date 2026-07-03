@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-B_auc_grid_sensitivity_7m.py — 7-metric variant of B_auc_grid_sensitivity.py.
+B_auc_grid_sensitivity_7m.py — 7-metric Hint-AUC grid-sensitivity script (supersedes the original 4-metric variant).
 
 Identical logic, but reports Hint-AUC for ALL SEVEN paper metrics
 (MSE, PSNR, SSIM, LPIPS, OpenCLIP, DINO, DreamSim) instead of the 4 in the

@@ -97,8 +97,6 @@ from datetime import datetime
 from torchvision.utils import make_grid, save_image
 from Register import Registers
 from datasets.custom import CustomSingleDataset, CustomAlignedDataset, CustomInpaintingDataset
-import datasets.custom_seedexp  # noqa: F401 -- registers `custom_seedexp_eval`
-import datasets.custom_seedexp_inline  # noqa: F401 -- registers `custom_seedexp_inline`
 
 
 def remove_file(fpath):
