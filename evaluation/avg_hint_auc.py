@@ -50,7 +50,7 @@ def main():
     p.add_argument("--name", type=str, default="MEAN",
                    help="出力行の name（例: illust_dot_det_mean）")
     p.add_argument("--in_csv", nargs="+", required=True,
-                   help="calc_hint_auc_manual.py が吐いた summary CSV（複数可）")
+                   help="calc_hint_auc.py が吐いた summary CSV（複数可）")
     p.add_argument("--out_csv", type=str, required=True,
                    help="平均結果を書き出す先（上書き）")
     p.add_argument("--with_std", action="store_true",

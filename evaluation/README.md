@@ -8,22 +8,22 @@ DINOv2 / DreamSim) and integrates each metric curve over the ratio grid
 
 ## Recommended pipeline (`dense/`, used for the paper's revision results)
 
-Works directly on the output layout of `detfill/run_inference_mr.sh`
+Works directly on the output layout of `detfill/run_inference.sh`
 (`.../sample_to_eval/illust/<hint_type>/<sketch_type>/<ratio>/{200,ground_truth}/`):
 
 ```bash
 # 1. per-ratio metrics (resumable; writes per_image.csv + per_ratio_summary.csv)
-python evaluation/dense/B_eval_dense_curve.py \
+python evaluation/dense/eval_curve.py \
     --results_root detfill/results/dataset_name/BrownianBridge_scribble_illust/sample_to_eval/illust/scribble \
     --sketches 0 1 2 \
     --metrics psnr ssim lpips dreamsim \
     --out_dir eval_out
 
 # 2. aggregate per_image.csv -> per_ratio_summary.csv (if you skipped it above)
-python evaluation/dense/B_build_summary.py --help
+python evaluation/dense/build_summary.py --help
 
 # 3. Hint-AUC over the ratio grid (per metric, incl. alternative grids)
-python evaluation/dense/B_auc_grid_sensitivity_7m.py --summary eval_out/per_ratio_summary.csv
+python evaluation/dense/auc_grids.py --summary eval_out/per_ratio_summary.csv
 ```
 
 `per_ratio_summary.csv` columns: `sketch, sketch_name, ratio, n, <metric>_mean, <metric>_std`.
@@ -33,9 +33,9 @@ python evaluation/dense/B_auc_grid_sensitivity_7m.py --summary eval_out/per_rati
 - `eval_single_run.py` — metrics for ONE inference run directory
   (`--run_dir .../<run>` with samples under `test/samples_cfg_scale_5.00`, generated
   `A_B.png` files paired with `--gt_root` by dataloader order). Writes a one-row CSV.
-- `calc_hint_auc_manual.py` — Hint-AUC from eight per-ratio CSVs
+- `calc_hint_auc.py` — Hint-AUC from eight per-ratio CSVs
   (`--alpha_csv 0.00=... --alpha_csv 0.01=...`, stdlib-only).
-- `avg_hint_auc_summary.py` — mean ± sample SD across summary CSVs
+- `avg_hint_auc.py` — mean ± sample SD across summary CSVs
   (e.g., over the three sketch extractors).
 
 ## Notes

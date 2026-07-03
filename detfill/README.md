@@ -31,7 +31,7 @@ All data locations are set by you in `configs/*.yaml`; hints are the paper's 64�
 setting by default.
 
 **A. Flat evaluation layout** — set `data.dataset_config.scratch_root` (used by the
-`*_mr.yaml` configs and `run_inference_mr.sh`):
+`*_illust.yaml` configs and `run_inference.sh`):
 
 ```
 <scratch_root>/
@@ -47,7 +47,7 @@ of the original experiments) — both are detected automatically.
 
 **B. Split-based layout** — set `data.dataset_config.dataset_path` (used when
 `scratch_root` is absent, e.g. the `*_real_*.yaml` configs). Train/valid/test ids come
-from `configs/<domain>/{train,valid,test}_paper.txt`:
+from `configs/<domain>/{train,valid,test}.txt`:
 
 ```
 <dataset_path>/
@@ -62,8 +62,8 @@ implement the same deterministic pipeline).
 ## 4. Inference over the Hint-AUC ratio grid (tested)
 
 ```bash
-GPU=0 bash run_inference_mr.sh scribble                      # all ratios x 3 sketch types
-GPU=0 RATIOS="0.10" TYPES="2" bash run_inference_mr.sh dot   # a single cell
+GPU=0 bash run_inference.sh scribble                      # all ratios x 3 sketch types
+GPU=0 RATIOS="0.10" TYPES="2" bash run_inference.sh dot   # a single cell
 ```
 
 Outputs land in:
@@ -74,7 +74,7 @@ results/dataset_name/BrownianBridge_<hint>_illust/sample_to_eval/illust/<hint>/
     <sketch_type>/<ratio>/ground_truth/             # matching GT copies
 ```
 
-which is exactly the layout `../evaluation/dense/B_eval_dense_curve.py` consumes.
+which is exactly the layout `../evaluation/dense/eval_curve.py` consumes.
 Ratios follow the paper grid {0.00, 0.01, 0.03, 0.05, 0.10, 0.25, 0.50, 1.00}; sketch
 types are 0 = sketch simplification (pysimp), 1 = XDoG, 2 = SketchKeras.
 

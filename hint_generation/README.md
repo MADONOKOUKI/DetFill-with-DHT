@@ -37,9 +37,9 @@ area (descending) — see `detfill/datasets/custom.py` (`sample_ratio`) or
 
 | File | Role |
 |---|---|
-| `D_retrain_gen_hints.py` | Batch generator with an argparse CLI (SLIC / Quickshift segmenters; sharding; resume-safe). Contains the verbatim `make_scribbling` port. Recommended batch tool. |
-| `D_danboo_hints.py` | DanbooRegion-segmenter variant (imports `make_scribbling` from the file above). |
-| `canonical/hint_dot_generation_20240114_illust_64.py` | Archival copy (verbatim) of the original script that built the paper dataset. Not meant to be run as-is. |
+| `generate_hints.py` | Batch generator with an argparse CLI (SLIC / Quickshift segmenters; sharding; resume-safe). Contains the verbatim `make_scribbling` port. Recommended batch tool. |
+| `danbooregion_hints.py` | DanbooRegion-segmenter variant (imports `make_scribbling` from the file above). |
+| `canonical/hint_dot_generation.py` | Archival copy (verbatim) of the original script that built the paper dataset. Not meant to be run as-is. |
 | `canonical/all_segmentations.py` | Archival copy of the segmentation stage (Felzenszwalb / SLIC / Quickshift / Watershed). |
 | `requirements.txt` | Dependencies for the scripts in this directory. |
 
@@ -48,7 +48,7 @@ area (descending) — see `detfill/datasets/custom.py` (`sample_ratio`) or
 ```bash
 pip install -r requirements.txt
 
-python D_retrain_gen_hints.py \
+python generate_hints.py \
     --segmenter slic --split test \
     --src_root /path/to/src \
     --txt_dir  /path/to/split_lists \
@@ -57,7 +57,7 @@ python D_retrain_gen_hints.py \
 
 - `--src_root` layout: `<src_root>/segmentation_regions/felzenszwalb/<dir>/<id>.image.png`
   (ground-truth color images).
-- `--txt_dir` contains `{train,valid,test}_paper.txt`, one `<dir>/<id>.image.png` path
+- `--txt_dir` contains `{train,valid,test}.txt`, one `<dir>/<id>.image.png` path
   per line (the paper's split lists ship in `../detfill/configs/illust/`).
 - Output: `<out_root>/<segmenter>/<dir>/<id>.image_{region,scribble_mask,scribble_col}64.png`.
 - `--limit N` processes only the first N ids (quick check); `--shard/--nshards` split

@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-B_build_summary.py — Aggregate per_image.csv → per_ratio_summary.csv (303 rows).
+build_summary.py — Aggregate per_image.csv → per_ratio_summary.csv (303 rows).
 
 Standalone summary builder, used by B_run_parallel.sh's watcher AFTER all 3
 parallel eval processes finish. Works on any per_image.csv produced by
-B_eval_dense_curve.py.
+eval_curve.py.
 """
 import argparse
 import sys

@@ -23,7 +23,7 @@ curl -L $BASE/detfill_dot_illust_200ep.pth \
      -o detfill/results/dataset_name/BrownianBridge_dot_illust/checkpoint/latest_model_200.pth
 ```
 
-These are the default paths used by `detfill/run_inference_mr.sh`; any other location
+These are the default paths used by `detfill/run_inference.sh`; any other location
 works with `python main.py ... --resume_model <path>`.
 
 ## Notes

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-B_auc_grid_sensitivity_7m.py — 7-metric Hint-AUC grid-sensitivity script (supersedes the original 4-metric variant).
+auc_grids.py — 7-metric Hint-AUC grid-sensitivity script (supersedes the original 4-metric variant).
 
 Identical logic, but reports Hint-AUC for ALL SEVEN paper metrics
 (MSE, PSNR, SSIM, LPIPS, OpenCLIP, DINO, DreamSim) instead of the 4 in the
@@ -43,7 +43,7 @@ GRIDS = [
 def parse_args():
     p = argparse.ArgumentParser()
     p.add_argument("--summary", required=True,
-                   help="per_ratio_summary.csv from B_eval_dense_curve (7-metric)")
+                   help="per_ratio_summary.csv from eval_curve (7-metric)")
     p.add_argument("--out_dir", required=True)
     return p.parse_args()
 

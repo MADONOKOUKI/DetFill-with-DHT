@@ -2,7 +2,7 @@
 """
 R2-2 / R1-3 segmentation-retrain data generation.
 
-For every image id listed in configs/illust/{train,valid,test}_paper.txt, read the
+For every image id listed in configs/illust/{train,valid,test}.txt, read the
 felzenszwalb GT source image from main_exp_felzenszwalb_fixdot, re-segment it with a
 DIFFERENT segmenter (SLIC or Quickshift) using the SAME parameters as the original
 felzenszwalb pipeline, and regenerate the deterministic region+scribble hint with the
@@ -11,7 +11,7 @@ can read them unchanged.
 
 Segmentation params  : ported verbatim from canonical/all_segmentations.py
 Hint (make_scribbling): ported verbatim from
-    canonical/hint_dot_generation_20240114_illust_64.py (same logic)
+    canonical/hint_dot_generation.py (same logic)
 
 GT/sketch are segmenter-independent and reused from fixdot (NOT regenerated here).
 Only region64 / scribble_mask64 / scribble_col64 are produced (training-needed, 64px).
@@ -19,7 +19,7 @@ Only region64 / scribble_mask64 / scribble_col64 are produced (training-needed, 
 Deps: cv2, scikit-image 0.19, astropy, fil_finder (see requirements.txt).
 
 Usage:
-  python D_retrain_gen_hints.py --segmenter slic --split all \
+  python generate_hints.py --segmenter slic --split all \
        --src_root /path/to/gt_images --txt_dir /path/to/split_lists --out_root /path/to/output
 Resume-safe: skips an id whose _scribble_mask64.png already exists.
 """
@@ -71,7 +71,7 @@ def colorize_regions(segments):
 
 # ------------------- hint generation (verbatim make_scribbling) -------------------
 def make_scribbling(img_bgr, region_bgr):
-    """Port of hint_dot_generation_20240114_illust_abl_64.py::make_scribbling.
+    """Port of canonical/hint_dot_generation.py::make_scribbling (verbatim).
     Returns (region64_bgr, scribble_mask64, scribble_col64) as the felz pipeline did."""
     img = cv2.resize(img_bgr, (SIZE, SIZE))
     region = cv2.resize(region_bgr, (SIZE, SIZE), interpolation=cv2.INTER_NEAREST)
@@ -130,7 +130,7 @@ def load_ids(split, txt_dir):
     splits = ["train", "valid", "test"] if split == "all" else [split]
     items = []
     for sp in splits:
-        with open(os.path.join(txt_dir, f"{sp}_paper.txt")) as f:
+        with open(os.path.join(txt_dir, f"{sp}.txt")) as f:
             for line in f:
                 line = line.strip()
                 if not line:
@@ -149,7 +149,7 @@ def main():
     ap.add_argument("--nshards", type=int, default=1)
     ap.add_argument("--out_root", required=True)
     ap.add_argument("--src_root", required=True, help="GT image root (<src_root>/segmentation_regions/felzenszwalb/<dir>/<id>.image.png)")
-    ap.add_argument("--txt_dir", required=True, help="dir with {train,valid,test}_paper.txt (e.g. detfill/configs/illust)")
+    ap.add_argument("--txt_dir", required=True, help="dir with {train,valid,test}.txt (e.g. detfill/configs/illust)")
     ap.add_argument("--limit", type=int, default=0, help="dry-run: process at most N ids")
     # segmentation granularity — tuned on sample so SLIC/QS ~match felz ~290 regions
     #   SLIC n=350 -> ~289 ; Quickshift k5,md12 -> ~305  (felz median ~280)

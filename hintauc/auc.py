@@ -1,6 +1,6 @@
 """Hint-AUC: integrate per-ratio metric scores over the hint-ratio grid.
 
-Port of ``evaluation/calc_hint_auc_manual.py``: plain trapezoidal integration
+Port of ``evaluation/calc_hint_auc.py``: plain trapezoidal integration
 of metric(alpha) over alpha in [0, 1] (the alpha range has length 1, so the
 integral equals the range-normalized value).
 """
@@ -14,7 +14,7 @@ DEFAULT_ALPHAS = (0.00, 0.01, 0.03, 0.05, 0.10, 0.25, 0.50, 1.00)
 
 
 def trapz(xs: Sequence[float], ys: Sequence[float]) -> float:
-    """Trapezoidal rule (port of calc_hint_auc_manual.trapz)."""
+    """Trapezoidal rule (port of calc_hint_auc.trapz)."""
     if len(xs) != len(ys) or len(xs) < 2:
         raise ValueError("need >= 2 (x, y) points with matching lengths")
     area = 0.0

@@ -69,7 +69,7 @@ def main():
     p.add_argument("--metrics", nargs="+", default=DEFAULT_METRICS,
                    help="CSV列名として読むメトリクス（例: mse psnr ssim ...）")
     p.add_argument("--out_csv", type=str, default="",
-                   help="summary CSV 出力先（未指定なら ./hint_auc_manual_summary.csv）")
+                   help="summary CSV 出力先（未指定なら ./hint_auc_summary.csv）")
     p.add_argument("--out_curve_csv", type=str, default="",
                    help="任意：alphaごとの点を出すCSV（デバッグ用）")
     p.add_argument("--check_hint_ratio", action="store_true",
@@ -176,7 +176,7 @@ def main():
             print(f"  {k:14s}: (missing values in some CSVs)")
 
     # ---- write summary CSV ----
-    out_csv = args.out_csv.strip() or os.path.abspath("hint_auc_manual_summary.csv")
+    out_csv = args.out_csv.strip() or os.path.abspath("hint_auc_summary.csv")
     out_csv = os.path.abspath(os.path.expanduser(out_csv))
     os.makedirs(os.path.dirname(out_csv), exist_ok=True)
 

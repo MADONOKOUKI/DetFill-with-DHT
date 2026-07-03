@@ -103,9 +103,9 @@ protocol is exactly reproducible.
 | Directory | Contents |
 |---|---|
 | `hintauc/` | **pip-installable library**: hint generation (`hints.py`), evaluation metrics (`metrics.py`), Hint-AUC (`auc.py`), CLI (`cli.py`). |
-| `hint_generation/` | The original research scripts behind the library: canonical 2024 generation scripts (`canonical/`), and the cleaned segmenter-robustness port (`D_retrain_gen_hints.py`, `D_danboo_hints.py`). |
+| `hint_generation/` | The original research scripts behind the library: canonical 2024 generation scripts (`canonical/`), and the cleaned segmenter-robustness port (`generate_hints.py`, `danbooregion_hints.py`). |
 | `detfill/` | DetFill model — a pixel-space Brownian Bridge diffusion fork of [BBDM](https://github.com/xuekt98/BBDM) (MIT) adapted to sketch + deterministic-hint conditioning. Training, inference, per-ratio sampling. |
-| `evaluation/` | The paper's evaluation pipelines: per-ratio metrics (`eval_single_run.py`, `dense/B_eval_dense_curve.py`) and Hint-AUC aggregation (`calc_hint_auc_manual.py`, `dense/B_auc_grid_sensitivity_7m.py`). |
+| `evaluation/` | The paper's evaluation pipelines: per-ratio metrics (`eval_single_run.py`, `dense/eval_curve.py`) and Hint-AUC aggregation (`calc_hint_auc.py`, `dense/auc_grids.py`). |
 | `checkpoints/` | Pointers to the released model weights (below). |
 | `examples/` | Library usage examples. |
 
@@ -128,17 +128,17 @@ Metric backbones (LPIPS, OpenCLIP, DINOv2, DreamSim) are downloaded automaticall
 conda env create -f detfill/environment.yml && conda activate BBDM
 
 # 1. generate the deterministic hint dataset (or use the hintauc library)
-python hint_generation/D_retrain_gen_hints.py --help
+python hint_generation/generate_hints.py --help
 
 # 2. point the configs at your data, then run inference over the hint-ratio grid
 #    (set data.dataset_config.dataset_path / scratch_root in detfill/configs/*.yaml;
 #     expected directory layout: detfill/README.md)
-(cd detfill && GPU=0 bash run_inference_mr.sh scribble)
-(cd detfill && GPU=0 RATIOS="0.10" TYPES="2" bash run_inference_mr.sh scribble)   # single cell
+(cd detfill && GPU=0 bash run_inference.sh scribble)
+(cd detfill && GPU=0 RATIOS="0.10" TYPES="2" bash run_inference.sh scribble)   # single cell
 
 # 3. per-ratio metrics + Hint-AUC
-python evaluation/dense/B_eval_dense_curve.py --help
-python evaluation/calc_hint_auc_manual.py --help
+python evaluation/dense/eval_curve.py --help
+python evaluation/calc_hint_auc.py --help
 ```
 
 ## Notes
@@ -158,7 +158,7 @@ simplified to the minimal set needed to reproduce the paper, **without changing 
 behavior of the shipped pipeline**:
 
 - `detfill/`: removed ~40 per-ratio `test_*.sh` launchers (superseded by
-  `run_inference_mr.sh`), cluster-specific ops scripts (`10_run_ratio.sh`,
+  `run_inference.sh`), cluster-specific ops scripts (`10_run_ratio.sh`,
   `20_launch.sh`, `30_push_and_eval.sh`), an unused alternate entry point
   (`main_colorization.py`), upstream BBDM evaluation utilities
   (`preprocess_and_evaluation.py`, `evaluation/` — our Hint-AUC evaluation lives at the
@@ -169,7 +169,7 @@ behavior of the shipped pipeline**:
 - `evaluation/`: removed `eval_single_run_v2.py` (a 9-line near-duplicate of
   `eval_single_run.py`) and the superseded 4-metric AUC script.
 - `hint_generation/canonical/`: kept the canonical generator
-  (`hint_dot_generation_20240114_illust_64.py`) and `all_segmentations.py`; the
+  (`hint_dot_generation.py`) and `all_segmentations.py`; the
   ImageNet / 256-px / superpixel-ablation variants differed only in path constants and
   were removed.
 
@@ -178,6 +178,13 @@ with `/path/to/dataset` placeholders, the dataset loaders derive all directories
 `dataset_path` / `scratch_root` (raising a clear error when unset), script argument
 defaults that pointed at our experiment environment became required arguments, and
 committed build artifacts were removed from version control.
+
+A final pass simplified every file name (dates and internal prefixes removed):
+`run_inference.sh`, `configs/{dot,scribble}_{illust,real}.yaml` (the duplicate
+training configs were merged into these), `configs/<domain>/{train,valid,test}.txt`,
+`hint_generation/generate_hints.py` / `danbooregion_hints.py` /
+`canonical/hint_dot_generation.py`, and `evaluation/{calc_hint_auc,avg_hint_auc}.py`,
+`evaluation/dense/{eval_curve,build_summary,auc_grids}.py`.
 
 Everything removed remains available in the git history.
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-B_eval_dense_curve.py — R2-1 dense hint-ratio sweep (LPIPS, DreamSim, SSIM, PSNR)
+eval_curve.py — R2-1 dense hint-ratio sweep (LPIPS, DreamSim, SSIM, PSNR)
 
 For each (sketch_type, hint_ratio) directory under R2-1 results, compute four
 quality metrics between generated images (`200/`) and ground truth (`ground_truth/`),

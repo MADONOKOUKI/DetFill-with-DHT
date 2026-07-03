@@ -287,7 +287,7 @@ class HintColorizationDataset(Dataset):
         #     <scratch_root>/hint_from_regions_64_rev/  and  hint_from_regions_256/
         #     <scratch_root>/sketch/{XDoG,pysimp,sketchkeras}/*.png
         #  B) dataset_config.dataset_path — split-based layout with
-        #     {train,valid,test}_paper.txt lists (see detfill/README.md).
+        #     {train,valid,test}.txt lists (see detfill/README.md).
         scratch_root = getattr(dataset_config, 'scratch_root', None)
         if scratch_root:
             self.root_sketch = os.path.join(scratch_root, "sketch")
@@ -517,14 +517,14 @@ def init_load_data(domain):
 
     #Training data
 
-    with open(os.path.join('configs', str(domain), 'train_paper.txt'), "r") as a:
+    with open(os.path.join('configs', str(domain), 'train.txt'), "r") as a:
         list_train_imgs = a.readlines()
 
-    with open(os.path.join('configs', str(domain), 'valid_paper.txt'), "r") as a:
+    with open(os.path.join('configs', str(domain), 'valid.txt'), "r") as a:
 
         list_valid_imgs = a.readlines()
 
-    with open(os.path.join('configs', str(domain), 'test_paper.txt'), "r") as a:
+    with open(os.path.join('configs', str(domain), 'test.txt'), "r") as a:
         list_test_imgs = a.readlines()        
 
     return list_train_imgs, list_valid_imgs, list_test_imgs

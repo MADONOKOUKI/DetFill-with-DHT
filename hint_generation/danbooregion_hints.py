@@ -8,7 +8,7 @@ Processes the region maps that are LOCAL on this node (glob), so it composes wit
 per-node sharding of Stage 1. Run one or more instances per node with --shard/--nshards.
 
 Usage (per shard, on a cayenne node):
-  py37 D_danboo_hints.py --shard 0 --nshards 32 \
+  py37 danbooregion_hints.py --shard 0 --nshards 32 \
      --region_root /path/to/data \
      --src_root /home/.../main_exp_felzenszwalb_fixdot/illust \
      --out_root /path/to/data
@@ -18,7 +18,7 @@ os.environ.setdefault("OMP_NUM_THREADS", "1")
 import sys, argparse, glob, time, traceback
 import cv2
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from D_retrain_gen_hints import make_scribbling, SEG_SUBDIR  # reuse exact hint logic + GT layout
+from generate_hints import make_scribbling, SEG_SUBDIR  # reuse exact hint logic + GT layout
 
 
 def main():

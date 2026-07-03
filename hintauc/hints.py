@@ -1,9 +1,9 @@
 """Deterministic region-based hint generation (DHT).
 
 Faithful port of the pipeline used to build the paper dataset
-(`hint_generation/canonical/hint_dot_generation_20240114_illust_*.py` and
+(`hint_generation/canonical/hint_dot_generation.py` and
 `all_segmentations.py`; see also the cleaned R2-2 port
-`hint_generation/D_retrain_gen_hints.py`):
+`hint_generation/generate_hints.py`):
 
     Felzenszwalb segmentation (scale=100, sigma=0.5, min_size=100)
       -> per-color connected-component split (4-connectivity)
