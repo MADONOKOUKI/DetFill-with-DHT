@@ -1,16 +1,48 @@
 # Hint-AUC evaluation
 
-Two pipelines (both compute MSE / PSNR / SSIM / LPIPS / OpenCLIP / DINO / DreamSim per
-hint ratio, then integrate over the ratio grid with the trapezoidal rule):
+Scores colorization outputs per hint ratio (MSE / PSNR / SSIM / LPIPS / OpenCLIP /
+DINOv2 / DreamSim) and integrates each metric curve over the ratio grid
+α ∈ {0, 0.01, 0.03, 0.05, 0.10, 0.25, 0.50, 1.00} with the trapezoidal rule
+(**Hint-AUC**). The `hintauc` library exposes the same computation as functions
+(`hintauc.Evaluator`, `hintauc.evaluate_hint_curve`, `hintauc.hint_auc`).
 
-- Original submission pipeline:
-  `eval_single_run.py` (per-ratio metrics over one inference output dir)
-  -> `calc_hint_auc_manual.py` (Hint-AUC over alpha in {0, .01, .03, .05, .10, .25, .50, 1.0})
-  -> `avg_hint_auc_summary.py` (mean +/- SD aggregation across sketch sources).
-- Revision (dense-grid) pipeline in `dense/`:
-  `B_eval_dense_curve.py` (resumable batch evaluation over `{sketch_type}/{ratio}/200/` outputs)
-  -> `B_auc_grid_sensitivity_7m.py` (7-metric Hint-AUC on multiple alpha grids;
-  the front-loaded row is the paper value).
+## Recommended pipeline (`dense/`, used for the paper's revision results)
 
-Metric backbones (lpips, open_clip, DINOv2 via transformers, dreamsim) are downloaded
-automatically on first run.
+Works directly on the output layout of `detfill/run_inference_mr.sh`
+(`.../sample_to_eval/illust/<hint_type>/<sketch_type>/<ratio>/{200,ground_truth}/`):
+
+```bash
+# 1. per-ratio metrics (resumable; writes per_image.csv + per_ratio_summary.csv)
+python evaluation/dense/B_eval_dense_curve.py \
+    --results_root detfill/results/dataset_name/BrownianBridge_scribble_illust/sample_to_eval/illust/scribble \
+    --sketches 0 1 2 \
+    --metrics psnr ssim lpips dreamsim \
+    --out_dir eval_out
+
+# 2. aggregate per_image.csv -> per_ratio_summary.csv (if you skipped it above)
+python evaluation/dense/B_build_summary.py --help
+
+# 3. Hint-AUC over the ratio grid (per metric, incl. alternative grids)
+python evaluation/dense/B_auc_grid_sensitivity_7m.py --summary eval_out/per_ratio_summary.csv
+```
+
+`per_ratio_summary.csv` columns: `sketch, sketch_name, ratio, n, <metric>_mean, <metric>_std`.
+
+## Original-submission pipeline
+
+- `eval_single_run.py` — metrics for ONE inference run directory
+  (`--run_dir .../<run>` with samples under `test/samples_cfg_scale_5.00`, generated
+  `A_B.png` files paired with `--gt_root` by dataloader order). Writes a one-row CSV.
+- `calc_hint_auc_manual.py` — Hint-AUC from eight per-ratio CSVs
+  (`--alpha_csv 0.00=... --alpha_csv 0.01=...`, stdlib-only).
+- `avg_hint_auc_summary.py` — mean ± sample SD across summary CSVs
+  (e.g., over the three sketch extractors).
+
+## Notes
+
+- Pixel metrics are computed on [0,1] tensors resized to 256×256; LPIPS uses the
+  AlexNet backbone in [-1,1]; OpenCLIP (ViT-B-32, laion2b_s34b_b79k) and DINOv2-base
+  report `(cosine+1)/2`; DreamSim reports its distance. Formulas match
+  `hintauc/metrics.py` one-to-one.
+- OpenCLIP / DINOv2 / DreamSim download their weights on first use (network needed);
+  LPIPS weights ship with the pip package.

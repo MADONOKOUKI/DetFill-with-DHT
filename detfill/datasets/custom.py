@@ -293,7 +293,10 @@ class HintColorizationDataset(Dataset):
             self.root_sketch = os.path.join(scratch_root, "sketch")
             self.root_scr = os.path.join(scratch_root, "hint_from_regions_64_rev")
             self.root_scr_region = os.path.join(scratch_root, "hint_from_regions_256")
-            self.hint_subdir = '0016'
+            # hints may live directly under hint_from_regions_64_rev/ or in a
+            # '0016' subdirectory (the layout of the original experiments)
+            self.hint_subdir = '0016' if os.path.isdir(os.path.join(self.root_scr, '0016')) else ''
+            self.flat_sketch = True  # sketch/{XDoG,pysimp,sketchkeras}/<id>.png
             self.root_region = os.path.join(scratch_root, "segmentations")
             self.image_paths = sorted(glob.glob(
                 os.path.join(scratch_root, "segmentations/originals/*.image.png")))
@@ -371,7 +374,10 @@ class HintColorizationDataset(Dataset):
         # try:
 
         if self.domain == "illust":
-            Simg = sketch_loader(os.path.join(self.root_sketch,  self.sketch_cands[rnd], dname, fname + '.png'))
+            if getattr(self, 'flat_sketch', False):
+                Simg = sketch_loader(os.path.join(self.root_sketch, self.sketch_cands[rnd], fname + '.png'))
+            else:
+                Simg = sketch_loader(os.path.join(self.root_sketch,  self.sketch_cands[rnd], dname, fname + '.png'))
             # Simg = sketch_loader(os.path.join(self.root_sketch,  self.sketch_cands[rnd],  fname + '.png'))  # for user study (FLAT layout, disabled by evalfix; real data is nested by dname)
         else:
             # Simg = sketch_loader(os.path.join(self.root_sketch,  self.sketch_cands[rnd], dname, fname + '.image.png'))

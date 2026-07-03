@@ -1,26 +1,72 @@
 # Deterministic hint generation (DHT)
 
-Pipeline per image: Felzenszwalb segmentation (scale=100, sigma=0.5, min_size=100)
--> per-region skeletonization (Zhang-Suen via skimage) -> 3x3 dilation (1 iteration)
--> FilFinder2D longest path (branch/skel threshold 3 px, prune by length)
--> scribble mask = longest path within the region; region color = per-region mean color;
-dot hint = single pixel at the mean coordinate of the longest path.
-Outputs per image: `*_region64.png`, `*_scribble_mask64.png`, `*_scribble_col64.png`,
-`*_flatten_img64.png`, `*_dot_mask64.png`, `*_dot_col64.png` (and 256px variants).
+Everything in this directory produces the deterministic region-based hints used by the
+paper. For most purposes the [`hintauc` library](../README.md#quick-start-pip) is the
+easiest entry point (`hintauc.generate_hints(...)` implements the same pipeline as a
+function); the scripts here are the batch tools used to build the datasets.
 
-Files:
-- `canonical/hint_dot_generation_20240114_illust_64.py`
-  -- the original generation script used to build the paper dataset, kept verbatim for
-  provenance (for new data use the `hintauc` library or `D_retrain_gen_hints.py`).
-  Variants for ImageNet / 256-px hints / the superpixel ablation differed only in path
-  constants and `hint_img_size` and were removed in the 2026-07 cleanup (git history).
-- `canonical/all_segmentations.py` -- segmentation stage (Felzenszwalb / SLIC / Quickshift / Watershed).
-- `D_retrain_gen_hints.py` -- cleaned, argparse-based port of the same `make_scribbling` logic
-  with SLIC/Quickshift segmenters (used for the supplementary segmenter-robustness study).
-  Recommended starting point.
-- `D_danboo_hints.py` -- DanbooRegion-segmenter variant (imports `make_scribbling` from the above).
+## The pipeline
 
-Environment: python 3.7-3.9, `pip install -r requirements.txt`.
+For one color image:
 
-At evaluation time, hints for a hint ratio alpha are the top-alpha regions ordered by pixel
-area (descending); see `detfill/datasets/custom.py` (`sample_ratio`).
+1. **Region segmentation** — Felzenszwalb (`scale=100, sigma=0.5, min_size=100`, the
+   paper's setting; SLIC / Quickshift variants for the robustness study).
+2. **Region-id map** — every region gets a unique color; disconnected components of the
+   same color are split (4-connectivity) and re-colored.
+3. **Per-region scribble** — Zhang–Suen skeletonization → 3×3 dilation (1 iteration) →
+   FilFinder longest path (branch/skeleton threshold 3 px, prune by length), clipped to
+   the region.
+4. **Colors** — each region is filled with its mean color; the scribble carries that
+   color. The dot hint is a single pixel at the mean coordinate of the longest path.
+
+Outputs per image (`<id>.image_*` naming, 64 px by default):
+
+```
+<id>.image_region64.png          # region-id map
+<id>.image_scribble_mask64.png   # {0,255} scribble mask
+<id>.image_scribble_col64.png    # scribble colors
+<id>.image_flatten_img64.png     # region-mean color image
+<id>.image_dot_mask64.png / _dot_col64.png
+```
+
+At evaluation time, the hints for hint ratio α are the top-α regions ordered by pixel
+area (descending) — see `detfill/datasets/custom.py` (`sample_ratio`) or
+`hintauc.HintResult.at_ratio()`.
+
+## Files
+
+| File | Role |
+|---|---|
+| `D_retrain_gen_hints.py` | Batch generator with an argparse CLI (SLIC / Quickshift segmenters; sharding; resume-safe). Contains the verbatim `make_scribbling` port. Recommended batch tool. |
+| `D_danboo_hints.py` | DanbooRegion-segmenter variant (imports `make_scribbling` from the file above). |
+| `canonical/hint_dot_generation_20240114_illust_64.py` | Archival copy (verbatim) of the original script that built the paper dataset. Not meant to be run as-is. |
+| `canonical/all_segmentations.py` | Archival copy of the segmentation stage (Felzenszwalb / SLIC / Quickshift / Watershed). |
+| `requirements.txt` | Dependencies for the scripts in this directory. |
+
+## Usage (tested)
+
+```bash
+pip install -r requirements.txt
+
+python D_retrain_gen_hints.py \
+    --segmenter slic --split test \
+    --src_root /path/to/src \
+    --txt_dir  /path/to/split_lists \
+    --out_root /path/to/output
+```
+
+- `--src_root` layout: `<src_root>/segmentation_regions/felzenszwalb/<dir>/<id>.image.png`
+  (ground-truth color images).
+- `--txt_dir` contains `{train,valid,test}_paper.txt`, one `<dir>/<id>.image.png` path
+  per line (the paper's split lists ship in `../detfill/configs/illust/`).
+- Output: `<out_root>/<segmenter>/<dir>/<id>.image_{region,scribble_mask,scribble_col}64.png`.
+- `--limit N` processes only the first N ids (quick check); `--shard/--nshards` split
+  the work across processes.
+
+For Felzenszwalb hints (the paper's default) use the `hintauc` library:
+
+```python
+import hintauc
+hints = hintauc.generate_hints("image.png", size=64)   # felzenszwalb by default
+hints.save("out/image")                                # canonical file set
+```

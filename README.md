@@ -51,6 +51,10 @@ Command line: `hintauc generate image.png --ratio 0.1` /
 `hintauc eval pred_dir gt_dir --metrics mse psnr ssim` — see
 [examples/basic_usage.py](examples/basic_usage.py).
 
+Everything above (fresh-venv install, generation, evaluation, CLI) plus the full
+DetFill inference and evaluation pipeline below is exercised end-to-end on a clean
+clone as part of the release checks.
+
 ---
 
 ## What the library produces
