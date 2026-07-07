@@ -111,7 +111,7 @@ protocol is exactly reproducible.
 
 ## Checkpoints
 
-The paper checkpoints (DetFill, 200 epochs, Danbooru2021 illustrations; 96 base channels for the scribble model and 64 for the dot model, see checkpoints/README.md) are
+The paper scribble checkpoint (DetFill, 96 base channels, 200 epochs, Danbooru2021 illustrations) is
 attached to the GitHub Release of this repository:
 
 - `detfill_scribble_illust_200ep.pth` (463 MB) — scribble-hint model (Table II scribble results)
