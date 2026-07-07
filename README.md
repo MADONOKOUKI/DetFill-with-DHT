@@ -114,10 +114,9 @@ protocol is exactly reproducible.
 The paper scribble checkpoint (DetFill, 96 base channels, 200 epochs, Danbooru2021 illustrations) is
 attached to the GitHub Release of this repository:
 
-- `detfill_scribble_illust_200ep.pth` (463 MB) — scribble-hint model (Table II scribble results)
-- `detfill_dot_illust_200ep.pth` (463 MB) — dot-hint model
+- `detfill_scribble_illust_200ep.pth` (1.08 GB) — scribble-hint model (Table II scribble results)
 
-Place them under `detfill/results/dataset_name/BrownianBridge_{scribble,dot}_illust/checkpoint/latest_model_200.pth`
+Place it under `detfill/results/dataset_name/BrownianBridge_scribble_illust/checkpoint/latest_model_200.pth`
 (or pass `--resume_model` explicitly). DetFill is pixel-space: no VQGAN / latent-diffusion weights are required.
 Metric backbones (LPIPS, OpenCLIP, DINOv2, DreamSim) are downloaded automatically by their pip packages.
 

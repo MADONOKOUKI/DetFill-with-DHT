@@ -19,7 +19,6 @@ and place as:
 
 ```
 results/dataset_name/BrownianBridge_scribble_illust/checkpoint/latest_model_200.pth
-results/dataset_name/BrownianBridge_dot_illust/checkpoint/latest_model_200.pth
 ```
 
 (see `../checkpoints/README.md` for download commands and SHA-256 checksums; any other
