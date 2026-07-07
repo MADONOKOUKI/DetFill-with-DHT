@@ -8,9 +8,6 @@ The DetFill scribble checkpoint used for the paper results (96 base channels,
 |---|---|---|---|
 | `detfill_scribble_illust_200ep.pth` | 1.08 GB | `fa85d6838a28b853e82f16ce28e3f5d9e6452879685b1313d84be11431226ee4` | Scribble-hint model, 96 base channels; reproduces the paper's Table II scribble results. |
 
-The dot-hint checkpoint (64 base channels; see Sec. VI-A of the paper) is
-available from the authors upon request.
-
 ## Download and placement
 
 ```bash
