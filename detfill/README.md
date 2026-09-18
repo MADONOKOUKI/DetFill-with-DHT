@@ -10,7 +10,7 @@ adapted to the Hint-AUC protocol — see the repository root README for the full
 conda env create -f environment.yml && conda activate BBDM
 ```
 
-(Python 3.9, PyTorch 1.12.1 + cu113; see `environment.yml` for the exact pins.)
+(Python 3.9.16, PyTorch 2.5.1 + CUDA 12.4, NumPy 2.0.2; see `environment.yml` for the import-verified pins used for the paper results.)
 
 ## 2. Checkpoints
 
@@ -18,7 +18,8 @@ Download from the [v1.0 release](https://github.com/MADONOKOUKI/DetFill-with-DHT
 and place as:
 
 ```
-results/dataset_name/BrownianBridge_scribble_illust/checkpoint/latest_model_200.pth
+results/dataset_name/BrownianBridge_scribble_illust/checkpoint/latest_model_200.pth   # detfill_scribble_illust_200ep.pth
+results/dataset_name/BrownianBridge_dot_illust/checkpoint/latest_model_200.pth        # detfill_dot_illust_200ep.pth
 ```
 
 (see `../checkpoints/README.md` for download commands and SHA-256 checksums; any other

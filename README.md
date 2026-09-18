@@ -111,20 +111,21 @@ protocol is exactly reproducible.
 
 ## Checkpoints
 
-The paper scribble checkpoint (DetFill, 96 base channels, 200 epochs, Danbooru2021 illustrations) is
-attached to the GitHub Release of this repository:
+The paper checkpoints (DetFill, 200 epochs, Danbooru2021 illustrations) are attached to the
+GitHub Release of this repository:
 
-- `detfill_scribble_illust_200ep.pth` (1.08 GB) — scribble-hint model (Table II scribble results)
+- `detfill_scribble_illust_200ep.pth` (1.08 GB) — scribble-hint model, 96 base channels (Table II/III scribble results)
+- `detfill_dot_illust_200ep.pth` (0.48 GB) — dot-hint model, 64 base channels (Table II/III dot results)
 
-Place it under `detfill/results/dataset_name/BrownianBridge_scribble_illust/checkpoint/latest_model_200.pth`
-(or pass `--resume_model` explicitly). DetFill is pixel-space: no VQGAN / latent-diffusion weights are required.
+Place them under `detfill/results/dataset_name/BrownianBridge_{scribble,dot}_illust/checkpoint/latest_model_200.pth`
+(or pass `--resume_model` explicitly; see `checkpoints/README.md` for SHA-256 checksums). DetFill is pixel-space: no VQGAN / latent-diffusion weights are required.
 Metric backbones (LPIPS, OpenCLIP, DINOv2, DreamSim) are downloaded automatically by their pip packages.
 
 ## Reproducing the paper experiments
 
 ```bash
 # environment for training / inference
-conda env create -f detfill/environment.yml && conda activate BBDM
+conda env create -f detfill/environment.yml && conda activate BBDM   # import-verified pins (numpy 2.0.2, torch 2.5.1, CUDA 12.4)
 
 # 1. generate the deterministic hint dataset (or use the hintauc library)
 python hint_generation/generate_hints.py --help
