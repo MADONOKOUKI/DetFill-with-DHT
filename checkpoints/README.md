@@ -39,3 +39,20 @@ any other location works with `python main.py ... --resume_model <path>`.
 - Inference uses the fixed global seed `1234` (`main.py --seed`, default); see the paper
   (Sec. VI-A) for the inference-seed policy. Equal-area region ties in the hint selection
   follow `np.argsort` of the pinned NumPy version (`environment.yml`, numpy==2.0.2).
+
+## Stored hint and label maps (test split)
+
+`test_split_hint_maps_64.tar.gz` (60 MB, SHA-256
+`01c0aa92ae976d9e0a5c48a02881c7ed9db9f0e98d77fd14e44c396471ac0dfd`), attached to the
+same v1.0 release, contains the 64x64 hint maps used for all reported results on the
+3,000 Danbooru2021 test images:
+
+```
+test_split_hint_maps_64/hint_from_regions_64_rev/<id>.image_{scribble,dot}_{mask,col}64.png
+test_split_hint_maps_64/region64/<id>.image_region64.png
+test_split_hint_maps_64/test_image_ids.txt
+```
+
+These stored maps are the reference evaluation inputs. Regenerating them from the
+source images is not bit-exact: the medial-axis tie-breaking inside the skeleton
+extraction and the region-label palette were not seeded when the dataset was built.
