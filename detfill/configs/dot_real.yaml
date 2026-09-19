@@ -20,6 +20,7 @@ data:
     domain: "real"
     image_size: 256
     channels: 3
+    # include_full_hint: false  # training only; true -> p uniform on {0,...,n} (paper: {0,...,n-1}, see Sec. V-B)
   train:
     batch_size: 1
     shuffle: True

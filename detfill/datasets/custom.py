@@ -280,6 +280,10 @@ class HintColorizationDataset(Dataset):
 
         self.domain = dataset_config.domain
         self.hint_type = dataset_config.hint_type
+        # Training-time hint sampling (Eq. 6): the paper draws p = floor(n*u), u~U[0,1),
+        # i.e. p in {0,...,n-1} (the full-hint case p = n never occurs in training).
+        # include_full_hint: true samples p uniformly on {0,...,n}. Default false (paper).
+        self.include_full_hint = bool(getattr(dataset_config, 'include_full_hint', False))
 
         # Two user-configurable layouts (set the roots in the yaml config):
         #  A) dataset_config.scratch_root — flat evaluation layout:
@@ -425,8 +429,11 @@ class HintColorizationDataset(Dataset):
             length_samples = int(len(cand_vals) * self.sample_ratio )
         else:
             np.random.shuffle(cand_vals) # randomly sampled region
-            rand_val = np.random.rand()
-            length_samples = int(len(cand_vals) * rand_val )
+            if getattr(self, 'include_full_hint', False):
+                length_samples = int(np.random.randint(0, len(cand_vals) + 1))  # p uniform on {0,...,n}
+            else:
+                rand_val = np.random.rand()
+                length_samples = int(len(cand_vals) * rand_val )               # paper: p = floor(n*u), u in [0,1)
         # length_samples = np.random.randint(5, 100)
 
 

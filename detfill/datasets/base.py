@@ -144,8 +144,11 @@ class HintColorizationDataset(Dataset):
         id_maps = region_uint64[:, :, 0] * 255 * 255 + region_uint64[:, :, 1] * 255  + region_uint64[:, :, 2]
         cand_vals, count = np.unique(id_maps.reshape(-1), axis=0, return_counts=True)
         np.random.shuffle(cand_vals) # randomly sampled region
-        rand_val = np.random.rand()
-        length_samples = int(len(cand_vals) * rand_val )
+        if getattr(self, 'include_full_hint', False):
+            length_samples = int(np.random.randint(0, len(cand_vals) + 1))  # p uniform on {0,...,n}
+        else:
+            rand_val = np.random.rand()
+            length_samples = int(len(cand_vals) * rand_val )               # paper: p = floor(n*u), u in [0,1)
         sample_area = np.isin(id_maps, list(cand_vals[:length_samples]))[:, :, np.newaxis]
 
 

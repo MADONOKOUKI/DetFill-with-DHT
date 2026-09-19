@@ -80,6 +80,12 @@ types are 0 = sketch simplification (pysimp), 1 = XDoG, 2 = SketchKeras.
 
 ## 5. Training
 
+Training-time hint sampling follows the paper (Eq. 6): `p = floor(n*u)`, `u ~ U[0,1)`, so `p` is uniform on
+`{0,...,n-1}` and the full-hint case `p = n` is never seen in training (it appears only at evaluation, `alpha = 1`).
+This is an artifact of the original implementation rather than a design choice; set
+`dataset_config.include_full_hint: true` in the config to sample `p` uniformly on `{0,...,n}` instead.
+The released checkpoints were trained with the default (paper) sampling.
+
 ```bash
 bash train.sh   # the two illustration configs; ~200 epochs
 ```
