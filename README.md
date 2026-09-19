@@ -148,6 +148,18 @@ stored test-split hint maps attached to the v1.0 release were produced with it.
 `hint_generation/compare_path_methods.py` compares the two methods on stored region maps
 (path overlap, dot displacement, failure counts, speed).
 
+**Dot placement** is selected with `dot_method` / `--dot_method`: `mean` (default, paper) truncates the
+mean row/column of the longest-path pixels to integers without projecting onto the region, so a dot
+can fall outside a non-convex region (about 3% of the test regions); `medoid` places the dot on the
+in-region path pixel nearest to that mean (ties in raster order), so every dot lies on its own scribble.
+`medoid` is provided for future use and was not used for the reported results.
+
+**Tie-breaking of equal-area regions** in `HintResult.at_ratio(..., tie_break=...)` / `--tie_break`:
+`default` (paper) uses NumPy's default `argsort`, whose order among equal-area regions depends on the
+NumPy build; `stable` breaks ties by ascending label value and is independent of the NumPy version and
+hardware. Equal-area ties are frequent at 64x64 (about a thousand regions per map), so the two settings
+select slightly different small regions at intermediate ratios; the reported results use `default`.
+
 Comparison on the first 20 stored test-split region maps (16,098 regions;
 `python hint_generation/compare_path_methods.py --region_dir <region64 dir> --limit 20`):
 

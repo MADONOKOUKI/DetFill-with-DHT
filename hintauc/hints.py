@@ -165,21 +165,35 @@ class HintResult:
     size: int = DEFAULT_HINT_SIZE
     failed_regions: int = 0     #: regions where no path could be extracted
     path_method: str = "filfinder"  #: 'filfinder' (paper) or 'geodesic' (dependency-free)
+    dot_method: str = "mean"        #: 'mean' (paper: truncated mean, may leave the region) or 'medoid' (path pixel nearest to the mean)
     _sorted_ids: Optional[np.ndarray] = field(default=None, repr=False)
+    _sorted_ids_stable: Optional[np.ndarray] = field(default=None, repr=False)
 
     # -- deterministic size-sorted ratio sampling (port of datasets/custom.py) --
-    def _ids_sorted_by_area(self) -> np.ndarray:
-        if self._sorted_ids is None:
+    def _ids_sorted_by_area(self, tie_break: str = "default") -> np.ndarray:
+        """Region labels by decreasing area.
+
+        ``tie_break='default'`` reproduces the paper (NumPy's default
+        ``argsort``, whose order among equal-area regions depends on the NumPy
+        build); ``'stable'`` breaks ties by ascending label value (stable
+        sort), which is independent of the NumPy version and hardware.
+        """
+        if tie_break not in ("default", "stable"):
+            raise ValueError(f"tie_break must be 'default' or 'stable', got {tie_break!r}")
+        cache = "_sorted_ids" if tie_break == "default" else "_sorted_ids_stable"
+        if getattr(self, cache) is None:
             ids = region_ids(self.region)
             vals, counts = np.unique(ids.reshape(-1), return_counts=True)
-            self._sorted_ids = vals[np.argsort(-counts)]
-        return self._sorted_ids
+            order = np.argsort(-counts) if tie_break == "default" else np.argsort(-counts, kind="stable")
+            setattr(self, cache, vals[order])
+        return getattr(self, cache)
 
     def at_ratio(
         self,
         alpha: float,
         hint_type: str = "scribble",
         resize_to: Optional[int] = None,
+        tie_break: str = "default",
     ) -> Tuple[np.ndarray, np.ndarray]:
         """Hints at hint ratio ``alpha`` in [0, 1].
 
@@ -187,6 +201,11 @@ class HintResult:
         (descending, background included) and the top ``int(n_regions*alpha)``
         regions keep their hints — exactly the evaluation-time behaviour of
         the paper (``detfill/datasets/custom.py`` with ``sample_ratio``).
+
+        ``tie_break`` selects how equal-area regions are ordered: ``'default'``
+        (paper: NumPy's default ``argsort``) or ``'stable'`` (ascending label
+        value; version- and hardware-independent).  Not used for the reported
+        results.
 
         Returns ``(hint_color, hint_mask)``; optionally upsampled with
         nearest-neighbour interpolation to ``resize_to``.
@@ -201,7 +220,7 @@ class HintResult:
             raise ValueError("hint_type must be 'scribble' or 'dot'")
 
         ids = region_ids(self.region)
-        sorted_ids = self._ids_sorted_by_area()
+        sorted_ids = self._ids_sorted_by_area(tie_break)
         n_keep = int(len(sorted_ids) * alpha)
         keep = sorted_ids[:n_keep]
         area = np.isin(ids, keep)
@@ -296,6 +315,7 @@ def generate_hints(
     region_map: Optional[ImageLike] = None,
     verbose: bool = False,
     path_method: str = "filfinder",
+    dot_method: str = "mean",
     **seg_kwargs,
 ) -> HintResult:
     """Generate deterministic region-based hints for ``image``.
@@ -324,9 +344,19 @@ def generate_hints(
         in raster order.  The two methods give slightly different scribbles;
         hint maps produced with different methods must not be mixed within
         one evaluation.
+    dot_method:
+        Where the dot of a region is placed.  ``'mean'`` (default, paper): the
+        mean row/column of the longest-path pixels truncated to integers, which
+        is not projected onto the region and can fall outside a non-convex
+        region (about 3% of the test regions).  ``'medoid'``: the in-region
+        path pixel nearest to that mean (ties in raster order), so every dot
+        lies on its own scribble and inside its region.  Not used for the
+        reported results.
     """
     if path_method not in ("filfinder", "geodesic"):
         raise ValueError(f"path_method must be 'filfinder' or 'geodesic', got {path_method!r}")
+    if dot_method not in ("mean", "medoid"):
+        raise ValueError(f"dot_method must be 'mean' or 'medoid', got {dot_method!r}")
     img_full = _load_bgr(image)
     if region_map is None:
         region_full = segment_regions(img_full, segmenter=segmenter, **seg_kwargs)
@@ -388,7 +418,15 @@ def generate_hints(
 
         idx_scr = np.argwhere(longpath == 1)
         if idx_scr.size:
-            mx, my = int(idx_scr[:, 0].mean()), int(idx_scr[:, 1].mean())
+            if dot_method == "mean":
+                mx, my = int(idx_scr[:, 0].mean()), int(idx_scr[:, 1].mean())
+            else:  # medoid: in-region path pixel nearest to the (float) mean; ties -> raster order
+                cand = np.argwhere((longpath == 1) & (skeleton_tmp == 1))
+                if cand.size == 0:
+                    cand = idx_scr
+                cy, cx = idx_scr[:, 0].mean(), idx_scr[:, 1].mean()
+                d2 = (cand[:, 0] - cy) ** 2 + (cand[:, 1] - cx) ** 2
+                mx, my = (int(v) for v in cand[int(np.argmin(d2))])
             dot_mask[mx, my] = 1
 
     scribbles_single = np.clip(scribbles_single, 0, 1)
@@ -408,4 +446,5 @@ def generate_hints(
         size=size,
         failed_regions=failed,
         path_method=path_method,
+        dot_method=dot_method,
     )

@@ -64,6 +64,41 @@ def test_path_is_subset_of_skeleton_random():
             assert r.mask.any()
 
 
+def test_medoid_dot_inside_region():
+    """generate_hints(dot_method='medoid') puts every dot on its own scribble (inside the region)."""
+    import numpy as np, cv2
+    from hintauc import generate_hints, region_ids
+    rng = np.random.default_rng(1)
+    img = np.zeros((128, 128, 3), np.uint8)
+    # crescent-like region on a two-colour background
+    yy, xx = np.mgrid[0:128, 0:128]
+    ring = ((yy - 64) ** 2 + (xx - 64) ** 2 < 50 ** 2) & ((yy - 64) ** 2 + (xx - 84) ** 2 > 40 ** 2)
+    img[ring] = (200, 30, 30); img[~ring] = (30, 30, 200)
+    region = np.zeros_like(img); region[ring] = (1, 2, 3); region[~ring] = (4, 5, 6)
+    res = generate_hints(img, size=64, region_map=region, path_method="geodesic", dot_method="medoid")
+    ids = region_ids(res.region)
+    dots = np.argwhere(res.dot_mask > 0)
+    assert len(dots) >= 1
+    for r, c in dots:
+        assert res.scribble_mask[r, c] > 0          # dot lies on a scribble pixel
+    assert res.dot_method == "medoid"
+
+
+def test_stable_tie_break_is_label_order():
+    import numpy as np
+    from hintauc import generate_hints
+    img = np.full((64, 64, 3), 120, np.uint8)
+    region = np.zeros((64, 64, 3), np.uint8)
+    for (r, c, col) in [(0, 0, (9, 0, 0)), (0, 16, (3, 0, 0)), (16, 0, (7, 0, 0)), (16, 16, (1, 0, 0))]:
+        region[r:r + 16, c:c + 16] = col      # four equal-area blocks, scrambled labels
+    region[32:, :] = (200, 0, 0)              # one large region
+    res = generate_hints(img, size=64, region_map=region, path_method="geodesic")
+    ids_stable = res._ids_sorted_by_area("stable")
+    assert list(ids_stable[1:]) == sorted(ids_stable[1:])   # ties by ascending label after the largest
+    c1, m1 = res.at_ratio(0.4, tie_break="stable"); c2, m2 = res.at_ratio(0.4, tie_break="stable")
+    assert (m1 == m2).all()
+
+
 if __name__ == "__main__":
     for name, fn in list(globals().items()):
         if name.startswith("test_"):

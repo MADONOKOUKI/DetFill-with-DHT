@@ -26,6 +26,10 @@ def main(argv=None):
     g.add_argument("--hint_type", default="scribble", choices=["scribble", "dot"])
     g.add_argument("--path_method", default="filfinder", choices=["filfinder", "geodesic"],
                    help="longest-path extraction: 'filfinder' (paper) or 'geodesic' (dependency-free, deterministic)")
+    g.add_argument("--tie_break", default="default", choices=["default", "stable"],
+                   help="order of equal-area regions when selecting by --ratio: 'default' (paper: NumPy argsort) or 'stable' (ascending label; version-independent)")
+    g.add_argument("--dot_method", default="mean", choices=["mean", "medoid"],
+                   help="dot placement: 'mean' (paper: truncated mean of the path, may leave the region) or 'medoid' (in-region path pixel nearest to the mean)")
     g.add_argument("-v", "--verbose", action="store_true")
 
     e = sub.add_parser("eval", help="evaluate colorization(s) against ground truth")
@@ -47,17 +51,17 @@ def main(argv=None):
 
         res = generate_hints(args.image, size=args.size,
                              segmenter=args.segmenter, verbose=args.verbose,
-                             path_method=args.path_method)
+                             path_method=args.path_method, dot_method=args.dot_method)
         stem = args.out_stem or os.path.splitext(args.image)[0]
         paths = res.save(stem)
         if args.ratio is not None:
-            color, mask = res.at_ratio(args.ratio, hint_type=args.hint_type)
+            color, mask = res.at_ratio(args.ratio, hint_type=args.hint_type, tie_break=args.tie_break)
             pct = int(round(args.ratio * 100))
             cv2.imwrite(f"{stem}_{args.hint_type}_col{res.size}_r{pct}.png", color)
             cv2.imwrite(f"{stem}_{args.hint_type}_mask{res.size}_r{pct}.png", mask)
             paths[f"ratio_{pct}"] = f"{stem}_{args.hint_type}_*{res.size}_r{pct}.png"
         info = {"n_regions": res.n_regions(), "failed_regions": res.failed_regions,
-                "path_method": res.path_method, "outputs": paths}
+                "path_method": res.path_method, "dot_method": res.dot_method, "outputs": paths}
         print(json.dumps(info, indent=1))
         return 0
 
