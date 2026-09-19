@@ -23,7 +23,8 @@ Usage:
        --src_root /path/to/gt_images --txt_dir /path/to/split_lists --out_root /path/to/output
 Resume-safe: skips an id whose _scribble_mask64.png already exists.
 """
-import os, sys, argparse, copy, time, traceback
+import os
+import sys, sys, argparse, copy, time, traceback
 import numpy as np
 import cv2
 cv2.setNumThreads(1)  # avoid thread oversubscription when many shards share a node
@@ -31,6 +32,11 @@ from skimage.morphology import skeletonize
 from skimage.segmentation import slic, quickshift
 from skimage.util import img_as_float
 from fil_finder import FilFinder2D
+try:
+    from hintauc.longest_path import geodesic_longest_path
+except ImportError:  # run from a checkout without installing the package
+    sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
+    from hintauc.longest_path import geodesic_longest_path
 import astropy.units as u
 
 SIZE = 64  # hint resolution (training reads *_mask64 / *_col64 / *_region64)
@@ -70,8 +76,8 @@ def colorize_regions(segments):
 
 
 # ------------------- hint generation (verbatim make_scribbling) -------------------
-def make_scribbling(img_bgr, region_bgr):
-    """Port of canonical/hint_dot_generation.py::make_scribbling (verbatim).
+def make_scribbling(img_bgr, region_bgr, path_method="filfinder"):
+    """Port of canonical/hint_dot_generation.py::make_scribbling (verbatim for path_method="filfinder").
     Returns (region64_bgr, scribble_mask64, scribble_col64) as the felz pipeline did."""
     img = cv2.resize(img_bgr, (SIZE, SIZE))
     region = cv2.resize(region_bgr, (SIZE, SIZE), interpolation=cv2.INTER_NEAREST)
@@ -106,6 +112,12 @@ def make_scribbling(img_bgr, region_bgr):
         mval = copy.deepcopy(img[idx[:, 0], idx[:, 1]].mean(axis=0).astype(np.uint8))
         scribble_img[idx[:, 0], idx[:, 1]] = mval
 
+        if path_method == "geodesic":
+            longpath = geodesic_longest_path(skeleton_s).mask.astype(np.uint8)
+            if not longpath.any():
+                continue
+            scribbles_single += longpath * skeleton_tmp
+            continue
         kernel = np.ones((3, 3), np.uint8)
         skeleton_s = cv2.dilate(skeleton_s.astype(np.uint8), kernel, iterations=1) * 255
         fil = FilFinder2D(skeleton_s, distance=250 * u.pc, mask=skeleton_s)
@@ -151,6 +163,9 @@ def main():
     ap.add_argument("--src_root", required=True, help="GT image root (<src_root>/segmentation_regions/felzenszwalb/<dir>/<id>.image.png)")
     ap.add_argument("--txt_dir", required=True, help="dir with {train,valid,test}.txt (e.g. detfill/configs/illust)")
     ap.add_argument("--limit", type=int, default=0, help="dry-run: process at most N ids")
+    ap.add_argument("--path_method", default="filfinder", choices=["filfinder", "geodesic"],
+                    help="longest-path extraction: 'filfinder' (paper) or 'geodesic' (dependency-free); "
+                         "geodesic outputs go to <out_root>/<segmenter>_geodesic/")
     # segmentation granularity — tuned on sample so SLIC/QS ~match felz ~290 regions
     #   SLIC n=350 -> ~289 ; Quickshift k5,md12 -> ~305  (felz median ~280)
     ap.add_argument("--slic_n", type=int, default=350)
@@ -168,7 +183,8 @@ def main():
     done = skip = err = 0
     t0 = time.time()
     for k, (dname, fname) in enumerate(mine):
-        out_dir = os.path.join(args.out_root, args.segmenter, dname)
+        seg_dir = args.segmenter if args.path_method == "filfinder" else f"{args.segmenter}_{args.path_method}"
+        out_dir = os.path.join(args.out_root, seg_dir, dname)
         prefix = os.path.join(out_dir, f"{fname}.image")
         mask_path = prefix + f"_scribble_mask{SIZE}.png"
         if os.path.isfile(mask_path):
@@ -183,7 +199,7 @@ def main():
         try:
             segments = run_segmenter(img, args.segmenter, args)
             region = colorize_regions(segments)
-            region64, mask64, col64 = make_scribbling(img, region)
+            region64, mask64, col64 = make_scribbling(img, region, args.path_method)
             os.makedirs(out_dir, exist_ok=True)
             cv2.imwrite(prefix + f"_region{SIZE}.png", region64)
             cv2.imwrite(prefix + f"_scribble_mask{SIZE}.png", mask64.astype(np.uint8))

@@ -24,6 +24,8 @@ def main(argv=None):
     g.add_argument("--ratio", type=float, default=None,
                    help="also write hints masked to this hint ratio (0..1)")
     g.add_argument("--hint_type", default="scribble", choices=["scribble", "dot"])
+    g.add_argument("--path_method", default="filfinder", choices=["filfinder", "geodesic"],
+                   help="longest-path extraction: 'filfinder' (paper) or 'geodesic' (dependency-free, deterministic)")
     g.add_argument("-v", "--verbose", action="store_true")
 
     e = sub.add_parser("eval", help="evaluate colorization(s) against ground truth")
@@ -44,7 +46,8 @@ def main(argv=None):
         import cv2
 
         res = generate_hints(args.image, size=args.size,
-                             segmenter=args.segmenter, verbose=args.verbose)
+                             segmenter=args.segmenter, verbose=args.verbose,
+                             path_method=args.path_method)
         stem = args.out_stem or os.path.splitext(args.image)[0]
         paths = res.save(stem)
         if args.ratio is not None:
@@ -54,7 +57,7 @@ def main(argv=None):
             cv2.imwrite(f"{stem}_{args.hint_type}_mask{res.size}_r{pct}.png", mask)
             paths[f"ratio_{pct}"] = f"{stem}_{args.hint_type}_*{res.size}_r{pct}.png"
         info = {"n_regions": res.n_regions(), "failed_regions": res.failed_regions,
-                "outputs": paths}
+                "path_method": res.path_method, "outputs": paths}
         print(json.dumps(info, indent=1))
         return 0
 

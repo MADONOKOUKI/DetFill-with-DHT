@@ -121,6 +121,50 @@ Place them under `detfill/results/dataset_name/BrownianBridge_{scribble,dot}_ill
 (or pass `--resume_model` explicitly; see `checkpoints/README.md` for SHA-256 checksums). DetFill is pixel-space: no VQGAN / latent-diffusion weights are required.
 Metric backbones (LPIPS, OpenCLIP, DINOv2, DreamSim) are downloaded automatically by their pip packages.
 
+## Longest-path extraction: two implementations
+
+The scribble of a region is the longest path of its skeleton. Two implementations are
+available and selected with `path_method` (library) / `--path_method` (CLI and batch generator):
+
+| `path_method` | How the path is found | Dependencies | Deterministic? |
+|---|---|---|---|
+| `filfinder` (default, **used for all paper results**) | 3x3 dilation of the Zhang--Suen skeleton, then FilFinder2D 1.7.2 (medial axis, branch/skeleton threshold 3 px, prune by length, longest path) | `fil_finder`, `astropy` | Deterministic given a skeleton *except* that FilFinder's medial-axis step (`skimage.morphology.medial_axis`) breaks pixel ties with an unseeded random generator, so regeneration is not bit-exact |
+| `geodesic` | Longest shortest path (geodesic diameter) of the 8-connected Zhang--Suen skeleton itself, orthogonal step 1 / diagonal step sqrt(2), no corner cutting; every tie is broken in raster order (`hintauc/longest_path.py`, pure NumPy) | none | Fully deterministic; the path is always inside the region |
+
+```python
+hints = hintauc.generate_hints("illustration.png", path_method="geodesic")
+hints.path_method   # 'geodesic'
+```
+
+```bash
+hintauc generate image.png --ratio 0.1 --path_method geodesic
+python hint_generation/generate_hints.py ... --path_method geodesic   # outputs under <out_root>/<segmenter>_geodesic/
+```
+
+The two methods produce slightly different scribbles (the geodesic path skips no corner
+pixels and applies no branch pruning). **Do not mix hint maps produced with different
+methods within one evaluation**; the paper's numbers correspond to `filfinder`, and the
+stored test-split hint maps attached to the v1.0 release were produced with it.
+`hint_generation/compare_path_methods.py` compares the two methods on stored region maps
+(path overlap, dot displacement, failure counts, speed).
+
+Comparison on the first 20 stored test-split region maps (16,098 regions;
+`python hint_generation/compare_path_methods.py --region_dir <region64 dir> --limit 20`):
+
+| | FilFinder (`filfinder`) | Geodesic (`geodesic`) |
+|---|---|---|
+| Regions without a path | 414 | 0 |
+| Time per region | 40.1 ms | 0.07 ms |
+| Dot outside its region | 3.4% | 3.3% |
+
+Path agreement on the 15,684 regions where both methods return a path: identical path in
+91.8% of regions, mean IoU 0.969 (median 1.000); the geodesic path has
++0.02 pixels on average relative to the FilFinder path; the dot positions coincide in
+95.5% of regions and are within one pixel in 99.7%.
+The FilFinder failure count of this run (414/16,098) is higher than the share of regions
+without a stored scribble in the released test-split maps (0.26%), which illustrates the environment sensitivity of the
+FilFinder path (randomized medial-axis tie-breaking, library versions); the geodesic method has no such dependence.
+
 ## Reproducing the paper experiments
 
 ```bash

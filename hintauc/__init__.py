@@ -19,6 +19,7 @@ Quick start
 ...                         0.50: 0.12, 1.00: 0.10})
 """
 
+from .longest_path import geodesic_longest_path
 from .hints import (
     DEFAULT_HINT_SIZE,
     FELZENSZWALB_PARAMS,

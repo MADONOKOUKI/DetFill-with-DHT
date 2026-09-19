@@ -42,6 +42,8 @@ except ImportError as e:  # pragma: no cover
     raise ImportError("hintauc.hints requires opencv-python (cv2)") from e
 
 from skimage.morphology import skeletonize
+
+from .longest_path import geodesic_longest_path
 from skimage.segmentation import felzenszwalb
 
 ImageLike = Union[str, "os.PathLike[str]", np.ndarray]
@@ -161,7 +163,8 @@ class HintResult:
     dot_mask: np.ndarray        #: (S,S)   {0,255} one pixel per region
     dot_color: np.ndarray       #: (S,S,3) region-mean color on dot pixels
     size: int = DEFAULT_HINT_SIZE
-    failed_regions: int = 0     #: regions where FilFinder found no path
+    failed_regions: int = 0     #: regions where no path could be extracted
+    path_method: str = "filfinder"  #: 'filfinder' (paper) or 'geodesic' (dependency-free)
     _sorted_ids: Optional[np.ndarray] = field(default=None, repr=False)
 
     # -- deterministic size-sorted ratio sampling (port of datasets/custom.py) --
@@ -292,6 +295,7 @@ def generate_hints(
     segmenter: str = "felzenszwalb",
     region_map: Optional[ImageLike] = None,
     verbose: bool = False,
+    path_method: str = "filfinder",
     **seg_kwargs,
 ) -> HintResult:
     """Generate deterministic region-based hints for ``image``.
@@ -308,7 +312,21 @@ def generate_hints(
     region_map:
         Optional precomputed region-color map (path or array) at any
         resolution; when given, ``segmenter`` is ignored.
+    path_method:
+        How the longest path of each region skeleton is extracted.
+        ``'filfinder'`` (default) reproduces the paper: 3x3 dilation followed
+        by FilFinder2D (medial axis, pruning, longest path); note that
+        FilFinder's medial-axis step breaks pixel ties with an unseeded
+        random generator, so regeneration is not bit-exact.
+        ``'geodesic'`` is a dependency-free, fully deterministic alternative
+        (:func:`hintauc.longest_path.geodesic_longest_path`): the longest
+        shortest path on the 8-connected Zhang--Suen skeleton, all ties broken
+        in raster order.  The two methods give slightly different scribbles;
+        hint maps produced with different methods must not be mixed within
+        one evaluation.
     """
+    if path_method not in ("filfinder", "geodesic"):
+        raise ValueError(f"path_method must be 'filfinder' or 'geodesic', got {path_method!r}")
     img_full = _load_bgr(image)
     if region_map is None:
         region_full = segment_regions(img_full, segmenter=segmenter, **seg_kwargs)
@@ -349,14 +367,21 @@ def generate_hints(
         mval = img[indices[:, 0], indices[:, 1]].mean(axis=0).astype(np.uint8)
         scribble_img[indices[:, 0], indices[:, 1]] = mval
 
-        # 3x3 dilation then FilFinder longest path (original parameters)
-        kernel = np.ones((3, 3), np.uint8)
-        skeleton_d = cv2.dilate(skeleton_s.astype(np.uint8), kernel, iterations=1) * 255
-        try:
-            longpath = _longest_path(skeleton_d)
-        except Exception:
-            failed += 1
-            continue
+        if path_method == "filfinder":
+            # 3x3 dilation then FilFinder longest path (original parameters)
+            kernel = np.ones((3, 3), np.uint8)
+            skeleton_d = cv2.dilate(skeleton_s.astype(np.uint8), kernel, iterations=1) * 255
+            try:
+                longpath = _longest_path(skeleton_d)
+            except Exception:
+                failed += 1
+                continue
+        else:
+            # dependency-free geodesic diameter of the (undilated) skeleton
+            longpath = geodesic_longest_path(skeleton_s).mask.astype(np.uint8)
+            if not longpath.any():
+                failed += 1
+                continue
 
         # keep the path inside the (undilated) region
         scribbles_single += longpath * skeleton_tmp
@@ -382,4 +407,5 @@ def generate_hints(
         dot_color=dot_color,
         size=size,
         failed_regions=failed,
+        path_method=path_method,
     )

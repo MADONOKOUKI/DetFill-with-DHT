@@ -1,0 +1,32 @@
+{
+ "images": 20,
+ "regions": 16098,
+ "filfinder_failed": 414,
+ "geodesic_empty": 0,
+ "compared": 15684,
+ "identical_paths": 14404,
+ "identical_frac": 0.9183881662841112,
+ "iou_mean": 0.9693839714468575,
+ "iou_median": 1.0,
+ "iou_p10": 1.0,
+ "path_len_diff_geo_minus_ff": {
+  "mean": 0.02116806937005866,
+  "median": 0.0,
+  "min": -15,
+  "max": 18
+ },
+ "dot_chebyshev_dist": {
+  "mean": 0.049859729660800815,
+  "frac_zero": 0.9546034174955369,
+  "frac_le1": 0.996684519255292,
+  "max": 5
+ },
+ "dot_outside_region_frac": {
+  "filfinder": 0.03379239989798521,
+  "geodesic": 0.032580974241264986
+ },
+ "ms_per_region": {
+  "filfinder": 40.129825852349434,
+  "geodesic": 0.07242821124580753
+ }
+}

@@ -70,3 +70,13 @@ import hintauc
 hints = hintauc.generate_hints("image.png", size=64)   # felzenszwalb by default
 hints.save("out/image")                                # canonical file set
 ```
+
+## Longest-path implementation
+
+`generate_hints.py --path_method {filfinder,geodesic}` selects how the longest path of each
+region skeleton is extracted. `filfinder` (default) is the paper pipeline (FilFinder2D 1.7.2 on
+the 3x3-dilated skeleton). `geodesic` is a dependency-free, fully deterministic alternative
+(`hintauc/longest_path.py`: geodesic diameter of the 8-connected skeleton, ties in raster
+order); its outputs are written under `<out_root>/<segmenter>_geodesic/`. Hint maps from the
+two methods differ slightly and must not be mixed in one evaluation; see
+`compare_path_methods.py` and the top-level README.
