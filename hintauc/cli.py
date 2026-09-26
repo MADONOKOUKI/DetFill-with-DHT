@@ -37,7 +37,10 @@ def main(argv=None):
     e.add_argument("gt", help="ground-truth image or directory")
     e.add_argument("--metrics", nargs="+",
                    default=["mse", "psnr", "ssim"],
-                   help="subset of: mse psnr ssim lpips openclip dino dreamsim")
+                   help="per-image metrics: mse psnr ssim lpips openclip dino dreamsim (paper) "
+                        "and mae ms_ssim deltae lpips_vgg dists (added after the paper)")
+    e.add_argument("--set_metrics", nargs="*", default=None,
+                   help="set-level metrics between the two directories: fid kid (needs torch-fidelity)")
     e.add_argument("--pairing", default="sorted", choices=["sorted", "name"])
     e.add_argument("--resize", type=int, default=256)
     e.add_argument("--device", default=None)
@@ -72,6 +75,10 @@ def main(argv=None):
         if os.path.isdir(args.pred):
             scores = evaluate_dirs(args.pred, args.gt, evaluator=ev,
                                    pairing=args.pairing, limit=args.limit)
+            if args.set_metrics:
+                from .metrics import evaluate_set
+                scores.update(evaluate_set(args.pred, args.gt, metrics=args.set_metrics or ("fid", "kid"),
+                                           device=args.device, resize=args.resize))
         else:
             scores = ev(args.pred, args.gt)
         print(json.dumps(scores, indent=1))

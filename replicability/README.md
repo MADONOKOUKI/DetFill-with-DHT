@@ -12,7 +12,7 @@ bash replicability/run.sh
 
 - **Result:** `replicability/output/fig9.png`
 - **Reference:** `replicability/expected/fig9_paper.png` (the figure as printed) and `expected/paper_panels/`
-- **Time:** about 3 minutes on a GPU, about 30 minutes on CPU, plus a one-time environment setup
+- **Time:** about 3 minutes on an RTX A6000 (4–5 minutes on an RTX 2080 Ti), about 30 minutes on 16 CPU threads, plus a one-time environment setup
 
 ## What the figure shows
 
@@ -42,6 +42,7 @@ first and the colorization is faithful and repeatable. Both the dot-hint and the
 - Linux (tested on Ubuntu 22.04), Miniconda or Anaconda installed.
 - An NVIDIA GPU with a CUDA 12 driver is recommended; without a GPU the script falls back to CPU automatically.
 - Internet access on the first run (packages ≈ 3 GB, checkpoints 1.5 GB), ≈ 8 GB of disk, < 4 GB of GPU memory.
+- Reference machines: NVIDIA RTX A6000 48 GB + 2 × AMD EPYC 9124 (32 threads, 377 GB RAM) and NVIDIA RTX 2080 Ti 11 GB + 2 × Intel Xeon Gold 6226R (32 threads, 187 GB RAM); Ubuntu 22.04, driver 535, CUDA 12.2.
 
 | Optional variable | Effect |
 |---|---|

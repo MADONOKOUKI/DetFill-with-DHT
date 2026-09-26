@@ -84,6 +84,11 @@ an NVIDIA GPU (CPU works but is slow).
 | **A whole table row** on the 3,000 test images | `DATA_ROOT=… bash reproduce/scripts/run_hauc_pipeline.sh` | ≈ 14 GPU-h per row |
 | **Training** from scratch | `bash reproduce/scripts/B9_train_detfill.sh` | days, 10 GPUs |
 
+**Hardware behind the timings.** Machine A: NVIDIA RTX A6000 (48 GB), 2 × AMD EPYC 9124 (32 threads), 377 GB RAM.
+Machine B: NVIDIA GeForce RTX 2080 Ti (11 GB), 2 × Intel Xeon Gold 6226R (32 threads), 187 GB RAM. Both Ubuntu 22.04,
+driver 535, CUDA 12.2. Fig. 9: 3 min on A, 4–5 min on B, 30 min on the CPUs of A (16 threads). Example suite and the
+full-scale estimates: measured on B; an A6000-class GPU is roughly twice as fast.
+
 Results are compared automatically with the paper's numbers, the paper's archived images of the same examples and the
 authors' reference run. Guide, coverage table and the list of what is bit-exact and what is not:
 [reproduce/README.md](reproduce/README.md). Background on every component: [detail_explanation.md](detail_explanation.md).
@@ -94,6 +99,10 @@ authors' reference run. Guide, coverage table and the list of what is bit-exact 
 - Dependency-free, bit-exact longest path `path_method="geodesic"`; dot options `medoid` / `mean` / `nearest_mean`;
   region tie-breaking `tie_break="stable"`.
 - Protocol switch `hint_order: area | label` (Table II vs. Table III) in the DetFill loader; training option `include_full_hint`.
+- Metrics beyond the paper's seven, enabled by name: MAE, MS-SSIM, CIEDE2000 colour difference (ΔE00), LPIPS-VGG,
+  DISTS per image, and set-level FID / KID between two directories (`hintauc eval pred_dir gt_dir --set_metrics fid kid`).
+  Hint-AUC works with any of them.
+- DreamSim and the other metric backbones run on CPU-only machines; their weights are cached under `~/.cache/hintauc`.
 - CPU inference, a flat user-configurable data layout, deterministic region-id colours, other segmenters in the generator.
 - The replicability script, the reproduction package and the additional releases (v1.1–v1.3, legacy-2024).
 

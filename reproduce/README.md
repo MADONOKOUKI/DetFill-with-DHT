@@ -21,6 +21,11 @@ layer D.
 `../replicability/run.sh` (Fig. 9, one command, ≈ 3 min on a GPU) is the Graphics-Replicability-Stamp entry point and
 is independent of this directory.
 
+**Hardware behind the timings.** Machine A: NVIDIA RTX A6000 (48 GB), 2 × AMD EPYC 9124 (32 threads), 377 GB RAM.
+Machine B: NVIDIA GeForce RTX 2080 Ti (11 GB), 2 × Intel Xeon Gold 6226R (32 threads), 187 GB RAM. Both Ubuntu 22.04,
+driver 535, CUDA 12.2. Fig. 9: 3 min on A, 4–5 min on B, 30 min on the CPUs of A (16 threads). Example suite and the
+full-scale estimates: measured on B; an A6000-class GPU is roughly twice as fast.
+
 ---
 
 ## A. Recompute the tables from the released metric files (no GPU)

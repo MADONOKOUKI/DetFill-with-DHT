@@ -29,11 +29,15 @@ from .hints import (
     segment_regions,
 )
 from .metrics import (
+    ALL_METRICS,
     DEFAULT_METRICS,
+    EXTRA_METRICS,
     LOWER_IS_BETTER,
+    SET_METRICS,
     Evaluator,
     evaluate_dirs,
     evaluate_pair,
+    evaluate_set,
 )
 from .auc import (
     DEFAULT_ALPHAS,
@@ -43,9 +47,13 @@ from .auc import (
     trapz,
 )
 
-__version__ = "0.1.0"
+__version__ = "0.2.0"
 
 __all__ = [
+    "ALL_METRICS",
+    "EXTRA_METRICS",
+    "SET_METRICS",
+    "evaluate_set",
     "DEFAULT_ALPHAS",
     "DEFAULT_HINT_SIZE",
     "DEFAULT_METRICS",

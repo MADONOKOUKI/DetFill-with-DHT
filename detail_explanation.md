@@ -40,6 +40,11 @@ What the library produces for one illustration:
   `*_scribble_mask64`, `*_dot_col64`, `*_dot_mask64` files used by the DetFill loader).
 - `hintauc.Evaluator(metrics=(...))` — MSE, PSNR, SSIM (256×256, values in [0, 1]), LPIPS (AlexNet), OpenCLIP
   (ViT-B-32, laion2b), DINOv2-base, DreamSim; the same formulas as the paper's `evaluation/eval_single_run.py`.
+- Metrics added after the paper (opt-in, never used for a published number): `mae`, `ms_ssim` (torchmetrics),
+  `deltae` (mean CIEDE2000 colour difference in CIELAB via scikit-image — a direct colour-fidelity measure),
+  `lpips_vgg`, `dists` (DISTS_pytorch), and the set-level `hintauc.evaluate_set(pred_dir, gt_dir, metrics=("fid", "kid"))`
+  (Inception features via torchmetrics + torch-fidelity; KID is the better choice for small sets). `hintauc.ALL_METRICS`
+  lists the per-image metrics, `hintauc.SET_METRICS` the set-level ones; `LOWER_IS_BETTER` gives each metric's direction.
 - `hintauc.hint_auc`, `hintauc.evaluate_hint_curve` — trapezoidal integration over α ∈ [0, 1];
   `hintauc.DEFAULT_ALPHAS` is the paper grid {0, 0.01, 0.03, 0.05, 0.10, 0.25, 0.50, 1.00}.
 - Command line: `hintauc generate image.png --ratio 0.1 [--path_method geodesic] [--dot_method mean]`,
@@ -122,6 +127,11 @@ Four layers, documented in [reproduce/README.md](reproduce/README.md):
   and the respective code, except the ColorizeDiffusion fine-tuned weights, which were not preserved.
 
 ## Environment
+
+**Hardware behind the timings.** Machine A: NVIDIA RTX A6000 (48 GB), 2 × AMD EPYC 9124 (32 threads), 377 GB RAM.
+Machine B: NVIDIA GeForce RTX 2080 Ti (11 GB), 2 × Intel Xeon Gold 6226R (32 threads), 187 GB RAM. Both Ubuntu 22.04,
+driver 535, CUDA 12.2. Fig. 9: 3 min on A, 4–5 min on B, 30 min on the CPUs of A (16 threads). Example suite and the
+full-scale estimates: measured on B; an A6000-class GPU is roughly twice as fast.
 
 - `replicability/environment.yml` (used by `replicability/run.sh` and `reproduce/examples/run_examples.sh`): Python 3.9,
   PyTorch 2.5.1 + CUDA 12.4 wheels (run on CPU too), NumPy 1.26.4, scikit-image, OpenCV, FilFinder 1.7.2 + astropy 5.3.4,

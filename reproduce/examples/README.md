@@ -43,8 +43,8 @@ models (v1.2; the ImageNet originals cannot be redistributed — point `run_hauc
 
 ## Authors' reference run
 
-`expected/` holds the grids and metrics of the authors' `full` run (NVIDIA RTX 2080 Ti, environment of
-`replicability/environment.yml`, 2026-09-26) and the paper's archived outputs of the 12 example images for the
+`expected/` holds the grids and metrics of the authors' `full` run (NVIDIA GeForce RTX 2080 Ti 11 GB, 2 × Intel Xeon Gold 6226R,
+environment of `replicability/environment.yml`, 2026-09-26) and the paper's archived outputs of the 12 example images for the
 Table II protocol. Because the diffusion sampler is seeded but not bit-exact across GPU generations, your outputs will
 differ from both at the pixel level; `compare_with_expected.py` flags metric differences beyond a generous tolerance
 (PSNR 0.6 dB, LPIPS 0.02, DreamSim 0.015). A few flagged cells on a different GPU generation or on CPU are expected

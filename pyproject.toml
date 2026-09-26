@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "hintauc"
-version = "0.1.0"
+version = "0.2.0"
 description = "Deterministic region-based hint generation (DHT) and Hint-AUC evaluation for line-art colorization"
 readme = "README.md"
 license = "MIT"
@@ -47,6 +47,8 @@ perceptual = [
   "transformers",
   "dreamsim",
   "torchmetrics",
+  "dists-pytorch",   # DISTS (added after the paper)
+  "torch-fidelity",  # FID / KID via torchmetrics (added after the paper)
 ]
 
 [project.scripts]
