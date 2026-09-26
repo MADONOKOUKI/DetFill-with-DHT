@@ -90,7 +90,7 @@ h, w = 256, 256
 mask = np.zeros((h,w, 1))
 repeat = np.random.randint(5, 25)
 
-original = resize(io.imread("/home/madorin/datasets/tog2024/main_exp/illust/segmentation/0016/3628016.image.png"),  (256, 256))  # Reading target images in RGB
+original = resize(io.imread("/home/madorin/datasets/labrepo/main_exp/illust/segmentation/0016/3628016.image.png"),  (256, 256))  # Reading target images in RGB
 
 for _ in range(repeat):
     mask = making_mask_v3(mask, original, size=256, hinttype='scribble')

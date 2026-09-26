@@ -123,7 +123,7 @@ Four layers, documented in [reproduce/README.md](reproduce/README.md):
 - **Deterministic per environment:** FilFinder longest paths (medial-axis tie-breaking is unseeded); use the stored
   maps to compare with printed numbers. The `geodesic` method is bit-exact everywhere.
 - **Not covered by released per-ratio data:** baseline rows (PaintsTorch, Diffusart, ColorizeDiffusion), the DetFill
-  dot rows of Tables II/III, the ImageNet tables and the legacy per-source tables; they can be regenerated with layer D
+  dot rows of Tables II/III, the ImageNet tables and the earlier per-source tables; they can be regenerated with layer D
   and the respective code, except the ColorizeDiffusion fine-tuned weights, which were not preserved.
 
 ## Environment
@@ -150,7 +150,7 @@ full-scale estimates: measured on B; an A6000-class GPU is roughly twice as fast
 | v1.1 | DanbooRegion- and SLIC-trained scribble models |
 | v1.2 | Diffusart-retrain models (our Diffusart re-implementation), ImageNet DetFill models, ImageNet test hint maps |
 | v1.3 | test-split line art (SketchKeras / sketch simplification / XDoG), DanbooRegion / SLIC / Felzenszwalb test hint maps, example bundle, user-study stimuli |
-| legacy-2024 | 2024-submission models, 32 / 64-channel scribble models, archived configs |
+| v1.4 | earlier-submission models, 32 / 64-channel scribble models, archived configs |
 
 Sizes and SHA-256 of every file: [checkpoints/README.md](checkpoints/README.md).
 
@@ -159,7 +159,7 @@ Sizes and SHA-256 of every file: [checkpoints/README.md](checkpoints/README.md).
 - `hintauc` library + CLI; `path_method="geodesic"`; `dot_method` and `tie_break` options; `hint_order` protocol switch;
   `include_full_hint` training option; CPU inference; flat user-configurable data layout; deterministic region-id colours;
   segmenter options in the generator; metrics beyond the paper's seven (MAE, MS-SSIM, CIEDE2000, LPIPS-VGG, DISTS,
-  set-level FID / KID); the replicability script; the reproduction package; releases v1.1–v1.3 and legacy-2024.
+  set-level FID / KID); the replicability script; the reproduction package; releases v1.1–v1.3 and v1.4.
 - A few minor issues of the original implementation were fixed along the way to make the library more usable; what is
   bit-exact with respect to the published numbers and what is not is listed in
   [reproduce/README.md](reproduce/README.md#known-deviations-and-gaps-honest-list).

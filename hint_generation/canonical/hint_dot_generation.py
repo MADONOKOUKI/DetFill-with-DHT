@@ -1,6 +1,6 @@
 # ---------------------------------------------------------------------------
 # ARCHIVAL COPY (verbatim) of the original dataset-generation script
-# (originally `hint_dot_generation_20240114_illust_64.py`) used to
+# (originally `hint_dot_generation_DATESTAMP_illust_64.py`) used to
 # build the paper dataset. Kept unmodified for provenance; the paths below
 # refer to the original experiment environment and are not meant to be run
 # as-is. For new data, use the `hintauc` library or ../D_retrain_gen_hints.py.
@@ -273,10 +273,10 @@ if __name__=='__main__':
     #                 , 'superpixel/superpixel_750_0.01', 'superpixel/superpixel_750_1', 'superpixel/superpixel_750_10'  ]
     dirs = ['']
     
-    # base_path = '/home/madorin/datasets/tog2024/main_exp/illust/segmentation'
+    # base_path = '/home/madorin/datasets/labrepo/main_exp/illust/segmentation'
     base_path = '/scratch/madono/tog_created/segmentation'
 
-    # /home/madorin/datasets/tog2024/main_exp/illust/deep_illust_pretrained/
+    # /home/madorin/datasets/labrepo/main_exp/illust/deep_illust_pretrained/
     save_path = '/scratch/madono/tog_created/illust/deep_illust_pretrained/'
 
     
@@ -292,7 +292,7 @@ if __name__=='__main__':
                 file_r = flists[kk][cnt]
                 fname = file_r.replace('\n', '').split('/')[-1].split('.png')[0].split('.jpg')[0].split('.image')[0]
                 dname = file_r.replace('\n', '').split('/')[-2]
-                # /home/madorin/datasets/tog2024/main_exp/illust/segmentation/0008/1870008.image.png
+                # /home/madorin/datasets/labrepo/main_exp/illust/segmentation/0008/1870008.image.png
                 # region_path_o = file_r[:-10]+'png'
                 image_path = os.path.join(base_path, dirs[jj], dname, fname + '.image.png' )
                 region_path_o = os.path.join(base_path, dirs[jj], dname, fname + '.png' )

@@ -9,8 +9,8 @@ Usage:
 """
 import cv2, numpy as np, glob, os, random, argparse
 
-FELZ = "/home/madorin/datasets/tog2024/main_exp_felzenszwalb_fixdot/illust/hint_from_regions/felzenszwalb"
-GT   = "/home/madorin/datasets/tog2024/main_exp_felzenszwalb_fixdot/illust/segmentation_regions/felzenszwalb"
+FELZ = "/home/madorin/datasets/labrepo/main_exp_felzenszwalb_fixdot/illust/hint_from_regions/felzenszwalb"
+GT   = "/home/madorin/datasets/labrepo/main_exp_felzenszwalb_fixdot/illust/segmentation_regions/felzenszwalb"
 CELL = 200   # upscaled cell size for viewing
 
 def load(p, gt=False):
@@ -32,8 +32,8 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--n", type=int, default=8)
     ap.add_argument("--kind", default="both", choices=["region", "scribble", "both"])
-    ap.add_argument("--data", default="/home/madorin/gitlab/tog2024/main/tvcg2026_materials/rebuttal/R2/R2-2_segmentation_dependency/retrain_data")
-    ap.add_argument("--out", default="/home/madorin/gitlab/tog2024/main/tvcg2026_materials/rebuttal/R2/R2-2_segmentation_dependency/output")
+    ap.add_argument("--data", default="/home/madorin/gitlab/labrepo/main/revision_materials/rebuttal/R2/R2-2_segmentation_dependency/retrain_data")
+    ap.add_argument("--out", default="/home/madorin/gitlab/labrepo/main/revision_materials/rebuttal/R2/R2-2_segmentation_dependency/output")
     ap.add_argument("--seed", type=int, default=0)
     args = ap.parse_args()
     os.makedirs(args.out, exist_ok=True)

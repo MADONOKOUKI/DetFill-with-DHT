@@ -1,7 +1,7 @@
 # The launchers that were actually run
 
 The shell and Python files that produced the paper's and the revision's numbers, copied verbatim from our lab tree
-(2024–2026). They are **example code**: cluster paths (`/scratch/madono/...`,
+. They are **example code**: cluster paths (`/scratch/madono/...`,
 `/home/madorin/gitlab/...`), conda environment names (`BBDM`, `py310`) and GPU ids are hard-coded, several were
 written for a specific host queue, and they are not maintained as runnable entry points. The runnable, path-free
 equivalents are `../scripts/run_hauc_pipeline.sh`, `../scripts/eval_per_ratio.py`, `../scripts/A1_*` / `A2_*` and

@@ -1,5 +1,5 @@
-# PROPOSED_ALIGN_V1 applied (20260622_164204)
-# INFER_64x64_PATCH_V1 applied (20260621_180131)
+# PROPOSED_ALIGN_V1 applied (DATESTAMP)
+# INFER_64x64_PATCH_V1 applied (DATESTAMP)
 #!/usr/bin/env python3
 # infer_det_proposed.py — DetFill (R3-2 deterministic) inference with PROPOSED-style
 # deterministic, region-sorted hints (the piece missing from test_wacv/CreateTestLoader).
@@ -139,7 +139,7 @@ class DetEvalData(MyData_train_scrib_det):
         mask = cv2.resize(mask, (256, 256), interpolation=cv2.INTER_NEAREST)
         single_hint = single_hint * hint
         single_mask = single_mask * mask[:, :, np.newaxis]
-        # DILATE_REMOVED_V1: dilate+blur removed to match dilate-free retraining (20260622_160051)
+        # DILATE_REMOVED_V1: dilate+blur removed to match dilate-free retraining (DATESTAMP)
         # kernel = np.ones((self.dil, self.dil), np.uint8)
         # single_hint = cv2.dilate(single_hint, kernel=kernel, iterations=1)
         # single_mask = cv2.dilate(single_mask, kernel=kernel, iterations=1)
@@ -198,8 +198,8 @@ def main():
     with open(args.test_list) as f:
         raw_items = [l for l in f.readlines() if l.strip()]
     # INFER_64x64: rewrite legacy /home/madorin/datasets/.../main_exp_felzenszwalb/ paths to /scratch
-    _OLD_PFX = '/home/madorin/datasets/tog2024/main_exp_felzenszwalb_tmp/'
-    _OLD_PFX2 = '/home/madorin/datasets/tog2024/main_exp_felzenszwalb/'
+    _OLD_PFX = '/home/madorin/datasets/labrepo/main_exp_felzenszwalb_tmp/'
+    _OLD_PFX2 = '/home/madorin/datasets/labrepo/main_exp_felzenszwalb/'
     _NEW_PFX = '/scratch/madorin/diffusart_det_R3-2/'
     items = []
     for _l in raw_items:

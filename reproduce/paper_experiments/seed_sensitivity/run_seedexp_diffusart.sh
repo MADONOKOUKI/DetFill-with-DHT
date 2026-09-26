@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 # Diffusart seeded-random-hint runs: scribble / sketchkeras (rnd=2 in
-# test_seedexp.py) / 32 runs. test_seedexp.py = test_tog2024.py with rnd fixed to
+# test_seedexp.py) / 32 runs. test_seedexp.py = test_labrepo.py with rnd fixed to
 # 2 and SEEDEXP_SAVE_ROOT-driven output. Hints/region are swapped per run by
 # re-pointing the global felzenszwalb symlink (runs are strictly sequential).
 #   GPU=0 bash run_seedexp_diffusart.sh
 set -uo pipefail
 GPU="${GPU:-0}"
-REPO=/home/madorin/gitlab/tog2024/main/Diffusion_v1_comp
+REPO=/home/madorin/gitlab/labrepo/main/Diffusion_v1_comp
 LINK=/scratch/madono/main_exp/illust/hint_from_regions/felzenszwalb
 SAVE_ROOT=/scratch/madono/seedexp/diffusart
 source /home/madorin/anaconda3/etc/profile.d/conda.sh 2>/dev/null || true
@@ -26,7 +26,7 @@ for r in "${RATIOS[@]}"; do
     env CUDA_VISIBLE_DEVICES=$GPU SEEDEXP_SAVE_ROOT="$SAVE_ROOT" \
       python test_seedexp.py \
         --hint_name scribble \
-        --checkpoint_path checkpoint/tog2024_scribble/checkpoint_198000.pth \
+        --checkpoint_path checkpoint/baseline_scribble/checkpoint_198000.pth \
         --ratio 1.0 --rnd 2 --domain illust --save_name "$tag" \
       || echo "[$(ts)] [FAIL] $tag"
   done

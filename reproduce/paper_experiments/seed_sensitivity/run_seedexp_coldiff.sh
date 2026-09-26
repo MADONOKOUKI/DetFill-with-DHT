@@ -6,7 +6,7 @@
 #   GPU=1 bash run_seedexp_coldiff.sh
 set -uo pipefail
 GPU="${GPU:-1}"
-REPO=/home/madorin/gitlab/tog2024/main/colorizeDiffusion_v2
+REPO=/home/madorin/gitlab/labrepo/main/colorizeDiffusion_v2
 CKPT=/scratch/madono/colorizeDiffusion_v2_checkpoints/illust_v2_scr/final/model.safetensors
 CFG=configs/inference/hint_ratios_scribble_sketch1/v2_inference_100.yaml   # sample_ratio:1.0, sketch_id:1
 source /home/madorin/anaconda3/etc/profile.d/conda.sh 2>/dev/null || true

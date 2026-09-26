@@ -6,7 +6,7 @@
 #   usage: D_reaper_eval_matrix.sh <slic|danbooregion>
 set -u
 SEG=${1:?slic|danbooregion}
-CODE=/home/madorin/gitlab/tog2024/main/tvcg2026_materials/rebuttal/R2/R2-2_segmentation_dependency/BBDM_seg_retrain
+CODE=/home/madorin/gitlab/labrepo/main/revision_materials/rebuttal/R2/R2-2_segmentation_dependency/BBDM_seg_retrain
 PY=/home/madorin/anaconda3/envs/BBDM/bin/python
 SR=/scratch/madono/seg_retrain
 RESULT="$SR/results_eval/${SEG}_model"

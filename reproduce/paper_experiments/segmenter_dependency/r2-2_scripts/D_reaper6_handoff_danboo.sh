@@ -6,7 +6,7 @@
 # every 30min so resume-skip stays aware of r2/r3 concurrent progress. If nothing remains,
 # exits cleanly. All workers resume-safe.
 set -u
-CODE=/home/madorin/gitlab/tog2024/main/tvcg2026_materials/rebuttal/R2/R2-2_segmentation_dependency/BBDM_seg_retrain
+CODE=/home/madorin/gitlab/labrepo/main/revision_materials/rebuttal/R2/R2-2_segmentation_dependency/BBDM_seg_retrain
 PY=/home/madorin/anaconda3/envs/BBDM/bin/python
 SR=/scratch/madono/seg_retrain
 CKPT=$SR/handoff_ckpt/danbooregion_model_200.pth

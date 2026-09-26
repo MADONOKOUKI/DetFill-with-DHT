@@ -23,7 +23,7 @@ BATCH_SIZE=${BATCH_SIZE:-8}
 WORKERS=${WORKERS:-2}
 
 OUT_DIR="${OUT_DIR:-$(pwd)/../output/B_dense_curve}"
-RESULTS_ROOT="${RESULTS_ROOT:-/home/madorin/gitlab/tog2024/main/tvcg2026_materials/rebuttal/R2/R2-1_alpha_grid_sensitivity/inference_results/scribble}"
+RESULTS_ROOT="${RESULTS_ROOT:-/home/madorin/gitlab/labrepo/main/revision_materials/rebuttal/R2/R2-1_alpha_grid_sensitivity/inference_results/scribble}"
 
 # Smoke / debug mode
 EXTRA=()

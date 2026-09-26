@@ -24,7 +24,7 @@ Official implementation of **"Hint-AUC: Deterministic Region-based Hint Generati
 
 ## News
 
-- **2026-09** — Code, checkpoints, data and the full reproduction package are public; `hintauc` 0.1.0 is on PyPI. The paper is accepted at IEEE TVCG.
+- Code, checkpoints, data and the full reproduction package are public; `hintauc` 0.2.0 is on PyPI. The paper is accepted at IEEE TVCG.
 
 ## Installation
 
@@ -64,8 +64,8 @@ DetFill inference over the hint-ratio grid: `cd detfill && GPU=0 bash run_infere
 | DetFill, SLIC hints | scribble | 96 | Danbooru2021 | [v1.1](https://github.com/MADONOKOUKI/DetFill-with-DHT/releases/tag/v1.1) |
 | DetFill, natural images | scribble / dot | 96 | ImageNet subset | [v1.2](https://github.com/MADONOKOUKI/DetFill-with-DHT/releases/tag/v1.2) |
 | Diffusart retrained with our hints | scribble / dot | — | Danbooru2021 | [v1.2](https://github.com/MADONOKOUKI/DetFill-with-DHT/releases/tag/v1.2) |
-| DetFill, channel ablation | scribble | 32 / 64 | Danbooru2021 | [legacy-2024](https://github.com/MADONOKOUKI/DetFill-with-DHT/releases/tag/legacy-2024) |
-| DetFill, 2024 submission | scribble / dot | 64 | Danbooru2021 / ImageNet | [legacy-2024](https://github.com/MADONOKOUKI/DetFill-with-DHT/releases/tag/legacy-2024) |
+| DetFill, channel ablation | scribble | 32 / 64 | Danbooru2021 | [v1.4](https://github.com/MADONOKOUKI/DetFill-with-DHT/releases/tag/v1.4) |
+| DetFill, earlier submission | scribble / dot | 64 | Danbooru2021 / ImageNet | [v1.4](https://github.com/MADONOKOUKI/DetFill-with-DHT/releases/tag/v1.4) |
 
 Data: the stored hint maps of the 3,000 test images (v1.0), the test-split line art from the three extractors, the
 alternative-segmenter hint maps, the example bundle and the user-study stimuli (v1.3). Every file with size and
@@ -107,7 +107,7 @@ authors' reference run. Guide, coverage table and the list of what is bit-exact 
   Hint-AUC works with any of them.
 - DreamSim and the other metric backbones run on CPU-only machines; their weights are cached under `~/.cache/hintauc`.
 - CPU inference, a flat user-configurable data layout, deterministic region-id colours, other segmenters in the generator.
-- The replicability script, the reproduction package and the additional releases (v1.1–v1.3, legacy-2024).
+- The replicability script, the reproduction package and the additional releases (v1.1–v1.3, v1.4).
 
 We also fixed a few minor issues in the original implementation to make the library more usable.
 

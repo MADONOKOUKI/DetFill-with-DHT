@@ -53,10 +53,10 @@ SKETCH_SOURCES=(${SKETCH_SOURCES:-s0 s1 s2})
 # main.pdf hint-ratio grid (percent): {0,0.01,0.03,0.05,0.10,0.25,0.50,1.00}
 RATIOS=(${RATIOS:-0 1 3 5 10 25 50 100})
 
-MAIN=/home/madorin/gitlab/tog2024/main
+MAIN=/home/madorin/gitlab/labrepo/main
 # COMPLETE data lives on NFS (accessible from every host incl. naga1):
-TRAIN_ROOT="${TRAIN_ROOT:-/home/madorin/datasets/tvcg2026/colorizeDiffusion/illust/images_train}"
-TEST_ROOT="${TEST_ROOT:-/home/madorin/datasets/tvcg2026/colorizeDiffusion/illust/images_test}"
+TRAIN_ROOT="${TRAIN_ROOT:-/home/madorin/datasets/revision/colorizeDiffusion/illust/images_train}"
+TEST_ROOT="${TEST_ROOT:-/home/madorin/datasets/revision/colorizeDiffusion/illust/images_test}"
 
 # checkpoint save roots (train.py writes <save>/<name>/final/model.safetensors)
 CKPT_V2="${CKPT_V2:-/scratch/madono/colorizeDiffusion_v2_checkpoints}"

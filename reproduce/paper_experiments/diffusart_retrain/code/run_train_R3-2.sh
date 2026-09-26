@@ -5,7 +5,7 @@
 set -u
 GPU=${GPU:-3}
 ROOT=/scratch/madono/diffusart_det_R3-2
-REPO=/home/madorin/gitlab/tog2024/main/Diffusion_v1_tvcg_R3-2
+REPO=/home/madorin/gitlab/labrepo/main/Diffusion_v1_tvcg_R3-2
 LOG=$ROOT/logs
 mkdir -p "$LOG"
 source /home/madorin/anaconda3/etc/profile.d/conda.sh

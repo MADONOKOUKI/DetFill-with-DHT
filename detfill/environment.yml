@@ -1,4 +1,4 @@
-# DetFill inference / evaluation environment (import-verified 2026-09-18).
+# DetFill inference / evaluation environment (import-verified DATE).
 #
 # Exported from the conda env (`BBDM`) that produced the paper's DetFill scribble results
 # (Tables II-III and the supplementary alpha-grid / segmenter / seed analyses). The versions
@@ -9,8 +9,6 @@
 #
 # Note on region-selection ties: the order of equal-area regions in `np.argsort(-count)`
 # (datasets/custom.py) depends on the NumPy build; the paper's numbers correspond to numpy==2.0.2.
-# The file previously shipped here (a 2023 export: numpy 1.24.2 / torch 1.12.1) is kept as
-# environment_2023_export.yml for provenance only.
 name: BBDM
 channels:
   - pytorch
@@ -42,5 +40,5 @@ dependencies:
       - torchsummary
       # NOTE: this is the inference environment. Deterministic hint generation (FilFinder) is NOT
       # runnable here: astropy releases compatible with numpy 2 need Python >= 3.10. Use
-      # replicability/environment.yml (Python 3.11, numpy 2.0.2, astropy >= 6.1, fil_finder 1.7.2) or
+      # replicability/environment.yml (Python 3.9, numpy 1.26.4, astropy 5.3.4, fil_finder 1.7.2) or
       # hint_generation/requirements.txt (the original numpy 1.x era pins) for hint generation.

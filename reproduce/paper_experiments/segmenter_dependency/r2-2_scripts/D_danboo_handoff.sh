@@ -4,10 +4,10 @@
 set -u
 KEY=~/.ssh/id_ed25519
 RSH="ssh -i $KEY -o BatchMode=yes -o StrictHostKeyChecking=no"
-NFS_RD=/home/madorin/gitlab/tog2024/main/tvcg2026_materials/rebuttal/R2/R2-2_segmentation_dependency/retrain_data
+NFS_RD=/home/madorin/gitlab/labrepo/main/revision_materials/rebuttal/R2/R2-2_segmentation_dependency/retrain_data
 LOCAL=/scratch/madono/seg_retrain_R2-2/danbooregion
 R2DATA=/scratch/madono/seg_retrain/danbooregion
-CODE=/home/madorin/gitlab/tog2024/main/tvcg2026_materials/rebuttal/R2/R2-2_segmentation_dependency/BBDM_seg_retrain
+CODE=/home/madorin/gitlab/labrepo/main/revision_materials/rebuttal/R2/R2-2_segmentation_dependency/BBDM_seg_retrain
 PY=/home/madorin/anaconda3/envs/BBDM/bin/python
 RES=/scratch/madono/seg_retrain/results; LOG=/scratch/madono/seg_retrain/logs
 

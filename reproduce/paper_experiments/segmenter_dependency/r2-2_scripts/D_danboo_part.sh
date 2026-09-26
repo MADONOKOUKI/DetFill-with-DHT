@@ -6,7 +6,7 @@
 #   usage: D_danboo_part.sh <ckpt_path> <from> <to> ["gpu list"]   (default GPUs: 0..9)
 set -u
 CKPT=${1:?ckpt path}; FROM=${2:?from idx}; TO=${3:?to idx}; GPUS="${4:-0 1 2 3 4 5 6 7 8 9}"
-CODE=/home/madorin/gitlab/tog2024/main/tvcg2026_materials/rebuttal/R2/R2-2_segmentation_dependency/BBDM_seg_retrain
+CODE=/home/madorin/gitlab/labrepo/main/revision_materials/rebuttal/R2/R2-2_segmentation_dependency/BBDM_seg_retrain
 PY=/home/madorin/anaconda3/envs/BBDM/bin/python
 SR=/scratch/madono/seg_retrain
 RESULT=$SR/results_eval/danbooregion_model

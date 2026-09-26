@@ -3,7 +3,7 @@
 # so the merges never collide). Run from cayenne1 after generation completes.
 # Usage: D_gather.sh [nfs_dest]
 set -u
-NFS=${1:-/home/madorin/datasets/tog2024/seg_retrain_R2-2}
+NFS=${1:-/home/madorin/datasets/labrepo/seg_retrain_R2-2}
 SRC=/scratch/madono/seg_retrain_R2-2
 KEY=~/.ssh/id_ed25519
 mkdir -p "$NFS"

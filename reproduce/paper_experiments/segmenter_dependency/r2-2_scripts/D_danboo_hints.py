@@ -17,7 +17,7 @@ import os
 os.environ.setdefault("OMP_NUM_THREADS", "1")
 import sys, argparse, glob, time, traceback
 import cv2
-SCR = "/home/madorin/gitlab/tog2024/main/tvcg2026_materials/rebuttal/R2/R2-2_segmentation_dependency/scripts"
+SCR = "/home/madorin/gitlab/labrepo/main/revision_materials/rebuttal/R2/R2-2_segmentation_dependency/scripts"
 sys.path.insert(0, SCR)
 from D_retrain_gen_hints import make_scribbling, SEG_SUBDIR  # reuse exact hint logic + GT layout
 

@@ -8,8 +8,8 @@ set -u
 H=${1:-reaper6}; KEY=~/.ssh/id_ed25519
 DST=/scratch/madono/seg_retrain
 CAY=/scratch/madono/seg_retrain_R2-2
-NFS_RD=/home/madorin/gitlab/tog2024/main/tvcg2026_materials/rebuttal/R2/R2-2_segmentation_dependency/retrain_data
-FX=/home/madorin/datasets/tog2024/main_exp_felzenszwalb_fixdot/illust
+NFS_RD=/home/madorin/gitlab/labrepo/main/revision_materials/rebuttal/R2/R2-2_segmentation_dependency/retrain_data
+FX=/home/madorin/datasets/labrepo/main_exp_felzenszwalb_fixdot/illust
 RSH="ssh -i $KEY -o BatchMode=yes -o StrictHostKeyChecking=no"
 
 $RSH "$H" "mkdir -p $DST/gt $DST/sketch $DST/slic $DST/quickshift"

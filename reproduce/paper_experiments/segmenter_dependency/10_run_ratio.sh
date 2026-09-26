@@ -1,5 +1,5 @@
 #!/bin/bash
-# Single-ratio inference for BBDM_tvcg26_revise_20260513.
+# Single-ratio inference for BBDM_revision_revise_DATESTAMP.
 # Runs the 3 sketch types (0/1/2 = pysimp/XDoG/sketchkeras) for one ratio.
 #
 # Required env:
@@ -10,14 +10,14 @@
 #   MODEL       : checkpoint path (default: results/.../latest_model_200.pth)
 #   CONFIG      : config yaml path (default: configs/<hint>_proposed_illust_200epoch_mr.yaml)
 #   TYPES       : sketch types to run (default "0 1 2")
-#   RESULT_PATH : where to write outputs (default /scratch/madono/tvcg26_major_revision/results)
+#   RESULT_PATH : where to write outputs (default /scratch/madono/major_revision/results)
 set -e
 
 RATIO="${RATIO:?RATIO env var required (e.g., 0.02)}"
 GPU_ID="${GPU_ID:-0}"
 HINT_TYPE="${HINT_TYPE:-dot}"
 TYPES="${TYPES:-0 1 2}"
-RESULT_PATH="${RESULT_PATH:-/scratch/madono/tvcg26_major_revision/results}"
+RESULT_PATH="${RESULT_PATH:-/scratch/madono/major_revision/results}"
 
 # Use BBDM conda env (compatible transformers / dreamsim / torch+cuda).
 export PATH=/home/madorin/anaconda3/envs/BBDM/bin:$PATH

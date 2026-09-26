@@ -22,7 +22,7 @@ import cv2
 
 HERE = Path(__file__).resolve().parent
 OUT = HERE.parent / "output" / "C-2"; OUT.mkdir(parents=True, exist_ok=True)
-IMG_ROOT = Path("/home/madorin/gitlab/tog2024/main/usertest/imgs")
+IMG_ROOT = Path("/home/madorin/gitlab/labrepo/main/usertest/imgs")
 ALPHAS = [1, 3, 5, 10, 25, 50, 100]
 
 

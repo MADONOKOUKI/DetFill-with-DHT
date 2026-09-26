@@ -24,8 +24,8 @@ import cv2
 import numpy as np
 from PIL import Image
 
-REGION_DIR = "/scratch/madono/tvcg26_major_revision/hint_from_regions_256"   # 64x64 region id maps
-HINT_DIR = "/scratch/madono/tvcg26_major_revision/hint_from_regions_64_rev/0016"
+REGION_DIR = "/scratch/madono/major_revision/hint_from_regions_256"   # 64x64 region id maps
+HINT_DIR = "/scratch/madono/major_revision/hint_from_regions_64_rev/0016"
 OUT_ROOT = "/scratch/madono/seedhints_scr"
 HINT_TYPE = "scribble"
 ALPHAS = [0.0, 0.01, 0.03, 0.05, 0.10, 0.25, 0.50, 1.00]

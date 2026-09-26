@@ -528,7 +528,7 @@ class ImageFolder_Test(data.Dataset):
         self.root_sketch =  os.path.join("/scratch/madono/diffusart_det_R3-2/", self.domain, "sketch")
         self.root_scr = os.path.join("/scratch/madono/diffusart_det_R3-2/", self.domain, "hint_from_regions", "felzenszwalb")
 
-        self.root_scr = os.path.join("/home/madorin/gitlab/tog2024/main/Evaluation_paper", "random_hint_rev" )
+        self.root_scr = os.path.join("/home/madorin/gitlab/labrepo/main/Evaluation_paper", "random_hint_rev" )
         self.root_region =  os.path.join("/scratch/madono/diffusart_det_R3-2/", self.domain, "segmentation_regions",  "felzenszwalb")
         self.sketch_cands =  ['pysimp', 'XDoG', 'sketchkeras']
 

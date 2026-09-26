@@ -1,7 +1,7 @@
 # BBDM 96-channel scribble illust config for TVCG 2026 major revision
 # Derived from BBDM_region_large_cvprw/configs/scribble_proposed_illust_200epoch.yaml
 # (the 96-channel variant that produced generated_images/BBDM_channel_96/).
-# Adds scratch_root for the migrated tvcg26_major_revision data layout.
+# Adds scratch_root for the migrated major_revision data layout.
 runner: "BBDMRunner"
 start_epoch: 0
 training:
@@ -20,8 +20,8 @@ data:
   dataset_name: 'dataset_name'
   dataset_type: 'custom_train_our_model'
   dataset_config:
-    dataset_path: '/scratch/madono/tvcg26_major_revision'
-    scratch_root: '/scratch/madono/tvcg26_major_revision'
+    dataset_path: '/scratch/madono/major_revision'
+    scratch_root: '/scratch/madono/major_revision'
     hint_type: 'scribble'
     domain: "illust"
     image_size: 256

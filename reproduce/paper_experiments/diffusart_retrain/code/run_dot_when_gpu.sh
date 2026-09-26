@@ -2,7 +2,7 @@
 # R3-2 dot trainer: grabs the first free GPU among 3,2 (GPU2 frees when scribble ends).
 set -u
 ROOT=/scratch/madono/diffusart_det_R3-2
-REPO=/home/madorin/gitlab/tog2024/main/Diffusion_v1_tvcg_R3-2
+REPO=/home/madorin/gitlab/labrepo/main/Diffusion_v1_tvcg_R3-2
 source /home/madorin/anaconda3/etc/profile.d/conda.sh
 conda activate BBDM || exit 1
 cd "$REPO"

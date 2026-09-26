@@ -369,7 +369,7 @@ def generate_hints(
         path was pruned away gets the pixel itself.  Every dot therefore lies on
         its own scribble and inside its region.  ``'mean'``: the mean
         row/column of the whole longest path truncated to integers (the rule of
-        the January-2024 generation script and the wording of the paper's
+        the earlier generation script and the wording of the paper's
         Sec. IV-A); it is not projected onto the region and can fall outside
         it.  ``'nearest_mean'``: the in-region path pixel nearest to that mean.
     """
@@ -441,7 +441,7 @@ def generate_hints(
         idx_scr = np.argwhere(longpath == 1)                              # whole longest path (may leave the region)
         idx_in = np.argwhere((longpath == 1) & (skeleton_tmp == 1))       # the part inside the region (= the scribble)
         if dot_method == "medoid":
-            # Rule of the paper's stored hint maps (main_hg_illust_64.py, Oct 2024 "fixdot" dataset): the in-region
+            # Rule of the paper's stored hint maps (main_hg_illust_64.py, earlier "fixdot" dataset): the in-region
             # path pixel with the smallest total Manhattan distance to the other in-region path pixels; ties -> first
             # in raster order. A single-pixel region without a path pixel gets the pixel itself (also as scribble).
             if idx_in.size:
@@ -454,7 +454,7 @@ def generate_hints(
                 scribbles_single[mx, my] = 1
         elif idx_scr.size:
             if dot_method == "mean":
-                # truncated mean of the whole path (hint_dot_generation_20240114_illust_64.py, Jan 2024); not
+                # truncated mean of the whole path (hint_dot_generation_DATESTAMP_illust_64.py, earlier); not
                 # projected onto the region, so it can fall outside it. NOT the rule of the paper's stored maps.
                 mx, my = int(idx_scr[:, 0].mean()), int(idx_scr[:, 1].mean())
             else:  # "nearest_mean": in-region path pixel nearest to the (float) mean of the whole path

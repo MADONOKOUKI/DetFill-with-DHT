@@ -1,5 +1,5 @@
 # Perceptual metrics used by hintauc.metrics.Evaluator / reproduce/scripts/eval_per_ratio.py
-# (LPIPS is already in replicability/environment.yml). Pins = versions used for the checks on 2026-09-26;
+# (LPIPS is already in replicability/environment.yml). Pins = the versions used for our checks;
 # they install on top of torch 2.5.1 / numpy 1.26.4 without changing either.
 open_clip_torch==3.3.0
 dreamsim==0.2.1

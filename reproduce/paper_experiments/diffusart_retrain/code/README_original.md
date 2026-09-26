@@ -1,7 +1,7 @@
-# Diffusion_v1_tvcg_R3-2 — Diffusart trained on deterministic hints (TVCG-2026 rebuttal R3-2)
+# Diffusion_v1_tvcg_R3-2 — Diffusart trained on deterministic hints (revision R3-2)
 
 Purpose: complete the 2x2 (training-hint distribution x evaluation protocol) asked by R3-2.
-The paper's Diffusart (Diffusion_v1_comp, ckpt tog2024_*/checkpoint_198000.pth) is trained
+The paper's Diffusart (Diffusion_v1_comp, ckpt labrepo_*/checkpoint_198000.pth) is trained
 with its ORIGINAL random-hint simulator (making_mask_v3). This repo trains the SAME
 architecture/schedule on the PROPOSED deterministic hints instead.
 
@@ -29,7 +29,7 @@ architecture/schedule on the PROPOSED deterministic hints instead.
 ## Data
 - /scratch/madono/diffusart_det_R3-2/illust/{hint_from_regions,segmentation_regions}/felzenszwalb,
   sketch/{pysimp,XDoG,sketchkeras} — staged from
-  /home/madorin/datasets/tog2024/main_exp_felzenszwalb_fixdot/illust (same source the felz/
+  /home/madorin/datasets/labrepo/main_exp_felzenszwalb_fixdot/illust (same source the felz/
   DetFill pipeline uses; see rebuttal/R2/R2-2_segmentation_dependency/D_RETRAIN_DATA.md).
 - Train list: configs/illust/train_paper.txt (19,999 ids) — identical to comp run.
 
@@ -38,6 +38,6 @@ bash run_train_R3-2.sh            # waits for staging + GPU3 free, scribble then
 # logs: /scratch/madono/diffusart_det_R3-2/logs/train_det_{scribble,dot}.log
 
 ## After training (TODO)
-- inference: test_tog2024.py-style det + rand runs (8 ratios x 3 sketches) with both new ckpts
+- inference: test_labrepo.py-style det + rand runs (8 ratios x 3 sketches) with both new ckpts
 - eval: Hint-AUC via Evaluation_paper/eval_single_run_batched.py (gt_order per mode)
 - deliver: Table II/III rows "Diffusart (det-trained)" + R3-2 coverletter fill

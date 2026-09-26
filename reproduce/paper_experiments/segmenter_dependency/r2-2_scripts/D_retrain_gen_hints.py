@@ -11,7 +11,7 @@ can read them unchanged.
 
 Segmentation params  : ported verbatim from /scratch/madono/all_segmentations.py
 Hint (make_scribbling): ported verbatim from
-    /scratch/madono/scripts_fixing/hint_dot_generation_20240114_illust_abl_64.py
+    /scratch/madono/scripts_fixing/hint_dot_generation_DATESTAMP_illust_abl_64.py
 
 GT/sketch are segmenter-independent and reused from fixdot (NOT regenerated here).
 Only region64 / scribble_mask64 / scribble_col64 are produced (training-needed, 64px).
@@ -39,7 +39,7 @@ SIZE = 64  # hint resolution (training reads *_mask64 / *_col64 / *_region64)
 # Source GT images are STAGED to local /scratch (NFS-free generation to spare the
 # fileserver). Staged layout mirrors fixdot: <src_root>/<SEG_SUBDIR>/<dir>/<id>.image.png
 SRC_ROOT_DEFAULT = "/scratch/madono/seg_retrain_R2-2/src"
-NFS_SRC   = "/home/madorin/datasets/tog2024/main_exp_felzenszwalb_fixdot/illust"  # original (NFS)
+NFS_SRC   = "/home/madorin/datasets/labrepo/main_exp_felzenszwalb_fixdot/illust"  # original (NFS)
 SEG_SUBDIR = "segmentation_regions/felzenszwalb"   # GT .image.png lives here, per-dir
 # txt split lists are copied next to the staged source so the txt read is NFS-free too
 TXT_DIR_DEFAULT = "/scratch/madono/seg_retrain_R2-2/configs/illust"
@@ -77,7 +77,7 @@ def colorize_regions(segments):
 
 # ------------------- hint generation (verbatim make_scribbling) -------------------
 def make_scribbling(img_bgr, region_bgr):
-    """Port of hint_dot_generation_20240114_illust_abl_64.py::make_scribbling.
+    """Port of hint_dot_generation_DATESTAMP_illust_abl_64.py::make_scribbling.
     Returns (region64_bgr, scribble_mask64, scribble_col64) as the felz pipeline did."""
     img = cv2.resize(img_bgr, (SIZE, SIZE))
     region = cv2.resize(region_bgr, (SIZE, SIZE), interpolation=cv2.INTER_NEAREST)

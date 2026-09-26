@@ -6,7 +6,7 @@
 #   GPU=0 bash run_seedexp_detfill.sh
 set -uo pipefail
 GPU="${GPU:-0}"
-REPO=/home/madorin/gitlab/tog2024/main/BBDM_tvcg26_revise_20260513
+REPO=/home/madorin/gitlab/labrepo/main/BBDM_revision_revise_DATESTAMP
 HERE="$(cd "$(dirname "$0")" && pwd)"
 CFG_DIR="$HERE/detfill_cfgs"; mkdir -p "$CFG_DIR"
 BASE_CFG="$REPO/configs/scribble_proposed_illust_200epoch_mr.yaml"

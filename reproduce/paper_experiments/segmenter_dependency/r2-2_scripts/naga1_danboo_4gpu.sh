@@ -6,9 +6,9 @@
 #   usage:  bash naga1_danboo_4gpu.sh "0 1 2"     (sketch types; use "0" for 1 type = ~3x faster)
 set -u
 TYPES="${1:-0 1 2}"
-CODE=/home/madorin/gitlab/tog2024/main/tvcg2026_materials/rebuttal/R2/R2-2_segmentation_dependency/BBDM_seg_retrain
+CODE=/home/madorin/gitlab/labrepo/main/revision_materials/rebuttal/R2/R2-2_segmentation_dependency/BBDM_seg_retrain
 PY=/home/madorin/anaconda3/envs/BBDM/bin/python
-CKPT=/home/madorin/gitlab/tog2024/main/tvcg2026_materials/rebuttal/R2/R2-2_segmentation_dependency/checkpoints/proposed_96ch_scribble.pth
+CKPT=/home/madorin/gitlab/labrepo/main/revision_materials/rebuttal/R2/R2-2_segmentation_dependency/checkpoints/proposed_96ch_scribble.pth
 EVAL=/scratch/madono/seg_eval
 RATIOS="0.00 0.01 0.03 0.05 0.10 0.25 0.50 1.00"
 export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True

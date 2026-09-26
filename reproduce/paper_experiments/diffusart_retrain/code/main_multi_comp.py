@@ -1,4 +1,4 @@
-# DDP_FIX_V1 applied (20260620_011531)
+# DDP_FIX_V1 applied (DATESTAMP)
 import os
 
 # os.environ['CUDA_VISIBLE_DEVICES'] = "5,6,7,8,9"
@@ -91,7 +91,7 @@ if __name__ == '__main__':
     model_ema = deepcopy(model)
 
     optimizer = torch.optim.AdamW(model.parameters(), lr=2e-5)
-    sub_dir = "tog2024_scribble"
+    sub_dir = "baseline_scribble"
     training_dif_multi_hints(model, model_ema, dataloader_train, optimizer, timesteps, channels, image_size, sub_dir, accumulation_steps=acc_gradient )
 
 

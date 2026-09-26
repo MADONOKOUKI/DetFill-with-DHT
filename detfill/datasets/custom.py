@@ -514,7 +514,7 @@ class HintColorizationDataset(Dataset):
         hint = (hint - 0.5) / 0.5
 
 
-        hint_c = torch.cat([mask, hint* mask], dim=0) # fixed at 2024/08/15
+        hint_c = torch.cat([mask, hint* mask], dim=0) 
         x_cond = torch.cat([Simg, hint_c], dim=0)
         CRimg = torch.cat([ Simg, mask, Cimg], dim=0)
 
@@ -524,7 +524,7 @@ class HintColorizationDataset(Dataset):
         # return (CRimg, image_name), (x_cond, image_name )
         return (CRimg, image_name), (x_cond, image_name ), (hint_weight, image_name)
 
-# (a fully commented-out duplicate of the dataset class was removed here in the 2026-07 cleanup)
+# (a fully commented-out duplicate of the dataset class was removed here during cleanup)
 
 def init_load_data(domain):
 

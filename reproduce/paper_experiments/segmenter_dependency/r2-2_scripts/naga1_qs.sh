@@ -6,10 +6,10 @@
 set -u
 GPUS=${1:-0,1}
 DST=/scratch/madono/seg_retrain
-CODE=/home/madorin/gitlab/tog2024/main/tvcg2026_materials/rebuttal/R2/R2-2_segmentation_dependency/BBDM_seg_retrain
+CODE=/home/madorin/gitlab/labrepo/main/revision_materials/rebuttal/R2/R2-2_segmentation_dependency/BBDM_seg_retrain
 PY=/home/madorin/anaconda3/envs/BBDM/bin/python
-FX=/home/madorin/datasets/tog2024/main_exp_felzenszwalb_fixdot/illust
-RD=/home/madorin/gitlab/tog2024/main/tvcg2026_materials/rebuttal/R2/R2-2_segmentation_dependency/retrain_data
+FX=/home/madorin/datasets/labrepo/main_exp_felzenszwalb_fixdot/illust
+RD=/home/madorin/gitlab/labrepo/main/revision_materials/rebuttal/R2/R2-2_segmentation_dependency/retrain_data
 
 echo "== naga1 QS setup =="
 [ -x "$PY" ]        || { echo "ERROR: BBDM env not visible at $PY  -> naga1 does not mount NFS; check the mount."; exit 1; }

@@ -56,14 +56,14 @@ Release: https://github.com/MADONOKOUKI/DetFill-with-DHT/releases/tag/v1.2
 | File | Size | SHA-256 | What it is |
 |---|---|---|---|
 | `diffusart_retrain_scribble_dethint_200ep_ema.pth` | 373 MB | `03ed65e385cab3947e52f9bbdf00c709d84af1ec7d05631624d2266dc40fb15b` | Diffusart (our re-implementation, `reproduce/paper_experiments/diffusart_retrain/code/`) retrained with the deterministic scribble hints, 200 epochs, EMA weights. The **Diffusart-retrain** scribble row of the supplementary "additional training comparisons" table; its PSNR 19.457 / LPIPS 0.177 are reproduced from the per-ratio record shipped in `reproduce/expected/`. |
-| `diffusart_retrain_dot_dethint_200ep_ema.pth` | 373 MB | `8c78717ac73f111ca31e00b43f4c7686e618c4191ce5ea38a437f2ed6b8964d1` | Same for dot hints (the dot row of that table; same training batch, June 2026). |
-| `detfill_scribble_imagenet_200ep.pth` | 1.08 GB | `0f8514000110be43927b9031912b4331e2753e3028ea8a0ab680630857d1d329` | DetFill scribble model trained on the natural-image (ImageNet subset) split, 96 base channels, 200 epochs (Nov 2024). Config: `detfill/configs/scribble_real.yaml`. |
-| `detfill_dot_imagenet_200ep.pth` | 1.08 GB | `1fdf881981c9a4e415711a8bdb6bab36c3e0251243e5d04544e7fc6b9811fd2e` | DetFill dot model on natural images, 96 base channels, 200 epochs (Nov 2024). Config: `detfill/configs/dot_real.yaml`. |
+| `diffusart_retrain_dot_dethint_200ep_ema.pth` | 373 MB | `8c78717ac73f111ca31e00b43f4c7686e618c4191ce5ea38a437f2ed6b8964d1` | Same for dot hints (the dot row of that table; same training batch, earlier). |
+| `detfill_scribble_imagenet_200ep.pth` | 1.08 GB | `0f8514000110be43927b9031912b4331e2753e3028ea8a0ab680630857d1d329` | DetFill scribble model trained on the natural-image (ImageNet subset) split, 96 base channels, 200 epochs. Config: `detfill/configs/scribble_real.yaml`. |
+| `detfill_dot_imagenet_200ep.pth` | 1.08 GB | `1fdf881981c9a4e415711a8bdb6bab36c3e0251243e5d04544e7fc6b9811fd2e` | DetFill dot model on natural images, 96 base channels, 200 epochs. Config: `detfill/configs/dot_real.yaml`. |
 | `test_split_hint_maps_64_imagenet.tar.gz` | 40 MB | `870db22dd7526c2fb3fe7d9bd5d3b7d10b90c9fa776ac901c1b04ab52bf01847` | The stored 64×64 hint maps (scribble/dot colour + mask) and region maps of the 2,999 ImageNet test images (`detfill/configs/real/test.txt`), i.e. the evaluation inputs of the supplementary ImageNet tables. |
 
 Honest caveats for the natural-image models: every natural-image checkpoint in our archive is a 96-channel model (the
-`*_real.yaml` configs were corrected to 96 channels in v1.2). Two training generations exist (Nov 2024, released here,
-and Mar 2025) with different weights, and the archive does not contain the evaluation record that ties the printed
+`*_real.yaml` configs were corrected to 96 channels in v1.2). Two training generations exist (earlier, released here,
+and earlier) with different weights, and the archive does not contain the evaluation record that ties the printed
 ImageNet values to one file. Treat re-evaluations with these weights as "same model family and protocol" rather than a
 bit-exact reproduction. The natural-image data path of the loader still expects our split lists with absolute paths
 (`detfill/configs/real/*.txt`), see `reproduce/README.md`.
@@ -85,27 +85,27 @@ research use).
 | `examples_data.tar.gz` | 8 MB | `3d7f699da9f8de5a5def35a997e7bb42461abd56babd3ce6c30adfbee9f71c87` | 12 example illustrations with originals, three line-art versions, the paper's hint maps and the DanbooRegion/SLIC maps — input of `reproduce/examples/run_examples.sh` |
 | `userstudy_stimuli.tar.gz` | 623 MB | `7bf1cc36999ef200edf48d8e2749338d990da3a4fb6323b021b26f007aef359d` | The images shown in the user study (192 images × 8 hint ratios: line art, hint image, DetFill / PaintsTorch / Diffusart colorizations, ground truth, `index.csv`); keyed like `reproduce/data/userstudy/glmm_trials.csv`. The ColorizeDiffusion-v2 stimuli were not preserved. |
 
-## legacy-2024 — checkpoints of the 2024 submission and the channel-ablation models
+## v1.4 — checkpoints of the earlier submission and the channel-ablation models
 
-Release: https://github.com/MADONOKOUKI/DetFill-with-DHT/releases/tag/legacy-2024. Released for completeness and for
+Release: https://github.com/MADONOKOUKI/DetFill-with-DHT/releases/tag/v1.4. Released for completeness and for
 the supplementary channel ablation; **not** the models behind the main tables (those are v1.0).
 
 | File | Size | SHA-256 | What it is |
 |---|---|---|---|
 | `detfill_scribble_illust_32ch_200ep.pth` | 129 MB | `4eef804755b9adc4fc0b5234501666138a4a6ecddfbdb28245fd7fc32443ecda` | Scribble model with 32 base channels (supplementary channel-ablation figure, "C = 32"); use `scribble_illust.yaml` with `model_channels: 32` |
 | `detfill_scribble_illust_64ch_200ep.pth` | 485 MB | `8eeee341331ed949cc216049c9fecebc70900d54fb709eee3b97a2b1fc34845b` | Scribble model with 64 base channels (channel ablation) |
-| `legacy2024_detfill_scribble_illust_200ep.pth` | 485 MB | `7d74ebe7d6c8862286fe9944b7cf9d2448a6e473880c383b13af8a36e6ce0002` | Scribble model of the 2024 submission (64 channels; its archived config sampled with 1,000 steps). Superseded by the 96-channel v1.0 model retrained for the revision |
-| `legacy2024_detfill_dot_illust_200ep.pth` | 485 MB | `b4779946f24b5f52cdf640418c73bef67925c845e50c8f36610aeac7d50f212b` | Dot model of the 2024 submission (64 channels; earlier training run of the same architecture as v1.0) |
-| `legacy2024_detfill_scribble_imagenet_200ep.pth` | 485 MB | `84dc2e4363b0fd9964338b019a35cecf29e5ef4687d6b167b59f958503520f09` | Natural-image scribble model of the 2024 submission (64 channels) |
-| `legacy2024_detfill_dot_imagenet_200ep.pth` | 485 MB | `41089d46313943fdac66aaf5a022c0aa365cff47c0bbaed581436e040d122a9e` | Natural-image dot model of the 2024 submission (64 channels; its config uses a 3-channel conditioning stage, see the archived config) |
-| `legacy2024_configs.tar.gz` | 2 KB | `aed088e20ebe5ee436b73a61d6c05f830df8d943f9bc44a138292b20f1886aed` | The archived training configs of the 2024 models and of the 32/64-channel models |
+| `detfill_scribble_illust_earlier_64ch_200ep.pth` | 485 MB | `7d74ebe7d6c8862286fe9944b7cf9d2448a6e473880c383b13af8a36e6ce0002` | Scribble model of the earlier submission (64 channels; its archived config sampled with 1,000 steps). Superseded by the 96-channel v1.0 model retrained for the revision |
+| `detfill_dot_illust_earlier_64ch_200ep.pth` | 485 MB | `b4779946f24b5f52cdf640418c73bef67925c845e50c8f36610aeac7d50f212b` | Dot model of the earlier submission (64 channels; earlier training run of the same architecture as v1.0) |
+| `detfill_scribble_imagenet_earlier_64ch_200ep.pth` | 485 MB | `84dc2e4363b0fd9964338b019a35cecf29e5ef4687d6b167b59f958503520f09` | Natural-image scribble model of the earlier submission (64 channels) |
+| `detfill_dot_imagenet_earlier_64ch_200ep.pth` | 485 MB | `41089d46313943fdac66aaf5a022c0aa365cff47c0bbaed581436e040d122a9e` | Natural-image dot model of the earlier submission (64 channels; its config uses a 3-channel conditioning stage, see the archived config) |
+| `earlier_run_configs.tar.gz` | 2 KB | `aed088e20ebe5ee436b73a61d6c05f830df8d943f9bc44a138292b20f1886aed` | The archived training configs of the 2024 models and of the 32/64-channel models |
 
 ## Which release do I need?
 
 | I want to … | Download |
 |---|---|
 | reproduce Fig. 9 with one command | nothing by hand — `replicability/run.sh` fetches the two v1.0 models |
-| run the example-based reproduction of every experiment | nothing by hand — `reproduce/examples/run_examples.sh` fetches v1.0, v1.1, v1.3 (and legacy-2024 in `full` mode) |
+| run the example-based reproduction of every experiment | nothing by hand — `reproduce/examples/run_examples.sh` fetches v1.0, v1.1, v1.3 (and v1.4 in `full` mode) |
 | recompute the paper's tables from the released metric files | nothing — the metric files are in the repository (`reproduce/expected/`) |
 | re-run a whole table row on the 3,000 test images | v1.0 models + v1.0 hint maps + v1.3 line art + the Danbooru2021 originals (`reproduce/README.md`, part B) |
 | re-run the segmentation-dependency study | v1.1 models + v1.3 segmenter hint maps |

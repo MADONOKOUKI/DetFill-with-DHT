@@ -5,9 +5,9 @@
 # Run from cayenne1.
 set -u
 BASE=/scratch/madono/seg_retrain_R2-2
-FIX=/home/madorin/datasets/tog2024/main_exp_felzenszwalb_fixdot/illust
-TXTD=/home/madorin/gitlab/tog2024/main/BBDM_tvcg26_revise_20260513/configs/illust
-REPO=/home/madorin/gitlab/tog2024/main/tvcg2026_materials/rebuttal/R2/R2-2_segmentation_dependency/scripts
+FIX=/home/madorin/datasets/labrepo/main_exp_felzenszwalb_fixdot/illust
+TXTD=/home/madorin/gitlab/labrepo/main/BBDM_revision_revise_DATESTAMP/configs/illust
+REPO=/home/madorin/gitlab/labrepo/main/revision_materials/rebuttal/R2/R2-2_segmentation_dependency/scripts
 KEY=~/.ssh/id_ed25519
 
 echo "[1] build list + copy txt"

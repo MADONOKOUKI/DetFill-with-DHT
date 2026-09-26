@@ -17,7 +17,7 @@ data:
   dataset_type: 'custom_train_our_model'
   dataset_config:
     dataset_path: '/scratch/madono/main_exp_felzenszwalb/illust/'
-    scratch_root: '/scratch/madono/tvcg26_major_revision/'
+    scratch_root: '/scratch/madono/major_revision/'
     hint_type: 'scribble'
     domain: "illust"
     image_size: 256

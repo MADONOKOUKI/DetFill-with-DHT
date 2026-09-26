@@ -5,8 +5,8 @@ behind the **Diffusart-retrain, scribble** row of the supplementary table (Diffu
 deterministic hints under the same 200-epoch protocol as DetFill; 3 sketch sources x 8 hint ratios x
 3,000 Danbooru2021 test images).
 
-* Source run: `/scratch/madorin/hauc_runs_v3` (reaper3, 2026-06), checkpoint
-  `Diffusion_v1_tvcg_R3-2/checkpoint/tog2024_scribble/final_model_ema.pth`
+* Source run: `/scratch/madorin/hauc_runs_v3` (reaper3), checkpoint
+  `Diffusion_v1_tvcg_R3-2/checkpoint/baseline_scribble/final_model_ema.pth`
   (repository `Diffusion_v1_tvcg_R3-2` = Diffusart code trained on deterministic hints; see
   `reproduce/paper_experiments/diffusart_retrain/`).
 * `A1_tables_from_released_metrics.py` recomputes the sketch-averaged Hint-AUC from `hauc_summary.json`:

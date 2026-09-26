@@ -348,8 +348,8 @@ for rnd in [2]:   # seedexp: sketchkeras only
     # if rnd <=1:
     #     continue
     # save_path = os.path.join('paper_results', args.save_name , args.hint_name, "kernel size_"+str(args.path_length), "hint_"+str(rnd))
-    # save_path = os.path.join('/scratch/madono/paper_results_sig25_diffusart/paper_result_userstudy', args.save_name , args.hint_name,  "hint_"+str(rnd))
-    save_path = os.path.join('/scratch/madono/paper_results_sig25_diffusart/paper_result_randomhints_2025_rev_sorted', args.save_name , args.hint_name,  "hint_"+str(rnd))
+    # save_path = os.path.join('/scratch/madono/paper_results_submission_diffusart/paper_result_userstudy', args.save_name , args.hint_name,  "hint_"+str(rnd))
+    save_path = os.path.join('/scratch/madono/paper_results_submission_diffusart/paper_result_randomhints_2025_rev_sorted', args.save_name , args.hint_name,  "hint_"+str(rnd))
     save_path = os.path.join(os.environ.get('SEEDEXP_SAVE_ROOT','/scratch/madono/seedexp/diffusart'), args.save_name)   # seedexp
     # save_path = os.path.join('/scratch/madono/tog_results/Diffusion_v1_comp/', args.save_name , args.hint_name, "kernel size_"+str(args.path_length), "hint_"+str(rnd))
 

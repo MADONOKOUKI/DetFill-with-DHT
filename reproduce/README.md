@@ -40,7 +40,7 @@ python reproduce/scripts/A2_userstudy_glmm.py                 # Tables IV/V + th
 with the numbers printed in the paper (`check_report.csv`). Reference copies of both scripts' outputs are in
 `expected/recomputed_tables/`.
 
-Result of the authors' run (2026-09-26): **A1 rebuilds 322 of the 324 compared cells to the printed precision**;
+Result of the authors' run (DATE): **A1 rebuilds 322 of the 324 compared cells to the printed precision**;
 **A2 reproduces all 30 percentages of Tables IV/V exactly and the three GLMM statistics** (z = 30.18;
 χ²(7) = 618.33, p = 2.75e-129; χ²(14) = 324.04, p = 1.12e-60). The two A1 exceptions are a rounding artefact and one
 provenance gap, both listed under "Known deviations" below; neither changes a conclusion.
@@ -91,7 +91,7 @@ entry point and the same `hintauc` evaluator as the full-scale experiments, and 
 | E5 Dense ratio curve | supp. α-grid study | per-image metric curves on a fine ratio grid and the Hint-AUC on the dense vs. the paper grid |
 | E8 Channel ablation | supp. channel-ablation figure | 32 / 64 / 96 base-channel scribble models on the two images of that figure |
 | E9 Hint regeneration | Sec. IV, supp. Sec. I | the deterministic hint generator re-run with the `hintauc` library vs. the stored maps |
-| E11 Legacy 2024 models | (provenance) | the scribble/dot models of the 2024 submission on the same images |
+| E11 Earlier checkpoints | (provenance) | the scribble/dot models of the earlier submission on the same images |
 
 `reproduce/examples/README.md` documents each experiment, the images used and the authors' numbers.
 
@@ -195,7 +195,7 @@ not re-run a complete table row on different hardware; expect small differences 
   tables written by A1 use the loader's mapping.
 - **Not covered by released per-ratio data:** the Table II/III *dot* rows of DetFill, all baseline rows
   (PaintsTorch, Diffusart, ColorizeDiffusion v1/v2), the natural-image (ImageNet) tables and the legacy per-source
-  tables of the supplement (2024 checkpoints). The dot row and the baselines can be regenerated with layer D and the
+  tables of the supplement (earlier checkpoints). The dot row and the baselines can be regenerated with layer D and the
   respective official code (the ColorizeDiffusion fine-tuned weights were not preserved). The natural-image DetFill
   models and the ImageNet test hint maps are released (v1.2), but the natural-image loader path still uses our absolute
   split lists (`detfill/configs/real/*.txt`) and the archive cannot tie the printed ImageNet values to one checkpoint

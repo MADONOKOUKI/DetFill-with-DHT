@@ -31,7 +31,7 @@ TYPES="${TYPES:-0 1 2}"
 POLL_INTERVAL=2
 
 # ── logs symlink to /scratch (keep NFS write pressure low) ────────────────
-SCRATCH_LOGS=/scratch/madono/tvcg26_logs
+SCRATCH_LOGS=/scratch/madono/revision_logs
 mkdir -p "$SCRATCH_LOGS"
 if [ -L logs ]; then
     rm -f logs
@@ -75,7 +75,7 @@ IFS=' ' read -ra RATIOS_ARR <<< "$RATIOS"
 NUM_RATIOS=${#RATIOS_ARR[@]}
 
 echo "=========================================="
-echo " BBDM_tvcg26_revise_20260513 launch"
+echo " BBDM_revision_revise_DATESTAMP launch"
 echo "=========================================="
 echo "  host       : $(hostname -s)"
 echo "  num_ratios : $NUM_RATIOS"

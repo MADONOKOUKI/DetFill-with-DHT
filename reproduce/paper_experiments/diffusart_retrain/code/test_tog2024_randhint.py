@@ -339,7 +339,7 @@ with torch.no_grad():
 
 for rnd in range(3):
     # save_path = os.path.join('paper_results', args.save_name , args.hint_name, "kernel size_"+str(args.path_length), "hint_"+str(rnd))
-    save_path = os.path.join('/scratch/madono/paper_results_sig25_diffusart/paper_result_randhints', args.save_name , args.hint_name,  "hint_"+str(rnd))
+    save_path = os.path.join('/scratch/madono/paper_results_submission_diffusart/paper_result_randhints', args.save_name , args.hint_name,  "hint_"+str(rnd))
     # save_path = os.path.join('/scratch/madono/tog_results/Diffusion_v1_comp/', args.save_name , args.hint_name, "kernel size_"+str(args.path_length), "hint_"+str(rnd))
 
     # for ratio in hint_ratio:

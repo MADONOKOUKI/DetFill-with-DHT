@@ -1,9 +1,9 @@
-# R3-2 (TVCG-2026 rebuttal): deterministic-hint training loader for Diffusart.
+# R3-2 (revision): deterministic-hint training loader for Diffusart.
 # Class body is a verbatim port of Diffusion_v1/data/data_load.py::MyData_train_scrib
 # (the approach='proposed' deterministic-hint loader), with only the hardcoded
 # data root replaced by DATA_ROOT (env DIFFUSART_DET_DATA_ROOT).
 #
-# 2026-06-22: __getitem__ aligned to the PROPOSED (BBDM) HintColorizationDataset flow:
+# DATE: __getitem__ aligned to the PROPOSED (BBDM) HintColorizationDataset flow:
 #   (1) hint channel order -> cat([mask, hint*mask]) (mask-FIRST, matches proposed)
 #   (2) region sampling     -> np.random.shuffle (random subset, matches proposed train)
 #   (3) GT/sketch transform -> PIL + Resize(NEAREST->size) + Resize(BICUBIC)+ToTensor+Normalize

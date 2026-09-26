@@ -1,4 +1,4 @@
-# R3-2 (TVCG-2026 rebuttal): deterministic-hint training loader for Diffusart.
+# R3-2 (revision): deterministic-hint training loader for Diffusart.
 # Class body is a verbatim port of Diffusion_v1/data/data_load.py::MyData_train_scrib
 # (the approach='proposed' deterministic-hint loader), with only the hardcoded
 # data root replaced by DATA_ROOT (env DIFFUSART_DET_DATA_ROOT).
