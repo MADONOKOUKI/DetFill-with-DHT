@@ -20,3 +20,8 @@ reproduce/output/
 
 # dreamsim downloads its weights into ./models by default
 models/
+
+# example-suite downloads and outputs
+reproduce/examples/data/
+reproduce/examples/checkpoints/
+reproduce/examples/output/
