@@ -60,7 +60,7 @@ LOG2="$OUT_DIR/log_sketch2_gpu3.log"
 
 # Launch all 3 in background using setsid + nohup + </dev/null so they fully
 # detach from this shell's session/process-group (otherwise some sandboxed
-# launchers — e.g. Claude Code's bash tool — kill descendants when the launcher
+# launchers (some tool launchers kill descendants when the launcher
 # script exits).
 setsid nohup "${CMD_BASE[@]}" --sketches 0 --gpu 2 --batch_size 32 \
     > "$LOG0" 2>&1 < /dev/null &

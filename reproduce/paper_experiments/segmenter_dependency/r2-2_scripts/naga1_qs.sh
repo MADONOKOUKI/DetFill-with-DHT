@@ -12,7 +12,7 @@ FX=/home/madorin/datasets/tog2024/main_exp_felzenszwalb_fixdot/illust
 RD=/home/madorin/gitlab/tog2024/main/tvcg2026_materials/rebuttal/R2/R2-2_segmentation_dependency/retrain_data
 
 echo "== naga1 QS setup =="
-[ -x "$PY" ]        || { echo "ERROR: BBDM env not visible at $PY  -> naga1 does not mount NFS; tell Claude."; exit 1; }
+[ -x "$PY" ]        || { echo "ERROR: BBDM env not visible at $PY  -> naga1 does not mount NFS; check the mount."; exit 1; }
 [ -f "$CODE/main.py" ] || { echo "ERROR: code not visible at $CODE"; exit 1; }
 "$PY" -c "import torch;print('torch',torch.__version__,'cuda',torch.cuda.is_available(),torch.cuda.device_count())" || exit 1
 
