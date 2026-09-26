@@ -310,6 +310,11 @@ class HintColorizationDataset(Dataset):
             self.image_paths = sorted(glob.glob(
                 os.path.join(scratch_root, "segmentations/originals/*.image.png")))
         else:
+            dataset_path = getattr(dataset_config, 'dataset_path', None)
+            if not dataset_path or str(dataset_path).startswith('/path/to'):
+                raise ValueError(
+                    "Set data.dataset_config.dataset_path (or scratch_root) in the yaml "
+                    "config to your dataset root; see detfill/README.md for the layout.")
             list_train_imgs, list_valid_imgs, list_test_imgs = init_load_data(dataset_config.domain)
             if stage == 'train':
                 self.image_paths = list_train_imgs
@@ -318,11 +323,6 @@ class HintColorizationDataset(Dataset):
             elif stage == 'test':
                 self.image_paths = list_test_imgs
 
-            dataset_path = getattr(dataset_config, 'dataset_path', None)
-            if not dataset_path or str(dataset_path).startswith('/path/to'):
-                raise ValueError(
-                    "Set data.dataset_config.dataset_path (or scratch_root) in the yaml "
-                    "config to your dataset root; see detfill/README.md for the layout.")
             self.root_sketch = os.path.join(dataset_path, "sketch")
             self.root_scr = os.path.join(dataset_path, "hint_from_regions_64_rev")
             self.root_scr_region = os.path.join(dataset_path, "hint_from_regions_256")

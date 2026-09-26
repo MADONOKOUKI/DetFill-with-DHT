@@ -39,6 +39,15 @@ from .metrics import (
     evaluate_pair,
     evaluate_set,
 )
+from .evaluate import (
+    PROTOCOL_VERSION,
+    evaluate_colorizer,
+    file_sha256,
+    hint_fill_colorizer,
+    hint_inputs,
+    plot_curves,
+    protocol_record,
+)
 from .auc import (
     DEFAULT_ALPHAS,
     evaluate_hint_curve,
@@ -47,7 +56,7 @@ from .auc import (
     trapz,
 )
 
-__version__ = "0.2.2"
+__version__ = "0.3.0"
 
 __all__ = [
     "ALL_METRICS",
@@ -66,6 +75,13 @@ __all__ = [
     "evaluate_pair",
     "generate_hints",
     "geodesic_longest_path",
+    "PROTOCOL_VERSION",
+    "evaluate_colorizer",
+    "file_sha256",
+    "hint_fill_colorizer",
+    "hint_inputs",
+    "plot_curves",
+    "protocol_record",
     "hint_auc",
     "hint_auc_table",
     "region_ids",

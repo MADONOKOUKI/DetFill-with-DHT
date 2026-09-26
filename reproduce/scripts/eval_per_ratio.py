@@ -59,6 +59,8 @@ def main():
     ap.add_argument("--gpu", default="0", help="CUDA device index, or -1 for CPU")
     ap.add_argument("--limit", type=int, default=0, help="evaluate only the first N images per cell (smoke test)")
     ap.add_argument("--epoch_dir", default="200")
+    ap.add_argument("--ckpt", default=None, help="checkpoint file whose SHA-256 is recorded in hauc.json")
+    ap.add_argument("--plot", action="store_true", help="also write curves.png (mean over the evaluated sketch types)")
     a = ap.parse_args()
     if a.gpu != "-1":
         os.environ.setdefault("CUDA_VISIBLE_DEVICES", a.gpu)
@@ -135,6 +137,13 @@ def main():
             v = np.array([hauc["per_sketch"][k][m] for k in hauc["per_sketch"]])
             hauc["mean_over_sketches"][m] = float(v.mean())
             hauc["sd_over_sketches"][m] = float(v.std(ddof=1)) if len(v) > 1 else None
+    from hintauc.evaluate import file_sha256, plot_curves, protocol_record
+    hauc["protocol"] = protocol_record(alphas=hauc["alphas"] or grid, metrics=list(a.metrics), sketch_types=list(a.sketches),
+                                       results_root=os.path.abspath(a.results_root), gt_dir=os.path.abspath(a.gt_dir),
+                                       checkpoint_sha256=file_sha256(a.ckpt) if a.ckpt else None, checkpoint=a.ckpt)
+    if a.plot:
+        per_alpha = {float(r): {m: float(g[f"{m}_mean"].mean()) for m in a.metrics} for r, g in summ.groupby("ratio")}
+        plot_curves(per_alpha, os.path.join(a.out_dir, "curves.png"), title="mean over sketch types")
     json.dump(hauc, open(os.path.join(a.out_dir, "hauc.json"), "w"), indent=2)
     print("\nper_ratio_summary.csv written; Hint-AUC over", hauc["alphas"])
     for m in a.metrics:

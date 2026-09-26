@@ -117,14 +117,20 @@ class Evaluator:
     def _read_01(self, image: ImageLike) -> np.ndarray:
         """HxWx3 float32 in [0,1], resized to (resize, resize).
 
-        With torch installed this matches eval_single_run.py exactly
-        (torchvision antialiased resize); otherwise falls back to PIL.
+        With torch installed this matches eval_single_run.py exactly (torchvision antialiased resize) for
+        files and arrays alike; without torch both fall back to PIL's default resize.
         """
         torch = self.torch
-        if torch and not isinstance(image, np.ndarray):
+        if torch:
             import torchvision
             import torchvision.transforms.functional as TVF
-            img = torchvision.io.read_image(os.fspath(image))
+            if isinstance(image, np.ndarray):          # arrays take the same route as files (same resize)
+                arr = image
+                if arr.ndim == 2:
+                    arr = np.stack([arr] * 3, axis=-1)
+                img = torch.from_numpy(np.ascontiguousarray(arr[:, :, :3].astype(np.uint8))).permute(2, 0, 1)
+            else:
+                img = torchvision.io.read_image(os.fspath(image))
             if img.shape[0] == 4:
                 img = img[:3]
             if img.shape[0] == 1:
@@ -344,12 +350,18 @@ def evaluate_dirs(
         gt_by_name = {os.path.basename(p): p for p in gts}
         pairs = [(p, gt_by_name[os.path.basename(p)]) for p in preds
                  if os.path.basename(p) in gt_by_name]
+        if preds and len(pairs) < len(preds):
+            import warnings
+            warnings.warn(f"{len(preds) - len(pairs)} of {len(preds)} predictions have no ground truth of the same name and are skipped", stacklevel=2)
     elif pairing == "sorted":
         if len(preds) != len(gts):
             raise ValueError(
                 f"pred/gt counts differ ({len(preds)} vs {len(gts)}); "
                 "use pairing='name' or align the directories")
         pairs = list(zip(preds, gts))
+        if [os.path.basename(p) for p in preds] != [os.path.basename(g) for g in gts]:
+            import warnings
+            warnings.warn("prediction and ground-truth file names differ; pairing by sorted order (pass pairing='name' when the files share names)", stacklevel=2)
     else:
         raise ValueError("pairing must be 'sorted' or 'name'")
     if limit:

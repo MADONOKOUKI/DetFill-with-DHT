@@ -17,7 +17,9 @@ evaluator = hintauc.Evaluator(metrics=("psnr", "lpips", "dreamsim"))
 print(evaluator("colorized.png", "ground_truth.png"))
 ```
 
-Command line: `hintauc generate image.png --ratio 0.1`, `hintauc eval pred_dir gt_dir --metrics mse psnr ssim`.
+Command line: `hintauc generate image.png --ratio 0.1`, `hintauc eval pred_dir gt_dir --metrics mse psnr ssim`,
+`hintauc curve pred_root gt_dir` (Hint-AUC from one directory of outputs per hint ratio). Your own model as a Python
+function: `hintauc.evaluate_colorizer(fn, samples)`.
 
 Documentation, the DetFill colorization model, all checkpoints and the reproduction package:
 https://github.com/MADONOKOUKI/DetFill-with-DHT

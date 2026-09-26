@@ -29,6 +29,12 @@ evaluation inputs and the scripts that reproduce the paper are released.
 - **Replicability Stamp** — `bash replicability/run.sh` reproduces Fig. 9 of the paper from a fresh checkout with no
   arguments; see [replicability/README.md](replicability/README.md) and the submission sheet
   [replicability/GRSI_SUBMISSION.txt](replicability/GRSI_SUBMISSION.txt).
+- **Quick start on CPU (a few minutes; `--fast` under a minute)** — `python examples/quickstart_cpu.py` writes hint
+  images, a reference colorization at every hint ratio, the metric curves and the Hint-AUC to
+  `examples/output/quickstart/`; the expected numbers are in the script's header.
+- **Evaluate your own model** — see [Evaluate your own model](docs/evaluate_your_model.md): hand in images per hint
+  ratio (`hintauc curve`) or plug in a Python function (`hintauc.evaluate_colorizer`); every result carries a protocol
+  record (grid, metric settings, versions).
 - **Installation** — see [Setup](docs/setup.md). The library is one command (`pip install hintauc`); DetFill and
   the reproduction scripts use a conda environment that the scripts create for you.
 - **Model zoo** — see [Model zoo](checkpoints/README.md): every released checkpoint and data file with its size,
@@ -85,6 +91,8 @@ repository and in the releases (example bundle, user-study stimuli, figure grids
 Contributions are welcome. See [contributing](CONTRIBUTING.md) and the [code of conduct](CODE_OF_CONDUCT.md).
 
 ## Citing
+
+GitHub's "Cite this repository" button uses `CITATION.cff`; the BibTeX entry:
 
 ```bibtex
 @article{madono2026hintauc,

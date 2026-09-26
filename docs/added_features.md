@@ -15,6 +15,9 @@ Everything below was added after the paper's experiments and does not change any
 - **Runs everywhere** — DreamSim and the other metric backbones work on CPU-only machines (DreamSim caches its weights
   under `~/.cache/hintauc`); DetFill inference runs on CPU (`--gpu_ids -1`); a flat, user-configurable data layout;
   deterministic region-id colours.
+- **Evaluate your own model** — `hintauc.evaluate_colorizer` (plug in a Python function) and `hintauc curve`
+  (directories of images per hint ratio); every result carries a protocol record (grid, metric settings, library
+  versions, optional checkpoint hash) and can be plotted (`hintauc.plot_curves`, `eval_per_ratio.py --plot`).
 - **Reproduction tooling** — the one-command Fig. 9 script (`replicability/`), the reproduction package (`reproduce/`)
   with example-based re-runs of every experiment, and the additional releases (v1.1–v1.4) with all remaining
   checkpoints and data.

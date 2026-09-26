@@ -1,0 +1,26 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite the paper below."
+title: "DetFill-with-DHT: Deterministic Hints and Hint-AUC for Line Art Colorization"
+type: software
+authors:
+  - family-names: Madono
+    given-names: Koki
+  - family-names: Mingcheng
+    given-names: Yuan
+  - family-names: Simo-Serra
+    given-names: Edgar
+repository-code: "https://github.com/MADONOKOUKI/DetFill-with-DHT"
+license: MIT
+preferred-citation:
+  type: article
+  title: "Hint-AUC: Deterministic Region-based Hint Generation for Line Art Colorization Evaluation"
+  authors:
+    - family-names: Madono
+      given-names: Koki
+    - family-names: Mingcheng
+      given-names: Yuan
+    - family-names: Simo-Serra
+      given-names: Edgar
+  journal: "IEEE Transactions on Visualization and Computer Graphics"
+  year: 2026
+  doi: "10.1109/TVCG.2026.3738401"

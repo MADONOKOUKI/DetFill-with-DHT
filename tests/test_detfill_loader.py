@@ -93,6 +93,12 @@ def test_region_orders_and_validation(layout):
         cls(_config(layout, hint_order="random"), stage="test", sample_ratio=0.5, sketch_type=2)
 
 
+def test_placeholder_roots_are_rejected(layout):
+    cls = _dataset_class()
+    with pytest.raises(ValueError):                    # the released configs' placeholders select no layout
+        cls(_config(layout, scratch_root="/path/to/dataset", dataset_path="/path/to/dataset"), stage="test", sample_ratio=0.5, sketch_type=2)
+
+
 def test_sketch_types_are_all_readable(layout):
     ds = _dataset_class()(_config(layout), stage="test", sample_ratio=0.1, sketch_type=None)
     for i in range(len(ds)):
