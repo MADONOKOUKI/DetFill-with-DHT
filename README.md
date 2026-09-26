@@ -46,7 +46,7 @@ Everything runs from this repository plus the files on the [GitHub releases](htt
 |---|---|---|
 | **Fig. 9** end to end — the Replicability-Stamp script | `bash replicability/run.sh` | GPU ≈ 3 min, CPU ≈ 30 min |
 | **Every table** rebuilt from the released metric files (Tables II–V, supplementary tables, GLMM) | `python reproduce/scripts/A1_tables_from_released_metrics.py` → 322/324 cells match<br>`python reproduce/scripts/A2_userstudy_glmm.py` → all values match | < 2 min, CPU |
-| **Every experiment** re-run on 12 example illustrations with the released checkpoints (Table II/III protocols, segmentation dependency, seed sensitivity, dense ratio curve, channel ablation, hint regeneration, 2024 models) | `bash reproduce/examples/run_examples.sh` | smoke ≈ 5 min, default ≈ 45 min, full = hours |
+| **Every experiment** re-run on 12 example illustrations with the released checkpoints (Table II/III protocols, segmentation dependency, seed sensitivity, dense ratio curve, channel ablation, hint regeneration, 2024 models) | `bash reproduce/examples/run_examples.sh` | smoke ≈ 5 min, default ≈ 1 h, full = hours |
 | **A whole table row** on the 3,000 test images | `DATA_ROOT=… bash reproduce/scripts/run_hauc_pipeline.sh` | ≈ 14 GPU-h per row |
 | **Training** from scratch | `bash reproduce/scripts/B9_train_detfill.sh` | days, 10 GPUs |
 

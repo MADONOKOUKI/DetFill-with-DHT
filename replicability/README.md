@@ -83,6 +83,6 @@ an existing conda environment, `GRSI_CKPT_DIR=<dir>` points at checkpoints downl
 ## Beyond this figure
 
 `reproduce/examples/run_examples.sh` re-runs every experiment of the paper and the supplement on a few example
-illustrations with the same environment and the released checkpoints (no arguments; about 45 minutes on a GPU in
+illustrations with the same environment and the released checkpoints (no arguments; about an hour on a GPU in
 the default mode), and `reproduce/README.md` explains how to rebuild every table from the released metric files and
 how to re-run a whole table row on the 3,000 test images. The repository README has the overview table.

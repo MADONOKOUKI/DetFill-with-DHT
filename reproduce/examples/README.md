@@ -6,7 +6,7 @@ the full-scale experiments. It needs no data preparation: the checkpoints and th
 (release v1.3, `examples_data.tar.gz`) are downloaded automatically and checked against their SHA-256.
 
 ```bash
-bash reproduce/examples/run_examples.sh                       # default: "quick" (4 images, 4 ratios)  ≈ 45 min on one GPU
+bash reproduce/examples/run_examples.sh                       # default: "quick" (4 images, 4 ratios)  ≈ 1 h on one GPU (2080 Ti class)
 EXAMPLES_MODE=smoke bash reproduce/examples/run_examples.sh   # 1 image, 2 ratios, scribble model only    ≈ 5 min on a GPU
 EXAMPLES_MODE=full  bash reproduce/examples/run_examples.sh   # all experiments, 12 images, 8 ratios      several GPU-hours
 ```
@@ -46,8 +46,9 @@ models (v1.2; the ImageNet originals cannot be redistributed — point `run_hauc
 `expected/` holds the grids and metrics of the authors' `full` run (NVIDIA RTX 2080 Ti, environment of
 `replicability/environment.yml`, 2026-09-26) and the paper's archived outputs of the 12 example images for the
 Table II protocol. Because the diffusion sampler is seeded but not bit-exact across GPU generations, your outputs will
-differ from both at the pixel level; `compare_with_expected.py` flags metric differences beyond a tolerance
-(PSNR 0.6 dB, LPIPS 0.02, DreamSim 0.015), which in our tests were not exceeded between two GPU generations.
+differ from both at the pixel level; `compare_with_expected.py` flags metric differences beyond a generous tolerance
+(PSNR 0.6 dB, LPIPS 0.02, DreamSim 0.015). A few flagged cells on a different GPU generation or on CPU are expected
+and do not indicate a problem as long as the trends described in the table above hold.
 
 ## Files
 

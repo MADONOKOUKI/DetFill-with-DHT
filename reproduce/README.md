@@ -14,7 +14,7 @@ layer D.
 | Layer | What it does | Needs | Time |
 |---|---|---|---|
 | **A. Recompute the tables from the released metric files** | Rebuilds every Hint-AUC table of the paper from the per-ratio metric files and the user-study trial table shipped in `expected/` and `data/`, and checks each printed cell | numpy, pandas, statsmodels (CPU) | < 2 min |
-| **B. Example-based re-run of every experiment** | Runs the released checkpoints on 12 example illustrations for each experiment of the paper and the supplement, writes labelled image grids and per-image metrics, and compares them with the authors' run and with the paper's archived outputs | one GPU (CPU possible but slow); assets are downloaded automatically | 5 min (smoke) / ≈ 45 min (default) / hours (full) |
+| **B. Example-based re-run of every experiment** | Runs the released checkpoints on 12 example illustrations for each experiment of the paper and the supplement, writes labelled image grids and per-image metrics, and compares them with the authors' run and with the paper's archived outputs | one GPU (CPU possible but slow); assets are downloaded automatically | 5 min (smoke) / ≈ 1 h (default) / hours (full) |
 | **C. Verbatim experiment launchers** (`paper_experiments/`) | The scripts that were actually run for the paper and its revision, kept as example code (cluster paths hard-coded) | our cluster | days |
 | **D. Full-scale re-run of a table row** | Colorizes the 3,000 test images at every hint ratio and recomputes the seven metrics and Hint-AUC | GPU + the Danbooru2021 originals + the released line art, hint maps and checkpoints | ≈ 14 GPU-hours per row |
 
@@ -61,7 +61,7 @@ mean ± sample standard deviation over the three sources — XDoG, sketch simpli
 ## B. Example-based re-run of every experiment (one GPU, no data preparation)
 
 ```bash
-bash reproduce/examples/run_examples.sh                       # default "quick" set (≈ 45 min on one GPU)
+bash reproduce/examples/run_examples.sh                       # default "quick" set (≈ 1 h on one GPU)
 EXAMPLES_MODE=smoke bash reproduce/examples/run_examples.sh   # 1 image, 2 ratios, scribble model only (≈ 5 min)
 EXAMPLES_MODE=full  bash reproduce/examples/run_examples.sh   # all experiments, 12 images, 8 ratios (several GPU-hours)
 ```
