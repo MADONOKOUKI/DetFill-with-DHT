@@ -256,7 +256,9 @@ Everything removed remains available in the git history.
 
 ## License and acknowledgements
 
-MIT License. The `detfill/` directory is derived from
+MIT License, with the third-party components listed in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)
+(notably the ColorizeDiffusion-derived inference wrappers under `reproduce/paper_experiments/coldiff_finetune/`,
+which stay under the upstream CC BY-NC-SA 4.0 license). The `detfill/` directory is derived from
 [BBDM: Image-to-image Translation with Brownian Bridge Diffusion Models](https://github.com/xuekt98/BBDM)
 (© 2023 xuekt98, MIT) — see `detfill/LICENSE`.
 

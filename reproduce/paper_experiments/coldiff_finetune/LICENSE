@@ -1,0 +1,14 @@
+# License notice for this directory
+
+`coldiff_v1_inference_official_fixed.py`, `coldiff_v2_inference_official_fixed.py` and
+`coldiff_v2_inference_official_fixed_random.py` are modified copies of the inference script of
+**ColorizeDiffusion** (https://github.com/tellurion-kanata/colorizeDiffusion, © the ColorizeDiffusion authors),
+which is licensed under the **Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International**
+license (CC BY-NC-SA 4.0, https://creativecommons.org/licenses/by-nc-sa/4.0/).
+
+As derivative works they are distributed under the same CC BY-NC-SA 4.0 terms and **not** under the MIT
+license of the rest of this repository. Changes: deterministic region-based hint input instead of random
+hint simulation, fixed-seed inference, and output paths for the Hint-AUC evaluation. They must be placed
+inside the upstream code base and used with the upstream weights, which are not included here.
+
+`run_coldiff_finetune_eval_naga1.sh` and `EXPERIMENT_coldiff_finetune.md` are our own launcher and notes (MIT).
