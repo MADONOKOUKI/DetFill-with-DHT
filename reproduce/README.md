@@ -136,6 +136,9 @@ python reproduce/paper_experiments/alpha_grid/B_auc_grid_sensitivity_7m.py \
 DATA_ROOT=/data/danbooru_test LIMIT=20 TYPES="2" GPU=0 bash reproduce/scripts/run_hauc_pipeline.sh
 ```
 
+The inference loader drops the last incomplete batch (batch size 5 for the scribble config, 8 for dot), so the number
+of images must be divisible by it — 3,000 is; for other subsets set `TEST_BATCH=1`.
+
 `run_hauc_pipeline.sh` = `detfill/main.py --sample_to_eval` for every (ratio, line-art source) followed by
 `scripts/eval_per_ratio.py`, which uses the released evaluator `hintauc.metrics.Evaluator` (the paper's
 `evaluation/eval_single_run.py`: 256 × 256, MSE/PSNR/SSIM on [0, 1]; LPIPS-Alex; OpenCLIP ViT-B-32 laion2b;

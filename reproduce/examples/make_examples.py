@@ -77,7 +77,9 @@ def write_config(template, data_root, out_path, hint_order="area", model_channel
         s = re.sub(r"^(\s*model_channels:).*$", rf"\1 {model_channels}", s, flags=re.M)
     if sample_step is not None:
         s = re.sub(r"^(\s*sample_step:).*$", rf"\1 {sample_step}", s, flags=re.M)
-    s = re.sub(r"^(\s*batch_size:) 5\s*$", r"\1 1", s, flags=re.M)  # test batch 1: every example image is processed
+    # test batch size 1: the runner's test loader drops the last incomplete batch (drop_last=True), so with the
+    # released batch sizes (scribble 5, dot 8) a handful of example images would be silently skipped
+    s = re.sub(r"^(\s*batch_size:) \d+\s*$", r"\1 1", s, flags=re.M)
     os.makedirs(os.path.dirname(out_path), exist_ok=True)
     open(out_path, "w").write(s)
     return out_path
@@ -94,8 +96,9 @@ def run_detfill(model_key, data_root, ratios, sketch_type, out_tag, args, hint_o
     cfg = write_config(template, data_root, os.path.join(result_path, "config.yaml"), hint_order, mc, steps)
     outs = {}
     for r in ratios:
+        # main.py names the last directory after the number of sampling steps (200 for the released configs)
         d = os.path.join(result_path, "dataset_name", f"BrownianBridge_{hint}_illust", "sample_to_eval", "illust",
-                         hint, str(sketch_type), rdir(r), "200")
+                         hint, str(sketch_type), rdir(r), str(steps or 200))
         ids = sorted(os.path.basename(p)[:-len(".image.png")] for p in glob.glob(os.path.join(data_root, "segmentations", "originals", "*.image.png")))
         if all(os.path.exists(os.path.join(d, f"{i}.image.png")) for i in ids):
             log(f"  [{out_tag}] ratio {r}: cached")
@@ -105,8 +108,9 @@ def run_detfill(model_key, data_root, ratios, sketch_type, out_tag, args, hint_o
                    "--result_path", result_path]
             log(f"  [{out_tag}] ratio {r}: {' '.join(cmd[1:6])} ...")
             t0 = time.time()
+            env = dict(os.environ, BATCH_SIZE_OVERRIDE="1")   # belt and braces: the runner honours this override too
             with open(os.path.join(result_path, f"log_r{r}_sk{sketch_type}.txt"), "w") as lf:
-                subprocess.run(cmd, cwd=os.path.join(ROOT, "detfill"), stdout=lf, stderr=subprocess.STDOUT, check=True)
+                subprocess.run(cmd, cwd=os.path.join(ROOT, "detfill"), stdout=lf, stderr=subprocess.STDOUT, check=True, env=env)
             log(f"  [{out_tag}] ratio {r}: {time.time() - t0:.0f}s")
         outs[r] = d
     return outs

@@ -26,6 +26,9 @@
 #   METRICS="mse psnr ..."       subset of mse psnr ssim lpips openclip dino dreamsim (default all)
 #   LIMIT=<n>                    evaluate only the first n images per cell (smoke test)
 #   SKIP_INFER=1                 only evaluate existing samples
+#   TEST_BATCH=<n>               inference batch size (default: the config's 5 for scribble / 8 for dot). The test loader
+#                                drops the last incomplete batch, so the number of images must be divisible by it
+#                                (3,000 is); set TEST_BATCH=1 for arbitrary subsets.
 #
 # Examples
 #   DATA_ROOT=/data/danbooru_test GPU=0 bash reproduce/scripts/run_hauc_pipeline.sh                 # Table II scribble row
@@ -79,6 +82,7 @@ echo "[config] $CFG  (dataset root $DATA_ROOT, hint_order $HINT_ORDER)"
 # ---- inference: one process per (ratio, sketch type), sequential -----------------------------------
 if [ "${SKIP_INFER:-0}" != 1 ]; then
   cd "$ROOT/detfill"
+  [ -n "${TEST_BATCH:-}" ] && export BATCH_SIZE_OVERRIDE="$TEST_BATCH"
   for R in $RATIOS; do for T in $TYPES; do
     n_have=$(ls "$RESULT_PATH/dataset_name/BrownianBridge_${HINT}_illust/sample_to_eval/illust/$HINT/$T/$(python -c "print(float('$R'))")/200" 2>/dev/null | wc -l || true)
     echo "[infer] $(date '+%F %T') hint=$HINT ratio=$R sketch_type=$T (have $n_have)"
