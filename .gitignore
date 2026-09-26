@@ -17,3 +17,6 @@ dist/
 
 # reproduction outputs
 reproduce/output/
+
+# dreamsim downloads its weights into ./models by default
+models/
