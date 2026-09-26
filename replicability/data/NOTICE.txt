@@ -1,0 +1,4 @@
+The two illustrations (Danbooru2021 ids 4731016 and 4942016) are the example images shown in Fig. 9 of the paper.
+They are redistributed here solely to allow replication of that figure; they are NOT covered by the repository's MIT
+license. Danbooru2021: https://gwern.net/danbooru2021 (research use). sketch/<id>.png are the SketchKeras line drawings
+used in the paper (sketch type 2 in detfill/configs).

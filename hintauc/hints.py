@@ -165,7 +165,7 @@ class HintResult:
     size: int = DEFAULT_HINT_SIZE
     failed_regions: int = 0     #: regions where no path could be extracted
     path_method: str = "filfinder"  #: 'filfinder' (paper) or 'geodesic' (dependency-free)
-    dot_method: str = "mean"        #: 'mean' (paper: truncated mean, may leave the region) or 'medoid' (path pixel nearest to the mean)
+    dot_method: str = "medoid"      #: 'medoid' (paper data: L1 medoid of the in-region path), 'mean' or 'nearest_mean'
     _sorted_ids: Optional[np.ndarray] = field(default=None, repr=False)
     _sorted_ids_stable: Optional[np.ndarray] = field(default=None, repr=False)
 
@@ -292,6 +292,21 @@ def _split_disconnected_regions(region: np.ndarray) -> np.ndarray:
     return region
 
 
+def _require_filfinder():
+    """Import check for the FilFinder backend (paper setting).
+
+    Raises a clear error instead of letting every region silently count as a
+    failed path extraction when the optional dependency is missing.
+    """
+    try:
+        import fil_finder  # noqa: F401
+        import astropy  # noqa: F401
+    except ImportError as e:  # pragma: no cover
+        raise ImportError(
+            "path_method='filfinder' needs the fil_finder and astropy packages "
+            "(pip install 'fil_finder>=1.7' astropy), or use path_method='geodesic'.") from e
+
+
 def _longest_path(skeleton_dilated: np.ndarray):
     """FilFinder longest-path extraction (parameters of the original script)."""
     from fil_finder import FilFinder2D
@@ -315,7 +330,7 @@ def generate_hints(
     region_map: Optional[ImageLike] = None,
     verbose: bool = False,
     path_method: str = "filfinder",
-    dot_method: str = "mean",
+    dot_method: str = "medoid",
     **seg_kwargs,
 ) -> HintResult:
     """Generate deterministic region-based hints for ``image``.
@@ -345,18 +360,25 @@ def generate_hints(
         hint maps produced with different methods must not be mixed within
         one evaluation.
     dot_method:
-        Where the dot of a region is placed.  ``'mean'`` (default, paper): the
-        mean row/column of the longest-path pixels truncated to integers, which
-        is not projected onto the region and can fall outside a non-convex
-        region (about 3% of the test regions).  ``'medoid'``: the in-region
-        path pixel nearest to that mean (ties in raster order), so every dot
-        lies on its own scribble and inside its region.  Not used for the
-        reported results.
+        Where the dot of a region is placed.  ``'medoid'`` (default) is the rule
+        of the stored hint maps used for every experiment in the paper
+        (verified against the released test-split maps: identical dot
+        positions given identical scribbles): the in-region longest-path pixel
+        with the smallest total Manhattan (L1) distance to the other in-region
+        path pixels, ties broken in raster order; a single-pixel region whose
+        path was pruned away gets the pixel itself.  Every dot therefore lies on
+        its own scribble and inside its region.  ``'mean'``: the mean
+        row/column of the whole longest path truncated to integers (the rule of
+        the January-2024 generation script and the wording of the paper's
+        Sec. IV-A); it is not projected onto the region and can fall outside
+        it.  ``'nearest_mean'``: the in-region path pixel nearest to that mean.
     """
+    if path_method == "filfinder":
+        _require_filfinder()
     if path_method not in ("filfinder", "geodesic"):
         raise ValueError(f"path_method must be 'filfinder' or 'geodesic', got {path_method!r}")
-    if dot_method not in ("mean", "medoid"):
-        raise ValueError(f"dot_method must be 'mean' or 'medoid', got {dot_method!r}")
+    if dot_method not in ("medoid", "mean", "nearest_mean"):
+        raise ValueError(f"dot_method must be 'medoid', 'mean' or 'nearest_mean', got {dot_method!r}")
     img_full = _load_bgr(image)
     if region_map is None:
         region_full = segment_regions(img_full, segmenter=segmenter, **seg_kwargs)
@@ -416,14 +438,27 @@ def generate_hints(
         # keep the path inside the (undilated) region
         scribbles_single += longpath * skeleton_tmp
 
-        idx_scr = np.argwhere(longpath == 1)
-        if idx_scr.size:
+        idx_scr = np.argwhere(longpath == 1)                              # whole longest path (may leave the region)
+        idx_in = np.argwhere((longpath == 1) & (skeleton_tmp == 1))       # the part inside the region (= the scribble)
+        if dot_method == "medoid":
+            # Rule of the paper's stored hint maps (main_hg_illust_64.py, Oct 2024 "fixdot" dataset): the in-region
+            # path pixel with the smallest total Manhattan distance to the other in-region path pixels; ties -> first
+            # in raster order. A single-pixel region without a path pixel gets the pixel itself (also as scribble).
+            if idx_in.size:
+                d = np.abs(idx_in[:, None, :] - idx_in[None, :, :]).sum(axis=(1, 2))
+                mx, my = (int(v) for v in idx_in[int(np.argmin(d))])
+                dot_mask[mx, my] = 1
+            elif indices.shape[0] == 1:
+                mx, my = (int(v) for v in indices[0])
+                dot_mask[mx, my] = 1
+                scribbles_single[mx, my] = 1
+        elif idx_scr.size:
             if dot_method == "mean":
+                # truncated mean of the whole path (hint_dot_generation_20240114_illust_64.py, Jan 2024); not
+                # projected onto the region, so it can fall outside it. NOT the rule of the paper's stored maps.
                 mx, my = int(idx_scr[:, 0].mean()), int(idx_scr[:, 1].mean())
-            else:  # medoid: in-region path pixel nearest to the (float) mean; ties -> raster order
-                cand = np.argwhere((longpath == 1) & (skeleton_tmp == 1))
-                if cand.size == 0:
-                    cand = idx_scr
+            else:  # "nearest_mean": in-region path pixel nearest to the (float) mean of the whole path
+                cand = idx_in if idx_in.size else idx_scr
                 cy, cx = idx_scr[:, 0].mean(), idx_scr[:, 1].mean()
                 d2 = (cand[:, 0] - cy) ** 2 + (cand[:, 1] - cx) ** 2
                 mx, my = (int(v) for v in cand[int(np.argmin(d2))])

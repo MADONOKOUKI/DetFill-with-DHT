@@ -4,7 +4,7 @@ Official research code for
 
 > **Hint-AUC: Deterministic Region-based Hint Generation for Line Art Colorization Evaluation**
 > Koki Madono, Yuan Mingcheng, Edgar Simo-Serra
-> (under review, IEEE TVCG)
+> IEEE Transactions on Visualization and Computer Graphics, 2026 (accepted; DOI to follow)
 
 Hint-based line-art colorization has been evaluated with *randomly* sampled color hints, which
 makes scores unstable and comparisons unfair. This repository provides:
@@ -19,6 +19,12 @@ makes scores unstable and comparisons unfair. This repository provides:
 *DHT pipeline: region segmentation → skeleton → longest path per region → color scribble map.*
 
 ---
+
+## Replicability
+
+`bash replicability/run.sh` reproduces **Fig. 9** of the paper end-to-end with no arguments (conda environment →
+released checkpoints → DHT hint generation → DetFill inference → figure). See [replicability/README.md](replicability/README.md)
+for requirements and run times. This is the script submitted for the Graphics Replicability Stamp.
 
 ## Quick start (pip)
 
@@ -53,7 +59,7 @@ Command line: `hintauc generate image.png --ratio 0.1` /
 
 Everything above (fresh-venv install, generation, evaluation, CLI) plus the full
 DetFill inference and evaluation pipeline below is exercised end-to-end on a clean
-clone as part of the release checks.
+clone as part of the release checks; `replicability/run.sh` is the one-command version.
 
 ---
 
@@ -148,11 +154,14 @@ stored test-split hint maps attached to the v1.0 release were produced with it.
 `hint_generation/compare_path_methods.py` compares the two methods on stored region maps
 (path overlap, dot displacement, failure counts, speed).
 
-**Dot placement** is selected with `dot_method` / `--dot_method`: `mean` (default, paper) truncates the
-mean row/column of the longest-path pixels to integers without projecting onto the region, so a dot
-can fall outside a non-convex region (about 3% of the test regions); `medoid` places the dot on the
-in-region path pixel nearest to that mean (ties in raster order), so every dot lies on its own scribble.
-`medoid` is provided for future use and was not used for the reported results.
+**Dot placement** is selected with `dot_method` / `--dot_method`. `medoid` (default) is the rule behind the
+paper's stored hint maps (training data and the released test-split maps; verified on six test images:
+every stored dot is the in-region longest-path pixel with the smallest total Manhattan distance to the other
+in-region path pixels, first index on ties, so every dot lies on its own scribble inside its region — see
+`hint_generation/canonical/hint_dot_generation_fixdot.py`). `mean` truncates the mean row/column of the whole
+longest path to integers without projecting onto the region (the January-2024 generation script and the wording
+of Sec. IV-A of the paper); it can place a dot outside a non-convex region and is kept only for reference.
+`nearest_mean` places the dot on the in-region path pixel nearest to that mean.
 
 **Tie-breaking of equal-area regions** in `HintResult.at_ratio(..., tie_break=...)` / `--tie_break`:
 `default` (paper) uses NumPy's default `argsort`, whose order among equal-area regions depends on the
@@ -256,7 +265,7 @@ MIT License. The `detfill/` directory is derived from
 @article{madono2026hintauc,
   title   = {Hint-AUC: Deterministic Region-based Hint Generation for Line Art Colorization Evaluation},
   author  = {Madono, Koki and Mingcheng, Yuan and Simo-Serra, Edgar},
-  journal = {under review},
+  journal = {IEEE Transactions on Visualization and Computer Graphics},
   year    = {2026}
 }
 ```

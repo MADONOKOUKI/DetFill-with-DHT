@@ -115,7 +115,7 @@ def main():
     if gpu_ids == "-1": # Use CPU
         nconfig.training.use_DDP = False
         nconfig.training.device = [torch.device("cpu")]
-        CPU_singleGPU_launcher(nconfig)
+        CPU_singleGPU_launcher(nconfig, args)
     else:
         gpu_list = gpu_ids.split(",")
         if len(gpu_list) > 1:

@@ -28,7 +28,7 @@ def main(argv=None):
                    help="longest-path extraction: 'filfinder' (paper) or 'geodesic' (dependency-free, deterministic)")
     g.add_argument("--tie_break", default="default", choices=["default", "stable"],
                    help="order of equal-area regions when selecting by --ratio: 'default' (paper: NumPy argsort) or 'stable' (ascending label; version-independent)")
-    g.add_argument("--dot_method", default="mean", choices=["mean", "medoid"],
+    g.add_argument("--dot_method", default="medoid", choices=["medoid", "mean", "nearest_mean"],
                    help="dot placement: 'mean' (paper: truncated mean of the path, may leave the region) or 'medoid' (in-region path pixel nearest to the mean)")
     g.add_argument("-v", "--verbose", action="store_true")
 

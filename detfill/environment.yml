@@ -37,9 +37,10 @@ dependencies:
       - omegaconf==2.3.0
       - pyyaml==6.0.2
       - tqdm==4.66.4
-      # hint generation (same pins as hint_generation/requirements.txt)
-      - fil_finder==1.7.2
-      - astropy==4.3.1
-      - networkx
-      - natsort
-      - matplotlib
+      - pytorch-lightning==1.9.3   # imported at module level by model/VQGAN (not used by DetFill)
+      - tensorboard
+      - torchsummary
+      # NOTE: this is the inference environment. Deterministic hint generation (FilFinder) is NOT
+      # runnable here: astropy releases compatible with numpy 2 need Python >= 3.10. Use
+      # replicability/environment.yml (Python 3.11, numpy 2.0.2, astropy >= 6.1, fil_finder 1.7.2) or
+      # hint_generation/requirements.txt (the original numpy 1.x era pins) for hint generation.

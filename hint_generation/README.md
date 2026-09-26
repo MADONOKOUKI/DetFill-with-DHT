@@ -17,7 +17,9 @@ For one color image:
    FilFinder longest path (branch/skeleton threshold 3 px, prune by length), clipped to
    the region.
 4. **Colors** — each region is filled with its mean color; the scribble carries that
-   color. The dot hint is a single pixel at the mean coordinate of the longest path.
+   color. The dot hint is a single pixel on the scribble: the in-region longest-path pixel with the
+   smallest total Manhattan distance to the other in-region path pixels (`hintauc` `dot_method="medoid"`,
+   the rule of the paper's stored hint maps — see `canonical/hint_dot_generation_fixdot.py`).
 
 Outputs per image (`<id>.image_*` naming, 64 px by default):
 
@@ -39,7 +41,8 @@ area (descending) — see `detfill/datasets/custom.py` (`sample_ratio`) or
 |---|---|
 | `generate_hints.py` | Batch generator with an argparse CLI (SLIC / Quickshift segmenters; sharding; resume-safe). Contains the verbatim `make_scribbling` port. Recommended batch tool. |
 | `danbooregion_hints.py` | DanbooRegion-segmenter variant (imports `make_scribbling` from the file above). |
-| `canonical/hint_dot_generation.py` | Archival copy (verbatim) of the original script that built the paper dataset. Not meant to be run as-is. |
+| `canonical/hint_dot_generation_fixdot.py` | Archival copy (verbatim) of the script whose dot rule produced the paper's stored hint maps (`fixdot` dataset, Oct 2024). Not meant to be run as-is. |
+| `canonical/hint_dot_generation.py` | Archival copy of the January-2024 version (dot = truncated mean of the whole path). Kept for provenance; its dot rule is not the one behind the released maps. |
 | `canonical/all_segmentations.py` | Archival copy of the segmentation stage (Felzenszwalb / SLIC / Quickshift / Watershed). |
 | `requirements.txt` | Dependencies for the scripts in this directory. |
 

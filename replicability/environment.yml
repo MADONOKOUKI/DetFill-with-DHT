@@ -1,0 +1,38 @@
+# Environment for replicability/run.sh (hint generation + DetFill inference + figure).
+#
+# Same Python/PyTorch/scikit-image/OpenCV pins as the paper's inference environment (detfill/environment.yml)
+# plus the hint-generation dependencies. FilFinder 1.7.2 (the version used for the paper's hint maps) requires
+# astropy < 6, and astropy < 6 requires NumPy < 2; therefore this environment uses numpy 1.26.4, whereas the
+# paper's inference runs used numpy 2.0.2. The only behavioural difference is the order of equal-area regions
+# in the size-sorted selection (NumPy's argsort tie order; see the paper, Sec. IV-B), which does not affect
+# the figure reproduced here. The perceptual-metric packages (OpenCLIP, DreamSim, transformers) are not needed.
+name: detfill-grsi
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.9.16
+  - pip
+  - pip:
+      - numpy==1.26.4
+      - torch==2.5.1
+      - torchvision==0.20.1
+      - opencv-python==4.11.0.86
+      - scikit-image==0.24.0
+      - scipy==1.13.1
+      - pillow==10.4.0
+      - lpips==0.1.4
+      - einops==0.4.1
+      - omegaconf==2.3.0
+      - pyyaml==6.0.2
+      - tqdm==4.66.4
+      - pytorch-lightning==1.9.3
+      - tensorboard
+      - torchsummary
+      - requests
+      # deterministic hint generation (hintauc / hint_generation)
+      - fil_finder==1.7.2
+      - astropy==5.3.4
+      - networkx
+      - natsort
+      - matplotlib

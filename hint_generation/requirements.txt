@@ -1,4 +1,4 @@
-numpy
+numpy<2          # astropy 4.3.1 / scikit-image 0.19 need numpy 1.x (the pins of the original 2024 hint-generation environment)
 opencv-python
 scikit-image==0.19.*
 fil_finder==1.7.2
