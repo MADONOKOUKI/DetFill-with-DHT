@@ -50,7 +50,7 @@ rows of the supplementary segmentation-dependency table (same protocol and train
 Use them with `detfill/configs/scribble_illust.yaml` and `--resume_model <file>`; the evaluation data root must
 contain hint maps from the matching segmenter (release v1.3, `test_split_hint_maps_64_{danbooregion,slic}.tar.gz`).
 
-## v1.2 — Diffusart-retrain and natural-image (ImageNet) models
+## v1.2 — Diffusart-retrain models, later natural-image (ImageNet) models and the ImageNet hint maps
 
 Release: https://github.com/MADONOKOUKI/DetFill-with-DHT/releases/tag/v1.2
 
@@ -58,8 +58,8 @@ Release: https://github.com/MADONOKOUKI/DetFill-with-DHT/releases/tag/v1.2
 |---|---|---|---|
 | `diffusart_retrain_scribble_dethint_200ep_ema.pth` | 373 MB | `03ed65e385cab3947e52f9bbdf00c709d84af1ec7d05631624d2266dc40fb15b` | Diffusart (our re-implementation, `reproduce/paper_experiments/diffusart_retrain/code/`) retrained with the deterministic scribble hints, 200 epochs, EMA weights. The **Diffusart-retrain** scribble row of the supplementary "additional training comparisons" table; its PSNR 19.457 / LPIPS 0.177 are reproduced from the per-ratio record shipped in `reproduce/expected/`. |
 | `diffusart_retrain_dot_dethint_200ep_ema.pth` | 373 MB | `8c78717ac73f111ca31e00b43f4c7686e618c4191ce5ea38a437f2ed6b8964d1` | Same for dot hints (the dot row of that table; same training batch). |
-| `detfill_scribble_imagenet_200ep.pth` | 1.08 GB | `0f8514000110be43927b9031912b4331e2753e3028ea8a0ab680630857d1d329` | DetFill scribble model trained on the natural-image (ImageNet subset) split, 96 base channels, 200 epochs. Config: `detfill/configs/scribble_real.yaml`. |
-| `detfill_dot_imagenet_200ep.pth` | 1.08 GB | `1fdf881981c9a4e415711a8bdb6bab36c3e0251243e5d04544e7fc6b9811fd2e` | DetFill dot model on natural images, 96 base channels, 200 epochs. Config: `detfill/configs/dot_real.yaml`. |
+| `detfill_scribble_imagenet_96ch_200ep.pth` | 1.08 GB | `0f8514000110be43927b9031912b4331e2753e3028ea8a0ab680630857d1d329` | DetFill scribble model on natural images with **96 base channels**: a later training generation that is **not** behind the printed ImageNet tables (those come from the 64-channel models of v1.4). Config: `detfill/configs/scribble_real.yaml` with `model_channels: 96`. |
+| `detfill_dot_imagenet_96ch_200ep.pth` | 1.08 GB | `1fdf881981c9a4e415711a8bdb6bab36c3e0251243e5d04544e7fc6b9811fd2e` | Same for dot hints (96 base channels, later generation; about 3 dB above the printed dot values at every hint ratio). Config: `detfill/configs/dot_real.yaml` with `model_channels: 96`. |
 | `test_split_hint_maps_64_imagenet.tar.gz` | 40 MB | `870db22dd7526c2fb3fe7d9bd5d3b7d10b90c9fa776ac901c1b04ab52bf01847` | The stored 64×64 hint maps (scribble/dot colour + mask) and region maps of 2,999 of the 3,000 ImageNet test images in `detfill/configs/real/test.txt` (`n02667379_7324` has no stored map), i.e. the evaluation inputs of the supplementary ImageNet tables. |
 
 The Diffusart-retrain models take the **64 × 64 deterministic hint maps of v1.0**, upsampled to 256 × 256 with
@@ -67,12 +67,13 @@ nearest-neighbour interpolation inside the inference script — this is how the 
 produced. Inference: `reproduce/paper_experiments/diffusart_retrain/code/infer_det_proposed.py` (PyTorch 2.5 and
 `diffusers` 0.32; see the README in that directory).
 
-Natural-image models: two training generations exist in our archive, the 96-channel models released here and the
-earlier 64-channel models of the first submission (release v1.4). The archive does not contain the evaluation record
-that ties the printed ImageNet values to one of them, so treat re-evaluations with these weights as "same model
-family and protocol" rather than a bit-exact reproduction. The `*_real.yaml` configs use the split-based layout
-(`dataset_path` plus the relative lists in `detfill/configs/real/`, run `main.py` from `detfill/`); the ImageNet
-images themselves are not redistributed.
+Natural-image models: two training generations exist. The 64-channel models (release v1.4) reproduce the printed
+ImageNet values (24 test images, SketchKeras line art: PSNR Hint-AUC 15.0 dot / 18.4 scribble against 15.7 / 18.0 printed),
+whereas the 96-channel models released here score 2–3 dB higher at every hint ratio; the printed supplementary
+ImageNet tables therefore come from the 64-channel models, and the 96-channel ones are a later, stronger
+generation that is not in the paper. The `*_real.yaml` configs use the split-based layout (`dataset_path` plus the
+relative lists in `detfill/configs/real/`, run `main.py` from `detfill/`); the ImageNet images themselves are not
+redistributed.
 
 ## v1.3 — data for full-scale and example-based reproduction
 
@@ -91,18 +92,19 @@ research use).
 | `examples_data.tar.gz` | 8 MB | `3d7f699da9f8de5a5def35a997e7bb42461abd56babd3ce6c30adfbee9f71c87` | 12 example illustrations with originals, three line-art versions, the paper's hint maps and the DanbooRegion/SLIC maps — input of `reproduce/examples/run_examples.sh` |
 | `userstudy_stimuli.tar.gz` | 623 MB | `7bf1cc36999ef200edf48d8e2749338d990da3a4fb6323b021b26f007aef359d` | The images shown in the user study (192 images × 8 hint ratios: line art, hint image, DetFill / PaintsTorch / Diffusart colorizations, ground truth, `index.csv`); keyed like `reproduce/data/userstudy/glmm_trials.csv`. The ColorizeDiffusion-v2 stimuli were not preserved. |
 
-## v1.4 — checkpoints of the earlier submission and the channel-ablation models
+## v1.4 — the natural-image models of the paper, the earlier-submission scribble model and the channel-ablation models
 
-Release: https://github.com/MADONOKOUKI/DetFill-with-DHT/releases/tag/v1.4. Released for completeness and for
-the supplementary channel ablation; **not** the models behind the main tables (those are v1.0).
+Release: https://github.com/MADONOKOUKI/DetFill-with-DHT/releases/tag/v1.4. The two natural-image models here are the
+ones behind the supplementary ImageNet tables; the other files are released for completeness and for the supplementary
+channel ablation and are **not** behind the main tables (those are v1.0).
 
 | File | Size | SHA-256 | What it is |
 |---|---|---|---|
 | `detfill_scribble_illust_32ch_200ep.pth` | 129 MB | `4eef804755b9adc4fc0b5234501666138a4a6ecddfbdb28245fd7fc32443ecda` | Scribble model with 32 base channels (supplementary channel-ablation figure, "C = 32"); use `scribble_illust.yaml` with `model_channels: 32` |
 | `detfill_scribble_illust_64ch_200ep.pth` | 485 MB | `8eeee341331ed949cc216049c9fecebc70900d54fb709eee3b97a2b1fc34845b` | Scribble model with 64 base channels (channel ablation) |
 | `detfill_scribble_illust_earlier_64ch_200ep.pth` | 485 MB | `7d74ebe7d6c8862286fe9944b7cf9d2448a6e473880c383b13af8a36e6ce0002` | Scribble model of the earlier submission (64 channels; its archived config sampled with 1,000 steps). Superseded by the 96-channel v1.0 model retrained for the revision |
-| `detfill_scribble_imagenet_earlier_64ch_200ep.pth` | 485 MB | `84dc2e4363b0fd9964338b019a35cecf29e5ef4687d6b167b59f958503520f09` | Natural-image scribble model of the earlier submission (64 channels) |
-| `detfill_dot_imagenet_earlier_64ch_200ep.pth` | 485 MB | `41089d46313943fdac66aaf5a022c0aa365cff47c0bbaed581436e040d122a9e` | Natural-image dot model of the earlier submission (64 channels; its config uses a 3-channel conditioning stage, see the archived config) |
+| `detfill_scribble_imagenet_64ch_200ep.pth` | 485 MB | `84dc2e4363b0fd9964338b019a35cecf29e5ef4687d6b167b59f958503520f09` | **The natural-image scribble model behind the supplementary ImageNet tables** (64 base channels; `scribble_real.yaml`). Re-evaluated on 24 test images with SketchKeras line art: PSNR Hint-AUC 18.4 (printed: 18.0) |
+| `detfill_dot_imagenet_64ch_200ep.pth` | 485 MB | `41089d46313943fdac66aaf5a022c0aa365cff47c0bbaed581436e040d122a9e` | **The natural-image dot model behind the supplementary ImageNet tables** (64 base channels; `dot_real.yaml`, 3-channel conditioning stage as released). Re-evaluated on 24 test images: PSNR Hint-AUC 15.0 (printed: 15.7) |
 | `earlier_run_configs.tar.gz` | 2 KB | `1e3944bcb9aafa45d9359ee2ab12f0a2a1dffd03d404c65d6e8353224588b275` | The archived training configs of the earlier-submission scribble and natural-image models and of the 32/64-channel models |
 
 ## Which release do I need?

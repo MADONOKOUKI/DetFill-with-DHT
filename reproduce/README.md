@@ -216,8 +216,10 @@ not re-run a complete table row on different hardware; expect small differences 
   (PaintsTorch, Diffusart, ColorizeDiffusion v1/v2), the natural-image (ImageNet) tables and the legacy per-source
   tables of the supplement (earlier checkpoints). The dot row and the baselines can be regenerated with layer D and the
   respective official code (the ColorizeDiffusion fine-tuned weights were not preserved). The natural-image DetFill
-  models and the ImageNet test hint maps are released (v1.2), but the archive cannot tie the printed ImageNet values to
-  one checkpoint file (`checkpoints/README.md`), so those tables are "same protocol", not bit-exact, reproductions.
+  models behind the printed ImageNet tables are the 64-channel models of release v1.4 (our re-evaluation on 24 test
+  images matches the printed Hint-AUC within 0.7 dB; the 96-channel models of v1.2 are a later generation), and the
+  ImageNet test hint maps are in v1.2; without the archived per-image record those tables remain "same protocol",
+  not bit-exact, reproductions.
 - **User study.** The released trial table is anonymised and reproduces Tables IV/V and the GLMM exactly; the stimuli
   of three of the four methods are released (v1.3), the ColorizeDiffusion-v2 stimuli were not preserved. The
   response-letter analyses in `paper_experiments/userstudy_rank_stability/` read the raw per-participant CSVs through

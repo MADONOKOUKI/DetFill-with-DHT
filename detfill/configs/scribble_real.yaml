@@ -84,7 +84,7 @@ model:
         image_size: 256
         in_channels: 10
         # in_channels: 5
-        model_channels: 96  # natural-image (ImageNet) checkpoints of the paper are 96-channel models
+        model_channels: 64  # the paper's natural-image models (release v1.4) have 64 base channels; the later 96-channel models of v1.2 need 96
         out_channels: 5
         num_res_blocks: 2
         attention_resolutions: !!python/tuple

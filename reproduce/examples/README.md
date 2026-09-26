@@ -39,7 +39,7 @@ Options: `GRSI_GPU=<id>` (default 0; `-1` = CPU, roughly 10× slower), `GRSI_ENV
 
 Not part of the automatic run (the ids E6, E7 and E10 of `make_examples.py` are reserved for them): the Diffusart-retrain models (v1.2; their inference needs the separate Diffusart code
 base and `diffusers`, see `reproduce/paper_experiments/diffusart_retrain/code/README.md`) and the natural-image
-models (v1.2; the ImageNet originals cannot be redistributed — point `run_hauc_pipeline.sh` at your own ImageNet copy).
+models (v1.4, and the later 96-channel generation in v1.2; the ImageNet originals cannot be redistributed — point `run_hauc_pipeline.sh` at your own ImageNet copy).
 
 ## Authors' reference run
 

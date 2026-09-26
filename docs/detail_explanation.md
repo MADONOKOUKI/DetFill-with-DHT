@@ -148,9 +148,9 @@ full-scale estimates: measured on B; an A6000-class GPU is roughly twice as fast
 |---|---|
 | v1.0 | paper checkpoints (scribble 96-ch, dot 64-ch), stored test-split hint maps |
 | v1.1 | DanbooRegion- and SLIC-trained scribble models |
-| v1.2 | Diffusart-retrain models (our Diffusart re-implementation), ImageNet DetFill models, ImageNet test hint maps |
+| v1.2 | Diffusart-retrain models (our Diffusart re-implementation), later 96-channel ImageNet DetFill models, ImageNet test hint maps |
 | v1.3 | test-split line art (SketchKeras / sketch simplification / XDoG), DanbooRegion / SLIC / Felzenszwalb test hint maps, example bundle, user-study stimuli |
-| v1.4 | earlier-submission models, 32 / 64-channel scribble models, archived configs |
+| v1.4 | the paper's natural-image (ImageNet) models, the earlier-submission scribble model, 32 / 64-channel scribble models, archived configs |
 
 Sizes and SHA-256 of every file: [checkpoints/README.md](../checkpoints/README.md).
 
