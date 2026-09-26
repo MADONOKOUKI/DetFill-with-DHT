@@ -73,3 +73,25 @@ they are the "DanbooRegion" and "SLIC" *training* rows of the supplementary tabl
 Use them with `configs/scribble_illust.yaml` and `--resume_model <file>` (or `CKPT=<file>` with
 `reproduce/scripts/run_hauc_pipeline.sh`); the evaluation data root must contain hint maps produced from the
 matching segmenter (`reproduce/paper_experiments/segmenter_dependency/`, `reproduce/README.md` B.3).
+
+## v1.2 assets — Diffusart-retrain and natural-image (ImageNet) models
+
+Attached to the [v1.2 GitHub Release](https://github.com/MADONOKOUKI/DetFill-with-DHT/releases/tag/v1.2)
+with `SHA256SUMS.txt`.
+
+| File | Size | SHA-256 | What it is |
+|---|---|---|---|
+| `diffusart_retrain_scribble_dethint_200ep_ema.pth` | 373 MB | `03ed65e385cab3947e52f9bbdf00c709d84af1ec7d05631624d2266dc40fb15b` | Diffusart (our re-implementation) retrained with the deterministic scribble hints, 200 epochs, EMA weights — the **Diffusart-retrain** scribble row of the supplementary "additional training comparisons" table (PSNR 19.457 / LPIPS 0.177 reproduced from its per-ratio record). Code: `reproduce/paper_experiments/diffusart_retrain/code/`. |
+| `diffusart_retrain_dot_dethint_200ep_ema.pth` | 373 MB | `8c78717ac73f111ca31e00b43f4c7686e618c4191ce5ea38a437f2ed6b8964d1` | Same, dot hints (the dot row of that table; same training batch, June 2026). |
+| `detfill_scribble_imagenet_200ep.pth` | 1.08 GB | `0f8514000110be43927b9031912b4331e2753e3028ea8a0ab680630857d1d329` | DetFill scribble model trained on natural images (ImageNet subset), 96 base channels, 200 epochs (Nov 2024 run). Config: `detfill/configs/scribble_real.yaml`. |
+| `detfill_dot_imagenet_200ep.pth` | 1.08 GB | `1fdf881981c9a4e415711a8bdb6bab36c3e0251243e5d04544e7fc6b9811fd2e` | DetFill dot model on natural images, 96 base channels, 200 epochs (Nov 2024 run). Config: `detfill/configs/dot_real.yaml`. |
+| `test_split_hint_maps_64_imagenet.tar.gz` | see release | see `SHA256SUMS.txt` | The stored 64×64 deterministic hint maps (scribble/dot colour + mask) and region maps of the 2,999 ImageNet test images (`detfill/configs/real/test.txt`), layout as the Danbooru maps of v1.0. |
+
+Notes on the natural-image models: every natural-image checkpoint in our archive is a 96-channel model
+(the released `*_real.yaml` configs were corrected accordingly in v1.2). The archive holds two training
+generations of these models (Nov 2024 and Mar 2025) with different weights; the printed ImageNet numbers of
+the supplement date from the Nov 2024 generation released here, but the archive does not contain the
+evaluation record that would tie the printed values to one specific file, so treat re-evaluations with these
+weights as "same model family and protocol" rather than a bit-exact reproduction. The natural-image data path
+of the loader still expects the lab's split lists (`detfill/configs/real/*.txt` contain absolute paths) and
+is not yet portable; see `reproduce/README.md`.

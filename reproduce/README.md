@@ -71,7 +71,8 @@ What each table is rebuilt from:
    which are the exact inputs of every reported number. Regenerating them with `hintauc`/`hint_generation/` is
    deterministic per environment but not bit-identical across environments (FilFinder medial-axis tie-breaking).
 4. **Checkpoints.** `checkpoints/README.md` (v1.0: scribble 96-ch, dot 64-ch; v1.1: the two segmenter-retrained
-   scribble models of the supplementary study).
+   scribble models of the supplementary study; v1.2: the Diffusart-retrain models and the natural-image (ImageNet)
+   DetFill models with the ImageNet test-split hint maps).
 
 ### B.2 One table row = one command
 
@@ -123,8 +124,9 @@ agreed with Table II to the printed precision.
   Training of the two models: `D_train_launch.sh` / `D_stage_train.sh` (200 epochs, same protocol as B9).
 * **Training DetFill from scratch** — `scripts/B9_train_detfill.sh` (the paper's `train.sh` commands with the
   released config names; ~4–5 days on 10 GPUs).
-* **Diffusart-retrain (supp.)** — `paper_experiments/diffusart_retrain/` (training loop, deterministic-hint data
-  loader, inference and evaluation scripts of the Diffusart code base trained with our hints).
+* **Diffusart-retrain (supp.)** — `paper_experiments/diffusart_retrain/code/` (our Diffusart re-implementation:
+  training loop, deterministic-hint loader, inference and evaluation; see its README) with the two released EMA
+  checkpoints of release v1.2 (`diffusart_retrain_{scribble,dot}_dethint_200ep_ema.pth`).
 * **ColorizeDiffusion fine-tuning (Table II/III “200ep”, supp. “7ep”)** — `paper_experiments/coldiff_finetune/`
   (fine-tuning/evaluation launchers for the official ColorizeDiffusion v1/v2 code).
 
@@ -148,7 +150,10 @@ agreed with Table II to the printed precision.
 * **Not covered by released per-ratio data:** the Table II/III *dot* rows of DetFill, all baseline rows
   (PaintsTorch, Diffusart, ColorizeDiffusion v1/v2), the natural-image (ImageNet) tables and the legacy per-sketch
   tables of the supplement (2024 checkpoints). The dot row and the baselines can be regenerated with layer B and the
-  respective official code; the ImageNet models are not part of the release.
+  respective official code. The natural-image DetFill models and the ImageNet test hint maps are released (v1.2),
+  but the natural-image loader path still uses the lab's absolute split lists (`detfill/configs/real/*.txt`) and
+  the archive cannot tie the printed ImageNet values to one checkpoint file (see `checkpoints/README.md`), so
+  those tables are "same protocol", not bit-exact, reproductions.
 * The user-study analyses A-1..A-3 in `paper_experiments/userstudy_rank_stability/` read the raw per-participant
   CSVs through `common/ab_loader.py`; the release contains the anonymised trial table instead (`A2` reproduces
   Tables IV/V and the GLMM from it).
