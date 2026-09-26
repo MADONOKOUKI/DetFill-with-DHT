@@ -4,7 +4,7 @@ Official research code for
 
 > **Hint-AUC: Deterministic Region-based Hint Generation for Line Art Colorization Evaluation**
 > Koki Madono, Yuan Mingcheng, Edgar Simo-Serra
-> IEEE Transactions on Visualization and Computer Graphics, 2026 (accepted; DOI to follow)
+> IEEE Transactions on Visualization and Computer Graphics, 2026 (accepted). DOI: [10.1109/TVCG.2026.3738401](https://doi.org/10.1109/TVCG.2026.3738401)
 
 Hint-based line-art colorization has been evaluated with *randomly* sampled color hints, which
 makes scores unstable and comparisons unfair. This repository provides:
@@ -269,6 +269,7 @@ which stay under the upstream CC BY-NC-SA 4.0 license). The `detfill/` directory
   title   = {Hint-AUC: Deterministic Region-based Hint Generation for Line Art Colorization Evaluation},
   author  = {Madono, Koki and Mingcheng, Yuan and Simo-Serra, Edgar},
   journal = {IEEE Transactions on Visualization and Computer Graphics},
-  year    = {2026}
+  year    = {2026},
+  doi     = {10.1109/TVCG.2026.3738401}
 }
 ```
