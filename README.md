@@ -7,6 +7,7 @@
 [![PyTorch 2.5](https://img.shields.io/badge/PyTorch-2.5-ee4c2c)](docs/setup.md)
 [![PyPI](https://img.shields.io/pypi/v/hintauc)](https://pypi.org/project/hintauc/)
 [![Releases](https://img.shields.io/github/v/release/MADONOKOUKI/DetFill-with-DHT)](https://github.com/MADONOKOUKI/DetFill-with-DHT/releases)
+[![tests](https://github.com/MADONOKOUKI/DetFill-with-DHT/actions/workflows/tests.yml/badge.svg)](https://github.com/MADONOKOUKI/DetFill-with-DHT/actions/workflows/tests.yml)
 
 Official implementation of **"Hint-AUC: Deterministic Region-based Hint Generation for Line Art Colorization
 Evaluation"**, IEEE Transactions on Visualization and Computer Graphics (TVCG), 2026.

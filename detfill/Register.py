@@ -14,7 +14,7 @@ class Register:
         if key is None:
             key = value.__name__
         if key in self.dict:
-            logging.warning("Key %s already in registry %s." % (key, self.__name__))
+            logging.warning("Key %s already in registry %s." % (key, self._name))
         self.dict[key] = value
 
     def register_with_name(self, name):

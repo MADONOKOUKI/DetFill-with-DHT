@@ -1,0 +1,42 @@
+# Continuous tests (free for public repositories on GitHub-hosted runners).
+# library: the hintauc package alone (no PyTorch), on three Python versions.
+# full:    hintauc + PyTorch (CPU wheels) — perceptual-metric registry checks and the DetFill data loader.
+name: tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  library:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.9", "3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+      - run: python -m pip install --upgrade pip && python -m pip install -e . pytest
+      - run: python -c "import hintauc; print(hintauc.__version__)" && hintauc --help > /dev/null
+      - run: pytest tests -q -k "not detfill"
+      - name: shell scripts parse
+        run: bash -n replicability/run.sh replicability/fetch_checkpoints.sh reproduce/examples/run_examples.sh reproduce/scripts/*.sh detfill/*.sh
+
+  full:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - run: python -m pip install --upgrade pip
+      - run: python -m pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
+      - run: python -m pip install -e . pytest "torchmetrics==1.4.0"
+      - run: pytest tests -q
