@@ -1,7 +1,7 @@
 #!/bin/bash
 set -uo pipefail
-export PATH=/home/madorin/anaconda3/envs/BBDM/bin:$PATH
-WORK=/scratch/madono/seedexp_n300_felz96
+export PATH=/home/USER/anaconda3/envs/BBDM/bin:$PATH
+WORK=/scratch/USER/seedexp_n300_felz96
 mkdir -p $WORK/metrics
 log=$WORK/metrics/sweep.log
 EVAL_SCRIPT=$WORK/code/eval_scripts/B_eval_dense_curve.py

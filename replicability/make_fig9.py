@@ -93,7 +93,8 @@ def run_detfill(hint_type, cfg, ckpt, result_path, gpu):
     log = os.path.join(result_path, "detfill_stdout.log")
     os.makedirs(result_path, exist_ok=True)
     with open(log, "w") as lf:
-        subprocess.run(cmd, cwd=os.path.join(ROOT, "detfill"), check=True, stdout=lf, stderr=subprocess.STDOUT)
+        subprocess.run(cmd, cwd=os.path.join(ROOT, "detfill"), check=True, stdout=lf, stderr=subprocess.STDOUT,
+                       env={**os.environ, "BATCH_SIZE_OVERRIDE": "1"})
 
 
 def find_output(result_path, image_id):
@@ -123,7 +124,7 @@ def main():
     for image_id, hint_type in ROWS:
         print(f"[{image_id}] DHT hint generation ({hint_type})", flush=True)
         gt_path = os.path.join(DATA, f"{image_id}.image.png")
-        h = hintauc.generate_hints(gt_path, size=64)                   # paper defaults (Felzenszwalb, FilFinder path, mean dot)
+        h = hintauc.generate_hints(gt_path, size=64)                   # paper defaults (Felzenszwalb, FilFinder path, medoid dot)
         ids = region_ids(h.region)
         vals, counts = np.unique(ids.reshape(-1), return_counts=True)
         n = len(vals); k = int(n * ALPHA)

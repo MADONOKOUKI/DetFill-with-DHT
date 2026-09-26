@@ -1,6 +1,6 @@
 #!/bin/bash
 # ============================================================================
-# R2-1 — Plan C: 3-GPU parallel dense-curve eval on naga1
+# R2-1 — Plan C: 3-GPU parallel dense-curve eval on HOST_A
 # ============================================================================
 # - sketch 0 → GPU 2 (A6000, batch=32)
 # - sketch 1 → GPU 0 (shared, batch=16, lower VRAM)
@@ -19,9 +19,9 @@
 set -e
 cd "$(dirname "$0")"
 
-PY=${PY:-/home/madorin/anaconda3/envs/BBDM/bin/python3}
+PY=${PY:-/home/USER/anaconda3/envs/BBDM/bin/python3}
 OUT_DIR="${OUT_DIR:-$(pwd)/../output/B_dense_curve}"
-RESULTS_ROOT="${RESULTS_ROOT:-/home/madorin/gitlab/labrepo/main/revision_materials/rebuttal/R2/R2-1_alpha_grid_sensitivity/inference_results/scribble}"
+RESULTS_ROOT="${RESULTS_ROOT:-/home/USER/gitlab/labrepo/main/revision_materials/rebuttal/R2/R2-1_alpha_grid_sensitivity/inference_results/scribble}"
 
 mkdir -p "$OUT_DIR"
 
@@ -75,7 +75,7 @@ setsid nohup "${CMD_BASE[@]}" --sketches 2 --gpu 3 --batch_size 32 \
 PID2=$!
 
 echo "=========================================="
-echo " [naga1] R2-1 dense-curve PARALLEL launched"
+echo " [HOST_A] R2-1 dense-curve PARALLEL launched"
 echo "=========================================="
 printf "  sketch 0 (GPU 2, batch 32): pid=%-6s log=%s\n" "$PID0" "$LOG0"
 printf "  sketch 1 (GPU 0, batch 16): pid=%-6s log=%s\n" "$PID1" "$LOG1"

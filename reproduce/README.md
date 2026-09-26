@@ -9,16 +9,17 @@ This directory is the reproduction package for
 
 ## Quick index
 
-| Goal | Command (no arguments) | Time |
+| Goal | Command | Time |
 |---|---|---|
 | **Fig. 9** end to end (the Replicability-Stamp script) | `bash replicability/run.sh` | GPU ≈ 3 min, CPU ≈ 30 min |
 | **Every table** rebuilt from the released metric files | `python reproduce/scripts/A1_tables_from_released_metrics.py` (322/324 cells match)<br>`python reproduce/scripts/A2_userstudy_glmm.py` (all values match) | < 2 min, CPU |
-| **Every experiment** re-run on 12 example illustrations | `bash reproduce/examples/run_examples.sh` | smoke ≈ 5 min, default ≈ 1 h, full = hours |
+| **Every experiment** re-run on example illustrations (default: E1–E4 and E9 on 4 images; `EXAMPLES_MODE=full`: all eight experiments on 12 images) | `bash reproduce/examples/run_examples.sh` | smoke ≈ 5 min, default ≈ 45–60 min, full = hours |
 | **A whole table row** on the 3,000 test images | `DATA_ROOT=… bash reproduce/scripts/run_hauc_pipeline.sh` | ≈ 14 GPU-h per row |
 | **Training** from scratch | `bash reproduce/scripts/B9_train_detfill.sh` | days, 10 GPUs |
 
-All scripts fetch what they need from the releases (SHA-256 verified) and compare their results with the paper's
-numbers, the paper's archived images of the same examples and the authors' reference run. Requirements and hardware:
+`replicability/run.sh` and `reproduce/examples/run_examples.sh` fetch what they need from the releases (SHA-256 verified)
+and compare their results with the paper's numbers, the paper's archived images of the same examples and the authors'
+reference run; the full-scale and training scripts expect the data and checkpoints to be in place. Requirements and hardware:
 [docs/setup.md](../docs/setup.md). The Replicability-Stamp submission sheet is `replicability/GRSI_SUBMISSION.txt`.
 
 ## The four layers
@@ -30,7 +31,7 @@ layer D.
 | Layer | What it does | Needs | Time |
 |---|---|---|---|
 | **A. Recompute the tables from the released metric files** | Rebuilds every Hint-AUC table of the paper from the per-ratio metric files and the user-study trial table shipped in `expected/` and `data/`, and checks each printed cell | numpy, pandas, statsmodels (CPU) | < 2 min |
-| **B. Example-based re-run of every experiment** | Runs the released checkpoints on 12 example illustrations for each experiment of the paper and the supplement, writes labelled image grids and per-image metrics, and compares them with the authors' run and with the paper's archived outputs | one GPU (CPU possible but slow); assets are downloaded automatically | 5 min (smoke) / ≈ 1 h (default) / hours (full) |
+| **B. Example-based re-run of every experiment** | Runs the released checkpoints on example illustrations (4 by default, 12 in `full` mode) for each experiment of the paper and the supplement, writes labelled image grids and per-image metrics, and compares them with the authors' run and with the paper's archived outputs | one GPU (CPU possible but slow); assets are downloaded automatically | 5 min (smoke) / ≈ 1 h (default) / hours (full) |
 | **C. Verbatim experiment launchers** (`paper_experiments/`) | The scripts that were actually run for the paper and its revision, kept as example code (cluster paths hard-coded) | our cluster | days |
 | **D. Full-scale re-run of a table row** | Colorizes the 3,000 test images at every hint ratio and recomputes the seven metrics and Hint-AUC | GPU + the Danbooru2021 originals + the released line art, hint maps and checkpoints | ≈ 14 GPU-hours per row |
 
@@ -39,8 +40,9 @@ is independent of this directory.
 
 **Hardware behind the timings.** Machine A: NVIDIA RTX A6000 (48 GB), 2 × AMD EPYC 9124 (32 threads), 377 GB RAM.
 Machine B: NVIDIA GeForce RTX 2080 Ti (11 GB), 2 × Intel Xeon Gold 6226R (32 threads), 187 GB RAM. Both Ubuntu 22.04,
-driver 535, CUDA 12.2. Fig. 9: 3 min on A, 4–5 min on B, 30 min on the CPUs of A (16 threads). Example suite and the
-full-scale estimates: measured on B; an A6000-class GPU is roughly twice as fast.
+driver 535, CUDA 12.2. Fig. 9: 3 min on A, 4–5 min on B, 30 min on the CPUs of A (16 threads). Example suite: measured
+on B. Full-scale inference: about 35 min per (ratio, line-art source) cell of 3,000 images on A with the 96-channel
+scribble model, i.e. ≈ 14 GPU-hours per table row on A (about twice that on B).
 
 ---
 
@@ -56,8 +58,8 @@ python reproduce/scripts/A2_userstudy_glmm.py                 # Tables IV/V + th
 with the numbers printed in the paper (`check_report.csv`). Reference copies of both scripts' outputs are in
 `expected/recomputed_tables/`.
 
-Result of the authors' run (DATE): **A1 rebuilds 322 of the 324 compared cells to the printed precision**;
-**A2 reproduces all 30 percentages of Tables IV/V exactly and the three GLMM statistics** (z = 30.18;
+Result of the authors' run: **A1 rebuilds 322 of the 324 compared cells to the printed precision**;
+**A2 reproduces all 30 percentages of Tables IV/V (the 6 pairwise and the 24 per-ratio values) exactly and the three GLMM statistics** (z = 30.18;
 χ²(7) = 618.33, p = 2.75e-129; χ²(14) = 324.04, p = 1.12e-60). The two A1 exceptions are a rounding artefact and one
 provenance gap, both listed under "Known deviations" below; neither changes a conclusion.
 
@@ -144,12 +146,13 @@ DATA_ROOT=/data/danbooru_test HINT=dot GPU=0 bash reproduce/scripts/run_hauc_pip
 # Table III (fixed random region order = ascending label order of the stored region map)
 DATA_ROOT=/data/danbooru_test HINT_ORDER=label GPU=0 bash reproduce/scripts/run_hauc_pipeline.sh
 # supplementary α-grid study: dense sweep, then integrate on the alternative grids
-DATA_ROOT=/data/danbooru_test RATIOS="$(seq -f %.2f 0 0.02 1 | tr '\n' ' ') 0.01 0.03 0.05 0.25" TAG=dense \
+DATA_ROOT=/data/danbooru_test RATIOS="$(seq -f %.2f 0 0.02 1 | tr '\n' ' ') 0.01 0.03 0.05 0.075 0.15 0.25" TAG=dense \
     bash reproduce/scripts/run_hauc_pipeline.sh
 python reproduce/paper_experiments/alpha_grid/B_auc_grid_sensitivity_7m.py \
     --summary reproduce/output/dense/metrics/per_ratio_summary.csv --out_dir reproduce/output/dense/auc
-# smoke test of the pipeline (20 images per cell, ~10 min on one GPU)
-DATA_ROOT=/data/danbooru_test LIMIT=20 TYPES="2" GPU=0 bash reproduce/scripts/run_hauc_pipeline.sh
+# smoke test of the pipeline: point DATA_ROOT at a copy that holds only a few test images (the loader colorizes every
+# image it finds; TEST_BATCH=1 for image counts that the config's batch size does not divide)
+DATA_ROOT=/data/danbooru_small TEST_BATCH=1 TYPES="2" GPU=0 bash reproduce/scripts/run_hauc_pipeline.sh
 ```
 
 The inference loader drops the last incomplete batch (batch size 5 for the scribble config, 8 for dot), so the number
@@ -213,9 +216,8 @@ not re-run a complete table row on different hardware; expect small differences 
   (PaintsTorch, Diffusart, ColorizeDiffusion v1/v2), the natural-image (ImageNet) tables and the legacy per-source
   tables of the supplement (earlier checkpoints). The dot row and the baselines can be regenerated with layer D and the
   respective official code (the ColorizeDiffusion fine-tuned weights were not preserved). The natural-image DetFill
-  models and the ImageNet test hint maps are released (v1.2), but the natural-image loader path still uses our absolute
-  split lists (`detfill/configs/real/*.txt`) and the archive cannot tie the printed ImageNet values to one checkpoint
-  file (`checkpoints/README.md`), so those tables are "same protocol", not bit-exact, reproductions.
+  models and the ImageNet test hint maps are released (v1.2), but the archive cannot tie the printed ImageNet values to
+  one checkpoint file (`checkpoints/README.md`), so those tables are "same protocol", not bit-exact, reproductions.
 - **User study.** The released trial table is anonymised and reproduces Tables IV/V and the GLMM exactly; the stimuli
   of three of the four methods are released (v1.3), the ColorizeDiffusion-v2 stimuli were not preserved. The
   response-letter analyses in `paper_experiments/userstudy_rank_stability/` read the raw per-participant CSVs through

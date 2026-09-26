@@ -36,10 +36,11 @@
 #   DATA_ROOT=/data/danbooru_test HINT_ORDER=label bash reproduce/scripts/run_hauc_pipeline.sh      # Table III scribble row
 #   DATA_ROOT=... RATIOS="$(seq -f %.2f 0 0.02 1)" bash reproduce/scripts/run_hauc_pipeline.sh      # dense alpha sweep (supp.)
 #
-# SKETCH TYPES: index -> directory follows the dataset loader (detfill/datasets/custom.py); the metric
-# tables label the three sources XDoG / sketch simplification (pysimp) / SketchKeras.
-# Run time: one (ratio, type) cell = 3,000 images x 200 sampling steps; ~35 min on one A6000 with the
-# 96-channel scribble model, so the full 8 x 3 grid is ~14 GPU-hours (dot model: about half).
+# SKETCH TYPES: index -> line-art source follows the dataset loader (detfill/datasets/custom.py):
+# 0 = sketch simplification (pysimp), 1 = XDoG, 2 = SketchKeras.
+# Run time: one (ratio, type) cell = 3,000 images x 200 sampling steps; ~35 min on one RTX A6000 with the
+# 96-channel scribble model, so the full 8 x 3 grid is ~14 GPU-hours on that GPU (dot model: about half;
+# an RTX 2080 Ti is roughly twice as slow).
 # =============================================================================
 set -euo pipefail
 
@@ -73,7 +74,7 @@ CFG_SRC="$ROOT/detfill/configs/${HINT}_illust.yaml"
 CFG="$OUT_DIR/${HINT}_illust_${HINT_ORDER}.yaml"
 sed -E "s#^(\s*dataset_path:).*#\1 '$DATA_ROOT'#; s#^(\s*scratch_root:).*#\1 '$DATA_ROOT'#" "$CFG_SRC" > "$CFG"
 if grep -qE "^\s*#?\s*hint_order:" "$CFG"; then
-  sed -i -E "s#^(\s*)#?\s*hint_order:.*#\1hint_order: '$HINT_ORDER'#" "$CFG"
+  sed -i -E "s|^(\s*)#?\s*hint_order:.*|\1hint_order: '$HINT_ORDER'|" "$CFG"
 else
   sed -i -E "s#^(\s*)hint_type:(.*)#\1hint_type:\2\n\1hint_order: '$HINT_ORDER'#" "$CFG"
 fi

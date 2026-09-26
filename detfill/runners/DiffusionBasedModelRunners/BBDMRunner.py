@@ -271,21 +271,21 @@ class BBDMRunner(DiffusionBaseRunner):
             for j in range(sample_num):
                 # sample = net.sample(x_cond, clip_denoised=False)
                 # only check first
+                n_in_batch = x.shape[0]                      # the last batch may be smaller than batch_size
                 cnt_batch = 0
-                for i in range(batch_size):
+                for i in range(n_in_batch):
                     if os.path.isfile(os.path.join(result_path, f'{x_name[i]}.png')):
-                        cnt_batch = cnt_batch + 1 
-                if cnt_batch == batch_size:
+                        cnt_batch = cnt_batch + 1
+                if cnt_batch == n_in_batch:
                     continue
                 sample = net.sample(x_cond, clip_denoised=False).to('cpu')
                 # sample = net.sample(x_cond, clip_denoised=True).to('cpu')
 
                 # sample = net.sample_vqgan(x)
-                for i in range(batch_size):
+                for i in range(n_in_batch):
                     condition = x_cond[i].detach().clone()
                     gt = x[i]
                     result = sample[i]
-                    print(condition.shape, result.shape)
                     if j == 0:
                         # print(condition.shape, gt.shape, sample_num)
                         # print(torch.max(condition[4, :, :]), torch.min(condition[4, :, :]), condition[4, :, :].unsqueeze(0).shape)

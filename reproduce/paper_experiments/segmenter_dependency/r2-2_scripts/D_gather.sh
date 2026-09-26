@@ -1,13 +1,13 @@
 #!/bin/bash
 # Gather per-node LOCAL /scratch outputs into one NFS tree (ids are disjoint per node,
-# so the merges never collide). Run from cayenne1 after generation completes.
+# so the merges never collide). Run from HOST_C after generation completes.
 # Usage: D_gather.sh [nfs_dest]
 set -u
-NFS=${1:-/home/madorin/datasets/labrepo/seg_retrain_R2-2}
-SRC=/scratch/madono/seg_retrain_R2-2
+NFS=${1:-/home/USER/datasets/labrepo/seg_retrain_R2-2}
+SRC=/scratch/USER/seg_retrain_R2-2
 KEY=~/.ssh/id_ed25519
 mkdir -p "$NFS"
-for h in cayenne1 cayenne2 cayenne3 cayenne4; do
+for h in HOST_C HOST_C HOST_C HOST_C; do
   for seg in slic quickshift; do
     echo "[$(date +%H:%M:%S)] gather $h:$seg -> $NFS/$seg"
     mkdir -p "$NFS/$seg"

@@ -3,7 +3,7 @@
 # Usage: D_node_all.sh <shard_start> <shard_end> [nshards_total] [out_root]
 set -u
 S0=${1:?shard_start}; S1=${2:?shard_end}; NTOT=${3:-192}
-OUT=${4:-/scratch/madono/seg_retrain_R2-2}
+OUT=${4:-/scratch/USER/seg_retrain_R2-2}
 HERE=$(cd "$(dirname "$0")" && pwd)
 echo "==== $(hostname) START $(date) shards [$S0,$S1)/$NTOT ===="
 bash "$HERE/D_run_node.sh" slic       "$NTOT" "$S0" "$S1" "$OUT"

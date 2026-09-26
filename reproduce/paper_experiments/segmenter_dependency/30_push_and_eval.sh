@@ -25,12 +25,12 @@ GPU="${GPU:-0}"
 DELETE_SRC="${DELETE_SRC:-0}"
 SKIP_EVAL="${SKIP_EVAL:-0}"
 
-SRC_BASE=/scratch/madono/major_revision/results/dataset_name/BrownianBridge_scribble_illust/sample_to_eval/illust/scribble
-DEST_BASE=/home/madorin/gitlab/labrepo/main/revision_materials/rebuttal/R2/R2-1_alpha_grid_sensitivity/inference_results/scribble
-EVAL_DIR=/home/madorin/gitlab/labrepo/main/revision_materials/rebuttal/R2/R2-1_alpha_grid_sensitivity/scripts
-OUT_DIR=/home/madorin/gitlab/labrepo/main/revision_materials/rebuttal/R2/R2-1_alpha_grid_sensitivity/output/B_dense_curve
+SRC_BASE=/scratch/USER/major_revision/results/dataset_name/BrownianBridge_scribble_illust/sample_to_eval/illust/scribble
+DEST_BASE=/home/USER/gitlab/labrepo/main/revision_materials/rebuttal/R2/R2-1_alpha_grid_sensitivity/inference_results/scribble
+EVAL_DIR=/home/USER/gitlab/labrepo/main/revision_materials/rebuttal/R2/R2-1_alpha_grid_sensitivity/scripts
+OUT_DIR=/home/USER/gitlab/labrepo/main/revision_materials/rebuttal/R2/R2-1_alpha_grid_sensitivity/output/B_dense_curve
 
-PY=/home/madorin/anaconda3/envs/BBDM/bin/python3
+PY=/home/USER/anaconda3/envs/BBDM/bin/python3
 
 echo "=== config ==="
 echo "  ratios       : $RATIOS"

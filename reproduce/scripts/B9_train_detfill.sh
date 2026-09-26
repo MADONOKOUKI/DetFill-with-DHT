@@ -22,7 +22,7 @@ DATA_ROOT="${DATA_ROOT:?set DATA_ROOT (split-based layout, detfill/README.md)}"
 CFG_SRC="$ROOT/detfill/configs/${HINT}_illust.yaml"
 CFG="$ROOT/reproduce/output/train_${HINT}/${HINT}_illust_train.yaml"
 mkdir -p "$(dirname "$CFG")"
-sed -E "s#^(\s*dataset_path:).*#\1 '$DATA_ROOT'#; s#^(\s*scratch_root:).*#\1 '$DATA_ROOT'#" "$CFG_SRC" > "$CFG"
+sed -E "s#^(\s*dataset_path:).*#\1 '$DATA_ROOT'#; s#^(\s*scratch_root:).*#\1 ''#" "$CFG_SRC" > "$CFG"   # split layout: dataset_path + configs/illust/*.txt
 cd "$ROOT/detfill"
 # verbatim launch (train.sh of the paper repository, config names updated):
 python3 main.py --config "$CFG" --train --sample_at_start --save_top --gpu_ids "$GPU_IDS" --port "$PORT" \

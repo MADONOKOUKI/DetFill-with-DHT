@@ -24,9 +24,9 @@ import cv2
 import numpy as np
 from PIL import Image
 
-REGION_DIR = "/scratch/madono/major_revision/hint_from_regions_256"   # 64x64 region id maps
-HINT_DIR = "/scratch/madono/major_revision/hint_from_regions_64_rev/0016"
-OUT_ROOT = "/scratch/madono/seedhints_scr"
+REGION_DIR = "/scratch/USER/major_revision/hint_from_regions_256"   # 64x64 region id maps
+HINT_DIR = "/scratch/USER/major_revision/hint_from_regions_64_rev/0016"
+OUT_ROOT = "/scratch/USER/seedhints_scr"
 HINT_TYPE = "scribble"
 ALPHAS = [0.0, 0.01, 0.03, 0.05, 0.10, 0.25, 0.50, 1.00]
 RATIO_TAG = {0.0: "0", 0.01: "1", 0.03: "3", 0.05: "5", 0.10: "10",

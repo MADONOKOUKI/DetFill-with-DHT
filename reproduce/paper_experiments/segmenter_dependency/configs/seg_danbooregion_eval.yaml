@@ -17,9 +17,9 @@ data:
   dataset_type: 'custom_train_our_model'
   dataset_config:
     # R1-3/R2-2 seg-retrain (SLIC). Data staged on local /scratch (NFS-free).
-    root_region: '/scratch/madono/seg_eval/gt'        # GT colour <dir>/<id>.image.png
-    root_sketch: '/scratch/madono/seg_eval/sketch'    # <type>/<id>.png (flat)
-    root_scr:    '/scratch/madono/seg_eval/danbooregion'      # <dir>/<id>.image_{region,scribble_mask,scribble_col}64.png
+    root_region: '/scratch/USER/seg_eval/gt'        # GT colour <dir>/<id>.image.png
+    root_sketch: '/scratch/USER/seg_eval/sketch'    # <type>/<id>.png (flat)
+    root_scr:    '/scratch/USER/seg_eval/danbooregion'      # <dir>/<id>.image_{region,scribble_mask,scribble_col}64.png
     hint_type: 'scribble'
     domain: "illust"
     image_size: 256

@@ -7,7 +7,7 @@ naming matches felz/SLIC/QS so the dataloader reads it unchanged.
 Processes the region maps that are LOCAL on this node (glob), so it composes with the
 per-node sharding of Stage 1. Run one or more instances per node with --shard/--nshards.
 
-Usage (per shard, on a cayenne node):
+Usage (per shard, on a HOST_C node):
   py37 danbooregion_hints.py --shard 0 --nshards 32 \
      --region_root /path/to/data \
      --src_root /home/.../main_exp_felzenszwalb_fixdot/illust \

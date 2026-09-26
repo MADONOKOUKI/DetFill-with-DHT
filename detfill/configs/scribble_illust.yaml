@@ -36,7 +36,7 @@ data:
 
     
 result:
-  sample_to_eval_path: "tog_results"
+  sample_to_eval_path: "sample_to_eval"   # not used by the runners
 
 model:
   model_name: "BrownianBridge_scribble_illust" # part of result path

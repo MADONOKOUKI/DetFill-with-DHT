@@ -25,8 +25,8 @@ p.add_argument('--ratio', type=float, required=True, help='hint ratio alpha (0..
 p.add_argument('--sketch_index', type=int, default=0, help='0=pysimp 1=XDoG 2=sketchkeras')
 p.add_argument('--domain', default='illust')
 p.add_argument('--dtype', default='felzenszwalb')
-p.add_argument('--data_root', default='/scratch/madorin/diffusart_det_R3-2', help='hint/sketch/GT root (host-local /scratch; has all 3 sketches incl pysimp)')
-p.add_argument('--region_root', default='/scratch/madorin/diffusart_det_R3-2/illust/hint_from_regions/felzenszwalb',
+p.add_argument('--data_root', default='/scratch/USER/diffusart_det_R3-2', help='hint/sketch/GT root (host-local /scratch; has all 3 sketches incl pysimp)')
+p.add_argument('--region_root', default='/scratch/USER/diffusart_det_R3-2/illust/hint_from_regions/felzenszwalb',
                help='flat dir of <fname>.image_region64.png (proposed-eval region source)')
 p.add_argument('--region_suffix', default='.image_region64.png')
 p.add_argument('--test_list', required=True, help='configs/<domain>/test_paper.txt')
@@ -126,11 +126,11 @@ class DetEvalData(MyData_train_scrib_det):
         single_mask[_sel[:, :, None]] = 1
 
         if self.hint == 'dot':
-            mask = self.sketch_loader(os.path.join(self.root_scr, dname, fname + '.image_dot_mask256.png'))
-            hint = self.load_image(os.path.join(self.root_scr, dname, fname + '.image_dot_col256.png'))
+            mask = self.sketch_loader(os.path.join(self.root_scr, dname, fname + '.image_dot_mask64.png'))
+            hint = self.load_image(os.path.join(self.root_scr, dname, fname + '.image_dot_col64.png'))
         else:  # strokes / scribble
-            mask = self.sketch_loader(os.path.join(self.root_scr, dname, fname + '.image_scribble_mask256.png'))
-            hint = self.load_image(os.path.join(self.root_scr, dname, fname + '.image_scribble_col256.png'))
+            mask = self.sketch_loader(os.path.join(self.root_scr, dname, fname + '.image_scribble_mask64.png'))
+            hint = self.load_image(os.path.join(self.root_scr, dname, fname + '.image_scribble_col64.png'))
 
         hint = pil2opencv(hint)
         mask = pil2opencv(mask)
@@ -197,10 +197,10 @@ def main():
 
     with open(args.test_list) as f:
         raw_items = [l for l in f.readlines() if l.strip()]
-    # INFER_64x64: rewrite legacy /home/madorin/datasets/.../main_exp_felzenszwalb/ paths to /scratch
-    _OLD_PFX = '/home/madorin/datasets/labrepo/main_exp_felzenszwalb_tmp/'
-    _OLD_PFX2 = '/home/madorin/datasets/labrepo/main_exp_felzenszwalb/'
-    _NEW_PFX = '/scratch/madorin/diffusart_det_R3-2/'
+    # INFER_64x64: rewrite legacy /home/USER/datasets/.../main_exp_felzenszwalb/ paths to /scratch
+    _OLD_PFX = '/home/USER/datasets/labrepo/main_exp_felzenszwalb_tmp/'
+    _OLD_PFX2 = '/home/USER/datasets/labrepo/main_exp_felzenszwalb/'
+    _NEW_PFX = '/scratch/USER/diffusart_det_R3-2/'
     items = []
     for _l in raw_items:
         _l = _l.replace(_OLD_PFX, _NEW_PFX).replace(_OLD_PFX2, _NEW_PFX)

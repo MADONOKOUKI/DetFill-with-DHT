@@ -26,6 +26,9 @@ evaluation inputs and the scripts that reproduce the paper are released.
 
 ## Getting started
 
+- **Replicability Stamp** — `bash replicability/run.sh` reproduces Fig. 9 of the paper from a fresh checkout with no
+  arguments; see [replicability/README.md](replicability/README.md) and the submission sheet
+  [replicability/GRSI_SUBMISSION.txt](replicability/GRSI_SUBMISSION.txt).
 - **Installation** — see [Setup](docs/setup.md). The library is one command (`pip install hintauc`); DetFill and
   the reproduction scripts use a conda environment that the scripts create for you.
 - **Model zoo** — see [Model zoo](checkpoints/README.md): every released checkpoint and data file with its size,
@@ -46,14 +49,15 @@ hints = hintauc.generate_hints("illustration.png", size=64)        # image -> de
 color, mask = hints.at_ratio(0.10, hint_type="scribble")           # hints of the largest 10 % of the regions
 hints.save("out/illustration")                                     # files in the DetFill data layout
 
-evaluator = hintauc.Evaluator(metrics=("psnr", "lpips", "dreamsim"))
+evaluator = hintauc.Evaluator(metrics=("psnr", "lpips", "dreamsim"))  # lpips / dreamsim need pip install "hintauc[perceptual]"
 print(evaluator("colorized.png", "ground_truth.png"))              # the paper's metrics
 ```
 
 - Command line: `hintauc generate image.png --ratio 0.1` and `hintauc eval pred_dir gt_dir --metrics mse psnr ssim`.
 - DetFill inference over the hint-ratio grid: `cd detfill && GPU=0 bash run_inference.sh scribble`
   (data layout and options in [detfill/README.md](detfill/README.md)).
-- Fig. 9 of the paper from a fresh checkout: `bash replicability/run.sh` (about 3 minutes on a GPU).
+- Fig. 9 of the paper from a fresh checkout: `bash replicability/run.sh` (about 3 minutes of compute on a GPU after a
+  one-time environment setup and download of 10–20 minutes).
 
 ## Repository structure
 
@@ -72,8 +76,9 @@ assets/            images for this page; representative image for the Replicabil
 ## License
 
 MIT License ([LICENSE](LICENSE)); third-party components are listed in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
-`detfill/` is built on [BBDM](https://github.com/xuekt98/BBDM) (MIT). Released data files are derived from
-Danbooru2021 illustrations and are provided for non-commercial research use only.
+`detfill/` is built on [BBDM](https://github.com/xuekt98/BBDM) (MIT). The few Danbooru2021-derived images in this
+repository and in the releases (example bundle, user-study stimuli, figure grids) are listed in
+[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) and are provided for non-commercial research use only.
 
 ## Contributing
 

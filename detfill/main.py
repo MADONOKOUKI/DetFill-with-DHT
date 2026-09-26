@@ -28,12 +28,12 @@ def parse_args_and_config():
 
     parser.add_argument('--resume_model', type=str, default=None, help='model checkpoint')
     parser.add_argument('--resume_optim', type=str, default=None, help='optimizer checkpoint')
-    parser.add_argument('--sketch_type', type=int, default=None, help='optimizer checkpoint')
+    parser.add_argument('--sketch_type', type=int, default=None, help='line-art source: 0 = sketch simplification, 1 = XDoG, 2 = SketchKeras (default: random per sample)')
 
 
-    parser.add_argument('--max_epoch', type=int, default=None, help='optimizer checkpoint')
-    parser.add_argument('--max_steps', type=int, default=None, help='optimizer checkpoint')
-    parser.add_argument('--sample_ratio', type=float, default=None, help='optimizer checkpoint')
+    parser.add_argument('--max_epoch', type=int, default=None, help='override training.n_epochs')
+    parser.add_argument('--max_steps', type=int, default=None, help='override training.n_steps')
+    parser.add_argument('--sample_ratio', type=float, default=None, help='hint ratio alpha in [0, 1] for --sample_to_eval (size-ordered selection)')
 
     args = parser.parse_args()
 
@@ -85,7 +85,7 @@ def DDP_run_fn(rank, world_size, config):
         runner.train()
     else:
         with torch.no_grad():
-            runner.test()
+            runner.test(config.args.sample_ratio, config.args.sketch_type)
     return
 
 

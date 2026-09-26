@@ -12,7 +12,7 @@ name: publish-pypi
 on:
   push:
     branches: [main]
-    paths: ["pyproject.toml", "hintauc/**", "README.md", "LICENSE", ".github/workflows/publish-pypi.yml"]
+    paths: ["pyproject.toml", "hintauc/**", "docs/pypi_readme.md", "LICENSE", ".github/workflows/publish-pypi.yml"]
     tags: ["hintauc-v*"]
   workflow_dispatch:
 

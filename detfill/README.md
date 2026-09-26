@@ -44,7 +44,13 @@ Set the data root in `configs/*.yaml` (`data.dataset_config.scratch_root`). Hint
   and [v1.0](https://github.com/MADONOKOUKI/DetFill-with-DHT/releases/tag/v1.0); for new images use the `hintauc`
   library (`hints.save(...)` writes exactly these files).
 - Hint files may also sit in a `hint_from_regions_64_rev/0016/` sub-directory (original experiment layout); both are detected.
-- The natural-image configs (`*_real.yaml`) use the split-based layout (`dataset_path` + `configs/real/*.txt`).
+- **Split-based layout** (training, and the natural-image configs `*_real.yaml`): set `dataset_path` instead of
+  `scratch_root` and run `main.py` from `detfill/`; the split lists `configs/{illust,real}/{train,valid,test}.txt`
+  hold `<bucket>/<id>.image.png` lines and the files live in
+  `<dataset_path>/segmentation_regions/felzenszwalb/<bucket>/<id>.image.png` (colour image),
+  `<dataset_path>/sketch/<type>/<bucket>/<id>.png` (`<id>.image.png` for natural images),
+  `<dataset_path>/hint_from_regions_64_rev/<bucket>/<id>.image_*64.png` and
+  `<dataset_path>/hint_from_regions_256/<bucket>/<id>.image_region64.png`.
 
 ## Inference over the hint-ratio grid
 

@@ -65,9 +65,9 @@ class Simplifier:
 simp=Simplifier()
 # in_dir = 'in'
 # out_dir = 'out4'
-in_dir = '/home/madorin/gitlab/yuan/lac_eval_v1-main/DanbooRegion2020_sketch/sketchkeras/val'
+in_dir = '/home/USER/gitlab/yuan/lac_eval_v1-main/DanbooRegion2020_sketch/sketchkeras/val'
 # out_dir = 'sketchkeras_enhanced'
-out_dir = '/home/madorin/gitlab/yuan/lac_eval_v1-main/DanbooRegion2020_sketch/pysketchsimplify/val'    
+out_dir = '/home/USER/gitlab/yuan/lac_eval_v1-main/DanbooRegion2020_sketch/pysketchsimplify/val'    
 
 if not os.path.exists(out_dir): os.mkdir(out_dir)
 for files1 in glob.glob(in_dir + '/*.jpg'):

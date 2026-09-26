@@ -1,4 +1,4 @@
-# DetFill inference / evaluation environment (import-verified DATE).
+# DetFill inference / evaluation environment (import-verified).
 #
 # Exported from the conda env (`BBDM`) that produced the paper's DetFill scribble results
 # (Tables II-III and the supplementary alpha-grid / segmenter / seed analyses). The versions

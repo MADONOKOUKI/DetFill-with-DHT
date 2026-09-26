@@ -3,7 +3,7 @@
 # ColorizeDiffusion v1/v2 : fine-tune (from official released weights) + inference
 # for the Hint-AUC protocol (Table II = deterministic, Table III = random sampling).
 #
-# Order (single GPU, sequential, naga1):
+# Order (single GPU, sequential, HOST_A):
 #   (1) v2-dot  (2) v2-scr  (3) v1-dot  (4) v1-scr
 # For each model:  TRAIN -> INFER(deterministic, 8 ratios x N sketch) ->
 #                  INFER(random sampling = Table III, 8 ratios x N sketch)
@@ -23,19 +23,19 @@
 #    If you truly want 1e-6 effective, set the config base to 2e-7 (or BATCH=1).
 #  * v2.yaml (scribble) has `base_learning_rate` COMMENTED OUT -> set it to 1.0e-6
 #    so v2-scr matches v2-dot. (v2_dot.yaml / mult.yaml / mult_dot.yaml are 1e-6.)
-#  * DATA: defaults point at the COMPLETE copy on NFS. naga1 can read NFS directly.
-#    For faster local I/O, rsync to naga1:/scratch first and switch *_ROOT below.
+#  * DATA: defaults point at the COMPLETE copy on NFS. HOST_A can read NFS directly.
+#    For faster local I/O, rsync to HOST_A:/scratch first and switch *_ROOT below.
 #  * accel_config.yaml is MULTI_GPU(4). We bypass it and force a single process.
 #  * sample_ratio in v2_dot.yaml is 0.2 (fixed). For paper-style random-ratio
 #    training set it to null in the training config (this script does NOT edit it).
 #
-# Preview without running:   DRY_RUN=1 bash run_coldiff_finetune_eval_naga1.sh
+# Preview without running:   DRY_RUN=1 bash run_coldiff_finetune_eval.sh
 # Quick smoke test:          SKETCH_SOURCES="s0"  RATIOS="0 10 100"  EPOCHS=2 ...
 # =============================================================================
 set -euo pipefail
 
 #### ========================= USER CONFIG ========================= ####
-GPU="${GPU:-0}"                     # naga1 free GPU index
+GPU="${GPU:-0}"                     # HOST_A free GPU index
 PORT="${PORT:-29555}"              # accelerate main_process_port (avoid clashes)
 EPOCHS="${EPOCHS:-30}"            # adaptation epochs (TUNE; see notes above)
 BATCH="${BATCH:-5}"               # train micro-batch per GPU
@@ -53,24 +53,24 @@ SKETCH_SOURCES=(${SKETCH_SOURCES:-s0 s1 s2})
 # main.pdf hint-ratio grid (percent): {0,0.01,0.03,0.05,0.10,0.25,0.50,1.00}
 RATIOS=(${RATIOS:-0 1 3 5 10 25 50 100})
 
-MAIN=/home/madorin/gitlab/labrepo/main
-# COMPLETE data lives on NFS (accessible from every host incl. naga1):
-TRAIN_ROOT="${TRAIN_ROOT:-/home/madorin/datasets/revision/colorizeDiffusion/illust/images_train}"
-TEST_ROOT="${TEST_ROOT:-/home/madorin/datasets/revision/colorizeDiffusion/illust/images_test}"
+MAIN=/home/USER/gitlab/labrepo/main
+# COMPLETE data lives on NFS (accessible from every host incl. HOST_A):
+TRAIN_ROOT="${TRAIN_ROOT:-/home/USER/datasets/revision/colorizeDiffusion/illust/images_train}"
+TEST_ROOT="${TEST_ROOT:-/home/USER/datasets/revision/colorizeDiffusion/illust/images_test}"
 
 # checkpoint save roots (train.py writes <save>/<name>/final/model.safetensors)
-CKPT_V2="${CKPT_V2:-/scratch/madono/colorizeDiffusion_v2_checkpoints}"
-CKPT_V1="${CKPT_V1:-/scratch/madono/colorizeDiffusion_v1/checkpoints}"
+CKPT_V2="${CKPT_V2:-/scratch/USER/colorizeDiffusion_v2_checkpoints}"
+CKPT_V1="${CKPT_V1:-/scratch/USER/colorizeDiffusion_v1/checkpoints}"
 # inference output roots (per existing convention)
-OUT_V2="${OUT_V2:-/scratch/madono/colorizeDiffusion_v2/checkpoints}"
-OUT_V1="${OUT_V1:-/scratch/madono/colorizeDiffusion_v1/checkpoints}"
+OUT_V2="${OUT_V2:-/scratch/USER/colorizeDiffusion_v2/checkpoints}"
+OUT_V1="${OUT_V1:-/scratch/USER/colorizeDiffusion_v1/checkpoints}"
 
 LOGDIR="${LOGDIR:-$MAIN/coldiff_runs_logs}"
 #### =============================================================== ####
 
 # ---- activate the ColDiff conda env (base env has incompatible huggingface-hub 1.7.1) ----
 # environment.yml of colorizeDiffusion_v2 is `name: hf` (hf-hub 0.29.3, transformers 4.49.0).
-source /home/madorin/anaconda3/etc/profile.d/conda.sh 2>/dev/null || true
+source /home/USER/anaconda3/etc/profile.d/conda.sh 2>/dev/null || true
 conda activate "${CONDA_ENV:-hf}" || { echo "[ERROR] conda activate ${CONDA_ENV:-hf} failed"; exit 1; }
 
 mkdir -p "$LOGDIR"

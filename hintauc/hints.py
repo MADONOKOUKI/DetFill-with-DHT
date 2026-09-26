@@ -2,7 +2,7 @@
 
 Faithful port of the pipeline used to build the paper dataset
 (`hint_generation/canonical/hint_dot_generation.py` and
-`all_segmentations.py`; see also the cleaned R2-2 port
+`all_segmentations.py`; see also the cleaned port
 `hint_generation/generate_hints.py`):
 
     Felzenszwalb segmentation (scale=100, sigma=0.5, min_size=100)
@@ -471,7 +471,7 @@ def generate_hints(
     dot_color = (scribble_img * dot_mask[:, :, None]).astype(np.uint8)
     dot_mask_u8 = (dot_mask * 255).astype(np.uint8)
 
-    return HintResult(
+    result = HintResult(
         region=region,
         scribble_mask=scribble_mask,
         scribble_color=scribble_color,
@@ -483,3 +483,8 @@ def generate_hints(
         path_method=path_method,
         dot_method=dot_method,
     )
+    if result.failed_regions and not result.scribble_mask.any() and not result.dot_mask.any():
+        import warnings
+        warnings.warn("hint generation produced no hints: the longest-path extraction failed for every region "
+                      "(check the FilFinder/astropy installation or use path_method='geodesic')", stacklevel=2)
+    return result

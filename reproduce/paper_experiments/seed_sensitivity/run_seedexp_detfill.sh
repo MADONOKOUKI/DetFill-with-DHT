@@ -6,7 +6,7 @@
 #   GPU=0 bash run_seedexp_detfill.sh
 set -uo pipefail
 GPU="${GPU:-0}"
-REPO=/home/madorin/gitlab/labrepo/main/BBDM_revision_revise_DATESTAMP
+REPO=/home/USER/gitlab/labrepo/main/BBDM_revision_revise_DATESTAMP
 HERE="$(cd "$(dirname "$0")" && pwd)"
 CFG_DIR="$HERE/detfill_cfgs"; mkdir -p "$CFG_DIR"
 BASE_CFG="$REPO/configs/scribble_proposed_illust_200epoch_mr.yaml"
@@ -18,11 +18,11 @@ for r in "${RATIOS[@]}"; do
   if [ "$r" = 0 ] || [ "$r" = 100 ]; then SEEDS=(1); else SEEDS=(1 2 3 4 5); fi
   for s in "${SEEDS[@]}"; do
     tag="seed${s}_alpha_${r}"
-    wrap="/scratch/madono/seedexp/detfill_roots/$tag"
+    wrap="/scratch/USER/seedexp/detfill_roots/$tag"
     cfg="$CFG_DIR/$tag.yaml"
     # scratch_root / dataset_path をwrapperへ差し替えたconfigを生成
     sed -E "s#(scratch_root:).*#\1 '$wrap'#; s#(dataset_path:).*#\1 '$wrap'#" "$BASE_CFG" > "$cfg"
-    out="/scratch/madono/seedexp/detfill/$tag"
+    out="/scratch/USER/seedexp/detfill/$tag"
     n=$(ls "$out/dataset_name/BrownianBridge_scribble_illust/sample_to_eval/illust/scribble/2/1.0/200" 2>/dev/null | wc -l)
     if [ "$n" -ge 2999 ]; then echo "[$(ts)] skip $tag (done n=$n)"; continue; fi
     echo "[$(ts)] ### DetFill $tag (have $n)"

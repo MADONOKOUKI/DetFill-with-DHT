@@ -1,18 +1,18 @@
 #!/bin/bash
-# RUN THIS ON naga1 (the user runs it).  Stages Quickshift training data to naga1's
+# RUN THIS ON HOST_A (the user runs it).  Stages Quickshift training data to HOST_A's
 # local /scratch, then launches QS BBDM training on 2 GPUs.
-#   usage:  bash naga1_qs.sh [gpu_ids]      e.g.  bash naga1_qs.sh 0,1
-# Assumes naga1 mounts the cluster NFS /home/madorin (code + BBDM env + data sources).
+#   usage:  bash quickshift.sh [gpu_ids]      e.g.  bash quickshift.sh 0,1
+# Assumes HOST_A mounts the cluster NFS /home/USER (code + BBDM env + data sources).
 set -u
 GPUS=${1:-0,1}
-DST=/scratch/madono/seg_retrain
-CODE=/home/madorin/gitlab/labrepo/main/revision_materials/rebuttal/R2/R2-2_segmentation_dependency/BBDM_seg_retrain
-PY=/home/madorin/anaconda3/envs/BBDM/bin/python
-FX=/home/madorin/datasets/labrepo/main_exp_felzenszwalb_fixdot/illust
-RD=/home/madorin/gitlab/labrepo/main/revision_materials/rebuttal/R2/R2-2_segmentation_dependency/retrain_data
+DST=/scratch/USER/seg_retrain
+CODE=/home/USER/gitlab/labrepo/main/revision_materials/rebuttal/R2/R2-2_segmentation_dependency/BBDM_seg_retrain
+PY=/home/USER/anaconda3/envs/BBDM/bin/python
+FX=/home/USER/datasets/labrepo/main_exp_felzenszwalb_fixdot/illust
+RD=/home/USER/gitlab/labrepo/main/revision_materials/rebuttal/R2/R2-2_segmentation_dependency/retrain_data
 
-echo "== naga1 QS setup =="
-[ -x "$PY" ]        || { echo "ERROR: BBDM env not visible at $PY  -> naga1 does not mount NFS; check the mount."; exit 1; }
+echo "== HOST_A QS setup =="
+[ -x "$PY" ]        || { echo "ERROR: BBDM env not visible at $PY  -> HOST_A does not mount NFS; check the mount."; exit 1; }
 [ -f "$CODE/main.py" ] || { echo "ERROR: code not visible at $CODE"; exit 1; }
 "$PY" -c "import torch;print('torch',torch.__version__,'cuda',torch.cuda.is_available(),torch.cuda.device_count())" || exit 1
 

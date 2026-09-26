@@ -1,14 +1,14 @@
 #!/bin/bash
-# Launch SLIC + Quickshift BBDM training on reaper6 (parallel, 5 GPUs each, DDP).
+# Launch SLIC + Quickshift BBDM training on HOST_B (parallel, 5 GPUs each, DDP).
 # Reads data from local /scratch, writes checkpoints to local /scratch (per req [3]).
-# Run from cayenne1.  Usage: D_train_launch.sh [host] [smoke]
+# Run from HOST_C.  Usage: D_train_launch.sh [host] [smoke]
 #   smoke -> --max_steps 4 on 1 GPU each, just to validate the pipeline.
 set -u
-H=${1:-reaper6}; MODE=${2:-full}; KEY=~/.ssh/id_ed25519
-CODE=/home/madorin/gitlab/labrepo/main/revision_materials/rebuttal/R2/R2-2_segmentation_dependency/BBDM_seg_retrain
-PY=/home/madorin/anaconda3/envs/BBDM/bin/python
-RES=/scratch/madono/seg_retrain/results
-LOG=/scratch/madono/seg_retrain/logs
+H=${1:-HOST_B}; MODE=${2:-full}; KEY=~/.ssh/id_ed25519
+CODE=/home/USER/gitlab/labrepo/main/revision_materials/rebuttal/R2/R2-2_segmentation_dependency/BBDM_seg_retrain
+PY=/home/USER/anaconda3/envs/BBDM/bin/python
+RES=/scratch/USER/seg_retrain/results
+LOG=/scratch/USER/seg_retrain/logs
 RSH="ssh -i $KEY -o BatchMode=yes -o StrictHostKeyChecking=no"
 
 launch() {

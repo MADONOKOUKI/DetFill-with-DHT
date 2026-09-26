@@ -381,22 +381,9 @@ def hint_vis_selected(root, i, hint, ratio, hint_order="area"):
     return Image.fromarray(vis).resize((256, 256), Image.NEAREST)
 
 
-def hint_vis_masked(root, i, ratio, args):
-    """Visualise the size-ordered selection at ``ratio`` (largest regions first), as the DetFill loader does."""
-    import cv2
-    region = cv2.imread(os.path.join(root, "hint_from_regions_256", f"{i}.image_region64.png"))
-    region = cv2.resize(region, (64, 64), interpolation=cv2.INTER_NEAREST).astype(np.uint64)
-    id_maps = region[:, :, 0] * 255 * 255 + region[:, :, 1] * 255 + region[:, :, 2]
-    vals, counts = np.unique(id_maps, return_counts=True)
-    order = vals[np.argsort(-counts)]
-    keep = order[: int(len(vals) * ratio)]
-    area = np.isin(id_maps, keep)
-    col = np.array(Image.open(os.path.join(root, "hint_from_regions_64_rev", f"{i}.image_scribble_col64.png")).convert("RGB"))
-    msk = np.array(Image.open(os.path.join(root, "hint_from_regions_64_rev", f"{i}.image_scribble_mask64.png")).convert("L")) > 0
-    vis = np.full_like(col, 255)
-    sel = msk & area
-    vis[sel] = col[sel]
-    return Image.fromarray(vis).resize((256, 256), Image.NEAREST)
+def hint_vis_masked(root, i, ratio, args=None):
+    """Size-ordered scribble selection at ``ratio`` (the DetFill loader's Table II rule)."""
+    return hint_vis_selected(root, i, "scribble", ratio, "area")
 
 
 def exp_E5(args, ids):
@@ -451,17 +438,8 @@ def exp_E8(args, ids, ratios):
 
 
 def _n_regions(h):
-    """number of regions found by the library (robust to the HintResult attribute names)."""
-    for attr in ("region_ids", "labels", "ids"):
-        if hasattr(h, attr):
-            try:
-                return int(len(getattr(h, attr)))
-            except Exception:
-                pass
-    try:
-        return int(len(h._ids_sorted_by_area()))
-    except Exception:
-        return -1
+    """Number of regions found by the library."""
+    return int(h.n_regions())
 
 
 def exp_E9(args, ids):
@@ -548,6 +526,8 @@ def main():
             done[e] = exp_E9(args, ids)
         elif e == "E11":
             done[e] = exp_E11(args, ids[:4], ratios)
+        else:
+            sys.exit(f"unknown experiment id {e!r}; available: E1s E1 E2 E3 E4 E5 E8 E9 E11 (E6 = Diffusart-retrain and E7 = natural-image models are not automated, see README)")
         log(f"==== {e} done in {time.time() - t0:.0f}s")
     json.dump({"mode": args.mode, "ids": ids, "ratios": ratios, "experiments": list(done), "seconds": time.time() - t_start},
               open(os.path.join(args.out, "summary.json"), "w"), indent=2)

@@ -14,8 +14,9 @@ Release: https://github.com/MADONOKOUKI/DetFill-with-DHT/releases/tag/v1.0
 | `detfill_dot_illust_200ep.pth` | 0.48 GB | `b4779946f24b5f52cdf640418c73bef67925c845e50c8f36610aeac7d50f212b` | DetFill **dot-hint** model, 64 base channels, 200 epochs. Behind every dot result of the paper (Table II, Table III, Fig. 9 dot row). |
 | `test_split_hint_maps_64.tar.gz` | 60 MB | `01c0aa92ae976d9e0a5c48a02881c7ed9db9f0e98d77fd14e44c396471ac0dfd` | The stored 64×64 deterministic hint maps (scribble and dot, colour + mask) and region maps of the 3,000 test images. These are the exact evaluation inputs of all reported numbers. |
 
-Where the code expects the two models (the default of `detfill/run_inference.sh`, `replicability/run.sh` and
-`reproduce/scripts/run_hauc_pipeline.sh`; any other location works with `--resume_model <file>` / `CKPT=<file>`):
+Where the DetFill launchers expect the two models (`detfill/run_inference.sh` and `reproduce/scripts/run_hauc_pipeline.sh`
+default to this path; `replicability/run.sh` and `reproduce/examples/run_examples.sh` download into their own
+`checkpoints/` directories; any location works with `--resume_model <file>` / `CKPT=<file>`):
 
 ```bash
 BASE=https://github.com/MADONOKOUKI/DetFill-with-DHT/releases/download/v1.0
@@ -57,18 +58,21 @@ Release: https://github.com/MADONOKOUKI/DetFill-with-DHT/releases/tag/v1.2
 |---|---|---|---|
 | `diffusart_retrain_scribble_dethint_200ep_ema.pth` | 373 MB | `03ed65e385cab3947e52f9bbdf00c709d84af1ec7d05631624d2266dc40fb15b` | Diffusart (our re-implementation, `reproduce/paper_experiments/diffusart_retrain/code/`) retrained with the deterministic scribble hints, 200 epochs, EMA weights. The **Diffusart-retrain** scribble row of the supplementary "additional training comparisons" table; its PSNR 19.457 / LPIPS 0.177 are reproduced from the per-ratio record shipped in `reproduce/expected/`. |
 | `diffusart_retrain_dot_dethint_200ep_ema.pth` | 373 MB | `8c78717ac73f111ca31e00b43f4c7686e618c4191ce5ea38a437f2ed6b8964d1` | Same for dot hints (the dot row of that table; same training batch). |
-
-Both Diffusart-retrain models take **256 × 256 deterministic hint maps** (`<id>.image_{scribble,dot}_{col,mask}256.png`), not the 64 × 64 maps of v1.0; generate them with `hintauc.generate_hints(image, size=256).save(...)`. Inference: `reproduce/paper_experiments/diffusart_retrain/code/infer_det_proposed.py` (needs `diffusers`; see the README in that directory).
 | `detfill_scribble_imagenet_200ep.pth` | 1.08 GB | `0f8514000110be43927b9031912b4331e2753e3028ea8a0ab680630857d1d329` | DetFill scribble model trained on the natural-image (ImageNet subset) split, 96 base channels, 200 epochs. Config: `detfill/configs/scribble_real.yaml`. |
 | `detfill_dot_imagenet_200ep.pth` | 1.08 GB | `1fdf881981c9a4e415711a8bdb6bab36c3e0251243e5d04544e7fc6b9811fd2e` | DetFill dot model on natural images, 96 base channels, 200 epochs. Config: `detfill/configs/dot_real.yaml`. |
-| `test_split_hint_maps_64_imagenet.tar.gz` | 40 MB | `870db22dd7526c2fb3fe7d9bd5d3b7d10b90c9fa776ac901c1b04ab52bf01847` | The stored 64×64 hint maps (scribble/dot colour + mask) and region maps of the 2,999 ImageNet test images (`detfill/configs/real/test.txt`), i.e. the evaluation inputs of the supplementary ImageNet tables. |
+| `test_split_hint_maps_64_imagenet.tar.gz` | 40 MB | `870db22dd7526c2fb3fe7d9bd5d3b7d10b90c9fa776ac901c1b04ab52bf01847` | The stored 64×64 hint maps (scribble/dot colour + mask) and region maps of 2,999 of the 3,000 ImageNet test images in `detfill/configs/real/test.txt` (`n02667379_7324` has no stored map), i.e. the evaluation inputs of the supplementary ImageNet tables. |
 
-Honest caveats for the natural-image models: every natural-image checkpoint in our archive is a 96-channel model (the
-`*_real.yaml` configs were corrected to 96 channels in v1.2). Two training generations exist (earlier, released here,
-and earlier) with different weights, and the archive does not contain the evaluation record that ties the printed
-ImageNet values to one file. Treat re-evaluations with these weights as "same model family and protocol" rather than a
-bit-exact reproduction. The natural-image data path of the loader still expects our split lists with absolute paths
-(`detfill/configs/real/*.txt`), see `reproduce/README.md`.
+The Diffusart-retrain models take the **64 × 64 deterministic hint maps of v1.0**, upsampled to 256 × 256 with
+nearest-neighbour interpolation inside the inference script — this is how the paper's Diffusart-retrain record was
+produced. Inference: `reproduce/paper_experiments/diffusart_retrain/code/infer_det_proposed.py` (PyTorch 2.5 and
+`diffusers` 0.32; see the README in that directory).
+
+Natural-image models: two training generations exist in our archive, the 96-channel models released here and the
+earlier 64-channel models of the first submission (release v1.4). The archive does not contain the evaluation record
+that ties the printed ImageNet values to one of them, so treat re-evaluations with these weights as "same model
+family and protocol" rather than a bit-exact reproduction. The `*_real.yaml` configs use the split-based layout
+(`dataset_path` plus the relative lists in `detfill/configs/real/`, run `main.py` from `detfill/`); the ImageNet
+images themselves are not redistributed.
 
 ## v1.3 — data for full-scale and example-based reproduction
 

@@ -16,7 +16,7 @@ from PIL import ImageFile
 import cv2
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
-DATA_ROOT = os.environ.get('DIFFUSART_DET_DATA_ROOT', '/scratch/madono/diffusart_det_R3-2')
+DATA_ROOT = os.environ.get('DIFFUSART_DET_DATA_ROOT', '/scratch/USER/diffusart_det_R3-2')
 
 def pil2opencv(in_image):
     out_image = np.array(in_image, dtype=np.uint8)

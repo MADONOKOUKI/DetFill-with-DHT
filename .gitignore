@@ -21,6 +21,10 @@ reproduce/output/
 # dreamsim downloads its weights into ./models by default
 models/
 
+# replicability script downloads and outputs
+replicability/checkpoints/
+replicability/output/
+
 # example-suite downloads and outputs
 reproduce/examples/data/
 reproduce/examples/checkpoints/

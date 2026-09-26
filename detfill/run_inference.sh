@@ -1,15 +1,17 @@
 #!/bin/bash
-# TABLE II 再現用推論スクリプト
+# Inference over the hint-ratio grid (the Table II protocol): DetFill colorizes the test split at every hint ratio
+# and line-art source. Run from detfill/ with the checkpoints at results/dataset_name/BrownianBridge_<hint>_illust/checkpoint/.
 #
 # Usage:
 #   GPU=<id> [RATIOS="..."] [TYPES="..."] bash run_inference.sh [dot|scribble|all]
 #
-# 例:
-#   GPU=0 bash run_inference.sh dot                        # dot 全ratio (0,1,2)
-#   GPU=1 bash run_inference.sh scribble                   # scribble 全ratio
-#   GPU=0 RATIOS="0.00 0.01" bash run_inference.sh dot     # dot 指定ratioのみ
-#   GPU=2 TYPES="0 1" bash run_inference.sh all            # sketch_type 0,1のみ
-#   GPU=3 RATIOS="0.10" TYPES="2" bash run_inference.sh dot  # 1ratio×1type のみ
+# Examples:
+#   GPU=0 bash run_inference.sh dot                          # dot model, all ratios and line-art sources (0,1,2)
+#   GPU=1 bash run_inference.sh scribble                     # scribble model, all ratios
+#   GPU=0 RATIOS="0.00 0.01" bash run_inference.sh dot       # selected ratios only
+#   GPU=2 TYPES="0 1" bash run_inference.sh all              # line-art sources 0 and 1 only
+#   GPU=3 RATIOS="0.10" TYPES="2" bash run_inference.sh dot  # one ratio x one source
+# Line-art sources: 0 = sketch simplification, 1 = XDoG, 2 = SketchKeras.
 
 set -e
 

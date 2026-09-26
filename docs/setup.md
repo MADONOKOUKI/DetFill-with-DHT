@@ -13,7 +13,9 @@ pip install "hintauc[perceptual]"   # + the perceptual metrics (LPIPS / OpenCLIP
 - Python 3.9–3.12; wheels exist for all dependencies, no compiler is needed.
 - Latest development version: `pip install git+https://github.com/MADONOKOUKI/DetFill-with-DHT.git`
   (or `pip install -e .` inside a checkout).
-- The perceptual metrics download their weights on first use into `~/.cache/hintauc` (override with `HINTAUC_CACHE_DIR`).
+- The perceptual metrics download their weights on first use (DreamSim into `~/.cache/hintauc`, override with
+  `HINTAUC_CACHE_DIR`; OpenCLIP and DINOv2 into their own Hugging Face caches; LPIPS ships with its package).
+- On a minimal Ubuntu server image OpenCV needs two system libraries: `sudo apt-get install -y libgl1 libglib2.0-0`.
 - Check the install: `python -c "import hintauc; print(hintauc.__version__)"` and `hintauc --help`.
 
 ## 2. DetFill and the reproduction scripts (conda environment)
@@ -26,8 +28,9 @@ pip install -e .                                     # the library from this che
 
 - `replicability/run.sh` and `reproduce/examples/run_examples.sh` create this environment themselves; `run.sh` also
   installs Miniconda into `~/miniconda3` when no conda is found (disable with `GRSI_NO_AUTO_CONDA=1`).
-- The paper's original training environment is `detfill/environment.yml` (`conda env create -f detfill/environment.yml`).
-- Without a GPU, pass `--gpu_ids -1` to `detfill/main.py`; the scripts detect the absence of CUDA automatically.
+- The paper's inference and evaluation environment is `detfill/environment.yml` (`conda env create -f detfill/environment.yml`).
+- Without a GPU, pass `--gpu_ids -1` to `detfill/main.py`; `replicability/run.sh` and `reproduce/examples/run_examples.sh`
+  fall back to the CPU automatically when no CUDA device is found (slow: about 30 minutes for Fig. 9).
 
 ## 3. Checkpoints and data
 
@@ -47,9 +50,10 @@ pip install -e .                                     # the library from this che
 | B | NVIDIA GeForce RTX 2080 Ti, 11 GB | 2 × Intel Xeon Gold 6226R (32 threads) | 187 GB |
 
 Both run Ubuntu 22.04, driver 535, CUDA 12.2. Fig. 9 (`replicability/run.sh`): 3 min on A, 4–5 min on B, 30 min on
-the CPUs of A (16 threads). The example suite and the full-scale estimates were measured on B; an A6000-class GPU is
-roughly twice as fast. Full-scale DetFill inference: about 35 min per (hint ratio, line-art source) cell of 3,000 images
-on A with the 96-channel scribble model, i.e. ≈ 14 GPU-hours for a Table II row.
+the CPUs of A (16 threads), plus the one-time environment setup and downloads (10–20 min, ≈ 3 GB of packages and
+1.5 GB of checkpoints). The example suite was measured on B. Full-scale DetFill inference: about 35 min per (hint
+ratio, line-art source) cell of 3,000 images on A with the 96-channel scribble model, i.e. ≈ 14 GPU-hours for a
+Table II row on A (about twice that on B).
 
 ## 5. Known pitfalls
 

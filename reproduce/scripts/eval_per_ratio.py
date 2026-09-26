@@ -13,7 +13,7 @@ Output:
     <out_dir>/per_ratio_summary.csv  sketch x ratio: n, <metric>_mean, <metric>_std   (same columns as reproduce/expected/**)
     <out_dir>/hauc.json              Hint-AUC per sketch + mean/SD over sketch types over the ratios found (paper grid by default)
 
-Example (Table II scribble row with the released checkpoint, after B4_table2_inference.sh):
+Example (Table II scribble row with the released checkpoint, after run_hauc_pipeline.sh / detfill/run_inference.sh):
     python reproduce/scripts/eval_per_ratio.py \
         --results_root detfill/results/dataset_name/BrownianBridge_scribble_illust/sample_to_eval/illust/scribble \
         --gt_dir <scratch_root>/segmentations/originals --out_dir reproduce/output/table2_scribble --gpu 0
@@ -72,9 +72,10 @@ def main():
         with open(per_image_path) as f:
             for row in csv.DictReader(f):
                 done.add((int(row["sketch"]), row["ratio"], row["image_name"]))
+    write_header = not os.path.exists(per_image_path) or os.path.getsize(per_image_path) == 0
     fh = open(per_image_path, "a", newline="")
     w = csv.writer(fh)
-    if not done:
+    if write_header:
         w.writerow(["sketch", "sketch_name", "ratio", "image_name"] + list(a.metrics))
 
     t0 = time.time()

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Launch the seed experiment as naga1 GPUs free up:
+# Launch the seed experiment as HOST_A GPUs free up:
 #   GPU0 (seg_slic pid $PID0 ends)        -> DetFill 32 runs, then Diffusart 32 runs
 #   GPU1 (seg_danbooregion pid $PID1 ends) -> ColDiff 32 runs
 # Polls every 10 min; exits after both chains are launched.

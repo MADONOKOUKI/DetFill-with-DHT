@@ -296,6 +296,8 @@ class HintColorizationDataset(Dataset):
         #  B) dataset_config.dataset_path — split-based layout with
         #     {train,valid,test}.txt lists (see detfill/README.md).
         scratch_root = getattr(dataset_config, 'scratch_root', None)
+        if scratch_root and str(scratch_root).startswith('/path/to'):
+            scratch_root = None                       # the placeholder of the released configs
         if scratch_root:
             self.root_sketch = os.path.join(scratch_root, "sketch")
             self.root_scr = os.path.join(scratch_root, "hint_from_regions_64_rev")

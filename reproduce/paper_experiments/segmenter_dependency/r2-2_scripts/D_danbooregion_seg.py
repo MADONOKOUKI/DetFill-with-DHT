@@ -1,4 +1,4 @@
-#!/home/madorin/anaconda3/envs/danbooregion/bin/python
+#!/home/USER/anaconda3/envs/danbooregion/bin/python
 """
 DanbooRegion segmentation (Stage 1): GT illustration -> region map (random colour per
 region), saved at 512px NEAREST. Stage 2 (make_scribbling, py37 env) turns these region
@@ -8,11 +8,11 @@ Runs in the `danbooregion` conda env (TF1.15 + Keras 2.2.4). The DanbooRegion UN
 are loaded once at import of `segment` (ai.py loads weights from the code dir's CWD).
 
 Usage (one shard):
-  cd /scratch/madono/DanbooRegion/code
+  cd /scratch/USER/DanbooRegion/code
   danbooregion/python D_danbooregion_seg.py --shard 0 --nshards 16 \
       --src_root /home/.../main_exp_felzenszwalb_fixdot/illust \
       --txt_dir  /home/.../BBDM_seg_retrain/configs/illust \
-      --out_root /scratch/madono/seg_retrain_R2-2/danboo_regions
+      --out_root /scratch/USER/seg_retrain_R2-2/danboo_regions
 Resume-safe (skips an id whose region png already exists).
 """
 import os
@@ -25,7 +25,7 @@ import sys, argparse, time, traceback
 import numpy as np
 import cv2
 
-DRCODE = "/scratch/madono/DanbooRegion/code"
+DRCODE = "/scratch/USER/DanbooRegion/code"
 SEG_SUBDIR = "segmentation_regions/felzenszwalb"   # GT lives here per-dir
 SIZE = 512   # save region map at 512px (NEAREST) — plenty for the 64px hint downsample
 

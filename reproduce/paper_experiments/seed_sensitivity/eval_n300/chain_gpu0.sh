@@ -1,11 +1,11 @@
 #!/bin/bash
-# 96ch Felz chain for reaper6 GPU 0. 13 cells, sequential.
+# 96ch Felz chain for HOST_B GPU 0. 13 cells, sequential.
 # Resume-safe: skips n>=299. Cleans up multiprocessing zombies on exit/interrupt.
 set -uo pipefail
-export PATH=/home/madorin/anaconda3/envs/BBDM/bin:$PATH
-cd /scratch/madono/seedexp_n300_felz96/code/BBDM
+export PATH=/home/USER/anaconda3/envs/BBDM/bin:$PATH
+cd /scratch/USER/seedexp_n300_felz96/code/BBDM
 GPU=0
-WORK=/scratch/madono/seedexp_n300_felz96
+WORK=/scratch/USER/seedexp_n300_felz96
 
 ts() { date '+%F %T'; }
 

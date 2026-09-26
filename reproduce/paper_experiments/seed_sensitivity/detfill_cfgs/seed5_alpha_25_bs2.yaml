@@ -16,8 +16,8 @@ data:
   dataset_name: 'dataset_name'
   dataset_type: 'custom_train_our_model'
   dataset_config:
-    dataset_path: '/scratch/madono/seedexp/detfill_roots/seed5_alpha_25'
-    scratch_root: '/scratch/madono/seedexp/detfill_roots/seed5_alpha_25'
+    dataset_path: '/scratch/USER/seedexp/detfill_roots/seed5_alpha_25'
+    scratch_root: '/scratch/USER/seedexp/detfill_roots/seed5_alpha_25'
     hint_type: 'scribble'
     domain: "illust"
     image_size: 256

@@ -19,18 +19,15 @@ CKPT_DIR="${GRSI_CKPT_DIR:-$HERE/checkpoints}"; DATA_DIR="$HERE/data"; OUT="$HER
 BASE=https://github.com/MADONOKOUKI/DetFill-with-DHT/releases/download
 
 echo "== [1/4] environment ($ENV_NAME)"
-command -v conda >/dev/null || { echo "conda not found: install Miniconda first (https://docs.conda.io)"; exit 1; }
-set +u; eval "$(conda shell.bash hook)"; set -u
-if ! conda env list | awk '{print $1}' | grep -qx "$ENV_NAME"; then
-  conda env create -n "$ENV_NAME" -f "$ROOT/replicability/environment.yml"
-fi
-set +u; conda activate "$ENV_NAME"; set -u
-python -m pip install -q --no-deps -e "$ROOT"
+source "$ROOT/replicability/conda_env.sh"     # finds or installs conda, creates and activates the env, checks the imports
 python -m pip install -q -r "$ROOT/reproduce/requirements-metrics.txt"
 python - <<'PY'
 import torch, hintauc, lpips, open_clip, dreamsim, transformers, torchmetrics
 print("   torch", torch.__version__, "| cuda", torch.cuda.is_available(), "| torchmetrics", torchmetrics.__version__)
 PY
+if [ "$GPU" != "-1" ] && ! python -c "import sys, torch; sys.exit(0 if torch.cuda.is_available() else 1)"; then
+  echo "   no CUDA device found: running on CPU (slow; set GRSI_GPU=-1 to silence this message)"; GPU=-1
+fi
 
 echo "== [2/4] checkpoints and example data"
 mkdir -p "$CKPT_DIR" "$DATA_DIR"

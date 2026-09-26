@@ -6,10 +6,10 @@
 #   GPU=0 bash run_seedexp_diffusart.sh
 set -uo pipefail
 GPU="${GPU:-0}"
-REPO=/home/madorin/gitlab/labrepo/main/Diffusion_v1_comp
-LINK=/scratch/madono/main_exp/illust/hint_from_regions/felzenszwalb
-SAVE_ROOT=/scratch/madono/seedexp/diffusart
-source /home/madorin/anaconda3/etc/profile.d/conda.sh 2>/dev/null || true
+REPO=/home/USER/gitlab/labrepo/main/Diffusion_v1_comp
+LINK=/scratch/USER/main_exp/illust/hint_from_regions/felzenszwalb
+SAVE_ROOT=/scratch/USER/seedexp/diffusart
+source /home/USER/anaconda3/etc/profile.d/conda.sh 2>/dev/null || true
 conda activate BBDM || { echo "[ERR] conda BBDM failed"; exit 1; }
 ts(){ date '+%F %T'; }
 RATIOS=(0 1 3 5 10 25 50 100)
@@ -21,7 +21,7 @@ for r in "${RATIOS[@]}"; do
     out="$SAVE_ROOT/$tag/100"     # dir_path = save_path + int(ratio*100)
     n=$(ls "$out" 2>/dev/null | grep -cE "^[0-9]+\.png$")
     if [ "$n" -ge 2999 ]; then echo "[$(ts)] skip $tag (done n=$n)"; continue; fi
-    ln -sfn "/scratch/madono/seedexp/diffusart_hints/$tag" "$LINK"
+    ln -sfn "/scratch/USER/seedexp/diffusart_hints/$tag" "$LINK"
     echo "[$(ts)] ### Diffusart $tag (have $n)"
     env CUDA_VISIBLE_DEVICES=$GPU SEEDEXP_SAVE_ROOT="$SAVE_ROOT" \
       python test_seedexp.py \

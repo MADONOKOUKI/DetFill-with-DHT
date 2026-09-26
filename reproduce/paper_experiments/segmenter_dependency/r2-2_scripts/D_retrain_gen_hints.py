@@ -1,4 +1,4 @@
-#!/home/madorin/anaconda3/envs/py37/bin/python
+#!/home/USER/anaconda3/envs/py37/bin/python
 """
 R2-2 / R1-3 segmentation-retrain data generation.
 
@@ -9,19 +9,19 @@ felzenszwalb pipeline, and regenerate the deterministic region+scribble hint wit
 SAME make_scribbling logic. Outputs use the felz-identical naming so the BBDM dataloader
 can read them unchanged.
 
-Segmentation params  : ported verbatim from /scratch/madono/all_segmentations.py
+Segmentation params  : ported verbatim from /scratch/USER/all_segmentations.py
 Hint (make_scribbling): ported verbatim from
-    /scratch/madono/scripts_fixing/hint_dot_generation_DATESTAMP_illust_abl_64.py
+    /scratch/USER/scripts_fixing/hint_dot_generation_DATESTAMP_illust_abl_64.py
 
 GT/sketch are segmenter-independent and reused from fixdot (NOT regenerated here).
 Only region64 / scribble_mask64 / scribble_col64 are produced (training-needed, 64px).
 
-Env: /home/madorin/anaconda3/envs/py37/bin/python  (cv2, skimage 0.19, astropy 4.3.1,
-     fil_finder 1.7.2). py37 lives on NFS so it is available on cayenne1-4.
+Env: /home/USER/anaconda3/envs/py37/bin/python  (cv2, skimage 0.19, astropy 4.3.1,
+     fil_finder 1.7.2). py37 lives on NFS so it is available on HOST_C-4.
 
 Usage (single node):
   py37 D_retrain_gen_hints.py --segmenter slic --split all \
-       --shard 0 --nshards 4 --out_root /scratch/madono/seg_retrain_R2-2
+       --shard 0 --nshards 4 --out_root /scratch/USER/seg_retrain_R2-2
 Resume-safe: skips an id whose _scribble_mask64.png already exists.
 """
 import os, sys, argparse, copy, time, traceback
@@ -38,11 +38,11 @@ SIZE = 64  # hint resolution (training reads *_mask64 / *_col64 / *_region64)
 
 # Source GT images are STAGED to local /scratch (NFS-free generation to spare the
 # fileserver). Staged layout mirrors fixdot: <src_root>/<SEG_SUBDIR>/<dir>/<id>.image.png
-SRC_ROOT_DEFAULT = "/scratch/madono/seg_retrain_R2-2/src"
-NFS_SRC   = "/home/madorin/datasets/labrepo/main_exp_felzenszwalb_fixdot/illust"  # original (NFS)
+SRC_ROOT_DEFAULT = "/scratch/USER/seg_retrain_R2-2/src"
+NFS_SRC   = "/home/USER/datasets/labrepo/main_exp_felzenszwalb_fixdot/illust"  # original (NFS)
 SEG_SUBDIR = "segmentation_regions/felzenszwalb"   # GT .image.png lives here, per-dir
 # txt split lists are copied next to the staged source so the txt read is NFS-free too
-TXT_DIR_DEFAULT = "/scratch/madono/seg_retrain_R2-2/configs/illust"
+TXT_DIR_DEFAULT = "/scratch/USER/seg_retrain_R2-2/configs/illust"
 
 
 # ------------------------- segmentation (verbatim params) -------------------------

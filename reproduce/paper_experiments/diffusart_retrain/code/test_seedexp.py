@@ -67,7 +67,7 @@ model = Unet(
 ).to(device)
 
 print('Entering to inference')
-# state_dict = torch.load('/home/madorin/gitlab/yuan/hint_colorization/train/compared/Diffusion_v1/checkpoint/wacv_dot/checkpoint_ema_269662.pth', map_location= device)
+# state_dict = torch.load('/home/USER/gitlab/yuan/hint_colorization/train/compared/Diffusion_v1/checkpoint/wacv_dot/checkpoint_ema_269662.pth', map_location= device)
 state_dict = torch.load(args.checkpoint_path, map_location= device)
 
 
@@ -85,13 +85,13 @@ model.to(device)
 #     #Training data
 
 #     #Training images list
-#     with open('/home/madorin/gitlab/yuan/hint_colorization/train/config/train_paper.txt', "r") as a:
+#     with open('/home/USER/gitlab/yuan/hint_colorization/train/config/train_paper.txt', "r") as a:
 #         list_train_imgs = a.readlines()
 
-#     with open('/home/madorin/gitlab/yuan/hint_colorization/train/config/valid_paper.txt', "r") as a:
+#     with open('/home/USER/gitlab/yuan/hint_colorization/train/config/valid_paper.txt', "r") as a:
 #         list_valid_imgs = a.readlines()
 
-#     with open('/home/madorin/gitlab/yuan/hint_colorization/train/config/test_paper.txt', "r") as a:
+#     with open('/home/USER/gitlab/yuan/hint_colorization/train/config/test_paper.txt', "r") as a:
 #         list_test_imgs = a.readlines()        
 
 #     return list_train_imgs, list_valid_imgs, list_test_imgs
@@ -104,7 +104,7 @@ def init_load_data(domain):
     with open(os.path.join('configs', str(domain), 'train_paper.txt'), "r") as a:
         list_train_imgs = a.readlines()
 
-    # with open('/home/madorin/gitlab/yuan/hint_colorization/train/config/valid_paper.txt', "r") as a:
+    # with open('/home/USER/gitlab/yuan/hint_colorization/train/config/valid_paper.txt', "r") as a:
     with open(os.path.join('configs', str(domain), 'valid_paper.txt'), "r") as a:
 
         list_valid_imgs = a.readlines()
@@ -266,8 +266,8 @@ def sample_DD_cat_hints(model, noise, feat_in, hints, scheduler, cat):
 
     return img
 
-# save_path = os.path.join('/home/madorin/gitlab/yuan/hint_colorization/paper_results/compared/Diffusion_v1/', args.hint_name, str(args.path_length), str(args.rnd))
-# save_path = os.path.join('/scratch/madono/paper_results_randomhint_diffsuart/paper_results/proposed/Diffusion_v1/', args.hint_name, str(args.path_length), str(args.rnd))
+# save_path = os.path.join('/home/USER/gitlab/yuan/hint_colorization/paper_results/compared/Diffusion_v1/', args.hint_name, str(args.path_length), str(args.rnd))
+# save_path = os.path.join('/scratch/USER/paper_results_randomhint_diffsuart/paper_results/proposed/Diffusion_v1/', args.hint_name, str(args.path_length), str(args.rnd))
 
 with torch.no_grad():
     def inference_scribs_paper_cat_hints_wacv(save_path, model, dataloader, channels, image_size, device, cat, hint_fix, hint_name, eval_metrics, ratio, batch_size):
@@ -348,10 +348,10 @@ for rnd in [2]:   # seedexp: sketchkeras only
     # if rnd <=1:
     #     continue
     # save_path = os.path.join('paper_results', args.save_name , args.hint_name, "kernel size_"+str(args.path_length), "hint_"+str(rnd))
-    # save_path = os.path.join('/scratch/madono/paper_results_submission_diffusart/paper_result_userstudy', args.save_name , args.hint_name,  "hint_"+str(rnd))
-    save_path = os.path.join('/scratch/madono/paper_results_submission_diffusart/paper_result_randomhints_2025_rev_sorted', args.save_name , args.hint_name,  "hint_"+str(rnd))
-    save_path = os.path.join(os.environ.get('SEEDEXP_SAVE_ROOT','/scratch/madono/seedexp/diffusart'), args.save_name)   # seedexp
-    # save_path = os.path.join('/scratch/madono/tog_results/Diffusion_v1_comp/', args.save_name , args.hint_name, "kernel size_"+str(args.path_length), "hint_"+str(rnd))
+    # save_path = os.path.join('/scratch/USER/paper_results_submission_diffusart/paper_result_userstudy', args.save_name , args.hint_name,  "hint_"+str(rnd))
+    save_path = os.path.join('/scratch/USER/paper_results_submission_diffusart/paper_result_randomhints_2025_rev_sorted', args.save_name , args.hint_name,  "hint_"+str(rnd))
+    save_path = os.path.join(os.environ.get('SEEDEXP_SAVE_ROOT','/scratch/USER/seedexp/diffusart'), args.save_name)   # seedexp
+    # save_path = os.path.join('/scratch/USER/tog_results/Diffusion_v1_comp/', args.save_name , args.hint_name, "kernel size_"+str(args.path_length), "hint_"+str(rnd))
 
     # for ratio in hint_ratio:
     img_size, batch_size = 256, 1 #35

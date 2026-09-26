@@ -1,14 +1,14 @@
 #!/bin/bash
-# RUN ON a reaper inside tmux/nohup. WAITS for THIS reaper's training to finish, then
+# RUN ON a HOST_B inside tmux/nohup. WAITS for THIS HOST_B's training to finish, then
 # immediately runs the eval matrix on ALL 10 GPUs (so the freed GPUs are grabbed at once):
 #   trained model ($SEG) x {felz, slic, danbooregion} hints x 8 ratio x 3 sketch type
 #   = 72 combos, round-robin over GPU 0..9. Resume-safe (skips done images).
-#   usage: D_reaper_eval_matrix.sh <slic|danbooregion>
+#   usage: D_eval_matrix.sh <slic|danbooregion>
 set -u
 SEG=${1:?slic|danbooregion}
-CODE=/home/madorin/gitlab/labrepo/main/revision_materials/rebuttal/R2/R2-2_segmentation_dependency/BBDM_seg_retrain
-PY=/home/madorin/anaconda3/envs/BBDM/bin/python
-SR=/scratch/madono/seg_retrain
+CODE=/home/USER/gitlab/labrepo/main/revision_materials/rebuttal/R2/R2-2_segmentation_dependency/BBDM_seg_retrain
+PY=/home/USER/anaconda3/envs/BBDM/bin/python
+SR=/scratch/USER/seg_retrain
 RESULT="$SR/results_eval/${SEG}_model"
 LOG="$SR/logs/eval_matrix_${SEG}"
 RATIOS="0.00 0.01 0.03 0.05 0.10 0.25 0.50 1.00"

@@ -4,11 +4,11 @@
 # cosine + 5000-step warmup, EMA 0.995, 256px. Single GPU (set GPU env, default 3).
 set -u
 GPU=${GPU:-3}
-ROOT=/scratch/madono/diffusart_det_R3-2
-REPO=/home/madorin/gitlab/labrepo/main/Diffusion_v1_tvcg_R3-2
+ROOT=/scratch/USER/diffusart_det_R3-2
+REPO=/home/USER/gitlab/labrepo/main/Diffusion_v1_tvcg_R3-2
 LOG=$ROOT/logs
 mkdir -p "$LOG"
-source /home/madorin/anaconda3/etc/profile.d/conda.sh
+source /home/USER/anaconda3/etc/profile.d/conda.sh
 conda activate BBDM || exit 1
 cd "$REPO"
 ts(){ date '+%F %T'; }

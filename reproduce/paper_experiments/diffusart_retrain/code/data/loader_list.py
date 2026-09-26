@@ -11,7 +11,7 @@ def init_load_data(domain):
     with open(os.path.join('configs', str(domain), 'train_paper.txt'), "r") as a:
         list_train_imgs = a.readlines()
 
-    # with open('/home/madorin/gitlab/yuan/hint_colorization/train/config/valid_paper.txt', "r") as a:
+    # with open('/home/USER/gitlab/yuan/hint_colorization/train/config/valid_paper.txt', "r") as a:
     with open(os.path.join('configs', str(domain), 'valid_paper.txt'), "r") as a:
 
         list_valid_imgs = a.readlines()

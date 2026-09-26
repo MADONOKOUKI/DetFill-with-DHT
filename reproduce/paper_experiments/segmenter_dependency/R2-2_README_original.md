@@ -21,7 +21,7 @@ Two complementary experiments (same scripts as R1-3):
 ### Reproduce
 
 ```bash
-PY=/home/madorin/anaconda3/envs/py310/bin/python3
+PY=/home/USER/anaconda3/envs/py310/bin/python3
 $PY scripts/C-1_segmenters.py
 $PY scripts/C-2_perturbation.py
 ```

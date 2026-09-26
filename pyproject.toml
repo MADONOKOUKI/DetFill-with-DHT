@@ -4,9 +4,9 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "hintauc"
-version = "0.2.1"
+version = "0.2.2"
 description = "Deterministic region-based hint generation (DHT) and Hint-AUC evaluation for line-art colorization"
-readme = "README.md"
+readme = "docs/pypi_readme.md"
 license = "MIT"
 license-files = ["LICENSE"]
 authors = [{ name = "Koki Madono" }]

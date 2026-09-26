@@ -69,13 +69,13 @@ def opencv2pil(in_image):
 #     #Training data
 
 #     #Training images list
-#     with open('/home/madorin/gitlab/yuan/hint_colorization/train/config/train_paper.txt', "r") as a:
+#     with open('/home/USER/gitlab/yuan/hint_colorization/train/config/train_paper.txt', "r") as a:
 #         list_train_imgs = a.readlines()
 
-#     with open('/home/madorin/gitlab/yuan/hint_colorization/train/config/valid_paper.txt', "r") as a:
+#     with open('/home/USER/gitlab/yuan/hint_colorization/train/config/valid_paper.txt', "r") as a:
 #         list_valid_imgs = a.readlines()
 
-#     with open('/home/madorin/gitlab/yuan/hint_colorization/train/config/test_paper.txt', "r") as a:
+#     with open('/home/USER/gitlab/yuan/hint_colorization/train/config/test_paper.txt', "r") as a:
 #         list_test_imgs = a.readlines()        
 
 #     return list_train_imgs, list_valid_imgs
@@ -368,7 +368,7 @@ def making_mask_v3(color, size, flatten=True):
 class ImageFolder(data.Dataset):
     def __init__(self, root, transform=None, vtransform=None, stransform=None):
         self.root = root
-        self.root_sketch = '/home/madorin/gitlab/yuan/hint_colorization/danbooru2021_sketch_png'
+        self.root_sketch = '/home/USER/gitlab/yuan/hint_colorization/danbooru2021_sketch_png'
         self.sketch_cands =  ['pysketchsimplify', 'XDoG', 'sketchkeras']
         self.transform = transform
         self.vtransform = vtransform
@@ -509,27 +509,27 @@ class ImageFolder_Test(data.Dataset):
 
     def __init__(self, root, img_size, method='strokes', transform=None, stransform=None, htransform=None, vtransform= None, ratio=None, path_length=None, rnd=None, domain=None, dtype=None, dtype_region=None):
         self.root       = root
-        # self.root_sketch = '/home/madorin/gitlab/yuan/hint_colorization/danbooru2021_sketch_png'
-        # self.root_scr = '/home/madorin/gitlab/yuan/hint_colorization/danbooru2021_scribbling_rev'
+        # self.root_sketch = '/home/USER/gitlab/yuan/hint_colorization/danbooru2021_sketch_png'
+        # self.root_scr = '/home/USER/gitlab/yuan/hint_colorization/danbooru2021_scribbling_rev'
 
 
         self.root       = root
         # self.approach = approach
-        # self.root_sketch = os.path.join('/scratch/madono/main_exp', domain, 'sketch')
-        # # self.root_sketch = '/scratch/madono/danbooru2021_sketch_png'
-        # # self.root_scr = '/scratch/madono/danbooru2021_scribbling_rev'
-        # self.root_scr = os.path.join('/scratch/madono/main_exp/', domain, dtype)
-        # # self.root_region = '/scratch/madono/region'
-        # self.root_region = os.path.join('/scratch/madono/main_exp/', domain, dtype_region)
-        # self.root_sketch = os.path.join('/scratch/madono/main_exp', domain, 'sketch')
-        # self.root_scr = os.path.join('/scratch/madono/main_exp/', domain, "hint_from_regions", dtype)
-        # self.root_region = os.path.join('/scratch/madono/main_exp/', domain, "segmentation_regions", dtype)
+        # self.root_sketch = os.path.join('/scratch/USER/main_exp', domain, 'sketch')
+        # # self.root_sketch = '/scratch/USER/danbooru2021_sketch_png'
+        # # self.root_scr = '/scratch/USER/danbooru2021_scribbling_rev'
+        # self.root_scr = os.path.join('/scratch/USER/main_exp/', domain, dtype)
+        # # self.root_region = '/scratch/USER/region'
+        # self.root_region = os.path.join('/scratch/USER/main_exp/', domain, dtype_region)
+        # self.root_sketch = os.path.join('/scratch/USER/main_exp', domain, 'sketch')
+        # self.root_scr = os.path.join('/scratch/USER/main_exp/', domain, "hint_from_regions", dtype)
+        # self.root_region = os.path.join('/scratch/USER/main_exp/', domain, "segmentation_regions", dtype)
         self.domain = domain
-        self.root_sketch =  os.path.join("/scratch/madono/diffusart_det_R3-2/", self.domain, "sketch")
-        self.root_scr = os.path.join("/scratch/madono/diffusart_det_R3-2/", self.domain, "hint_from_regions", "felzenszwalb")
+        self.root_sketch =  os.path.join("/scratch/USER/diffusart_det_R3-2/", self.domain, "sketch")
+        self.root_scr = os.path.join("/scratch/USER/diffusart_det_R3-2/", self.domain, "hint_from_regions", "felzenszwalb")
 
-        self.root_scr = os.path.join("/home/madorin/gitlab/labrepo/main/Evaluation_paper", "random_hint_rev" )
-        self.root_region =  os.path.join("/scratch/madono/diffusart_det_R3-2/", self.domain, "segmentation_regions",  "felzenszwalb")
+        self.root_scr = os.path.join("/home/USER/gitlab/labrepo/main/Evaluation_paper", "random_hint_rev" )
+        self.root_region =  os.path.join("/scratch/USER/diffusart_det_R3-2/", self.domain, "segmentation_regions",  "felzenszwalb")
         self.sketch_cands =  ['pysimp', 'XDoG', 'sketchkeras']
 
 
@@ -557,9 +557,9 @@ class ImageFolder_Test(data.Dataset):
             transforms.ToTensor(),
         ])       
 
-        # self.root_sketch = '/scratch/madono/danbooru2021_sketch_png'
-        # self.root_scr = '/scratch/madono/danbooru2021_scribbling_rev'
-        # self.root_region = '/scratch/madono/region'
+        # self.root_sketch = '/scratch/USER/danbooru2021_sketch_png'
+        # self.root_scr = '/scratch/USER/danbooru2021_scribbling_rev'
+        # self.root_region = '/scratch/USER/region'
 
 
         # self.sketch_cands =  ['pysketchsimplify', 'XDoG', 'sketchkeras']

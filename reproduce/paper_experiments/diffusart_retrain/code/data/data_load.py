@@ -746,17 +746,17 @@ class MyData_train_scrib(Dataset):
 
         self.root       = root
         self.approach = approach
-        # self.root_sketch = os.path.join('/scratch/madono/main_exp', domain, 'sketch')
-        # # self.root_sketch = '/scratch/madono/danbooru2021_sketch_png'
-        # # self.root_scr = '/scratch/madono/danbooru2021_scribbling_rev'
-        # self.root_scr = os.path.join('/scratch/madono/main_exp/', domain, dtype)
-        # # self.root_region = '/scratch/madono/region'
-        # self.root_region = os.path.join('/scratch/madono/main_exp/', domain, dtype_region)
+        # self.root_sketch = os.path.join('/scratch/USER/main_exp', domain, 'sketch')
+        # # self.root_sketch = '/scratch/USER/danbooru2021_sketch_png'
+        # # self.root_scr = '/scratch/USER/danbooru2021_scribbling_rev'
+        # self.root_scr = os.path.join('/scratch/USER/main_exp/', domain, dtype)
+        # # self.root_region = '/scratch/USER/region'
+        # self.root_region = os.path.join('/scratch/USER/main_exp/', domain, dtype_region)
         self.domain = domain
 
-        self.root_sketch =  os.path.join("/scratch/madono/main_exp/", self.domain, "sketch")
-        self.root_scr = os.path.join("/scratch/madono/main_exp/", self.domain, "hint_from_regions", "felzenszwalb")
-        self.root_region =  os.path.join("/scratch/madono/main_exp/", self.domain, "segmentation_regions",  "felzenszwalb")
+        self.root_sketch =  os.path.join("/scratch/USER/main_exp/", self.domain, "sketch")
+        self.root_scr = os.path.join("/scratch/USER/main_exp/", self.domain, "hint_from_regions", "felzenszwalb")
+        self.root_region =  os.path.join("/scratch/USER/main_exp/", self.domain, "segmentation_regions",  "felzenszwalb")
         self.sketch_cands =  ['pysimp', 'XDoG', 'sketchkeras']
 
 

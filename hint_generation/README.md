@@ -6,8 +6,8 @@ the scripts here are the batch tools with sharding and resume.
 
 ## The pipeline (one colour image → hint maps)
 
-1. **Region segmentation** — Felzenszwalb (`scale=100, sigma=0.5, min_size=100`); SLIC, Quickshift, Watershed and
-   DanbooRegion variants for the robustness study.
+1. **Region segmentation** — Felzenszwalb (`scale=100, sigma=0.5, min_size=100`); SLIC and Quickshift variants
+   (`generate_hints.py`) and DanbooRegion (`danbooregion_hints.py`) for the robustness study.
 2. **Region-id map** — a unique colour per region; disconnected parts of one region are split and recoloured.
 3. **Scribble per region** — Zhang–Suen skeleton → 3 × 3 dilation → longest path (FilFinder, branch/skeleton threshold
    3 px), clipped to the region; coloured with the region's mean colour.
@@ -51,7 +51,7 @@ hints.save("out/image")                                # the file set above
 
 | File | Role |
 |---|---|
-| `generate_hints.py` | batch generator (SLIC / Quickshift / Felzenszwalb; sharding; resume-safe); contains the verbatim `make_scribbling` port |
+| `generate_hints.py` | batch generator for the alternative segmenters (SLIC / Quickshift; sharding; resume-safe); contains the verbatim `make_scribbling` port. Felzenszwalb maps: `hintauc.generate_hints` |
 | `danbooregion_hints.py` | DanbooRegion-segmenter variant (needs the upstream DanbooRegion code and weights) |
 | `compare_path_methods.py` | compares the FilFinder and geodesic longest paths on stored region maps |
 | `canonical/hint_dot_generation_fixdot.py` | archival copy of the script that produced the paper's stored maps |

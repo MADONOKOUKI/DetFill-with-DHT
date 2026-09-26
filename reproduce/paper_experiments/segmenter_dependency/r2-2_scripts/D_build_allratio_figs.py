@@ -1,12 +1,12 @@
-#!/home/madorin/anaconda3/envs/py37/bin/python
+#!/home/USER/anaconda3/envs/py37/bin/python
 """Build/inspect per-id all-ratio figure cells for R2-2 supp_fig_allratio.
-Model: DanbooRegion-trained DetFill (raw eval, reaper2). Sketch index matched to existing figs (sk=0).
+Model: DanbooRegion-trained DetFill (raw eval, HOST_B). Sketch index matched to existing figs (sk=0).
 Modes: --dry (report) | --write --id <ID> [--sk N].  Emits <ID>_<seg>_{seg,hint,a000..a100}.png + <ID>_GT.png."""
 import cv2, numpy as np, glob, os, argparse, sys
-P   = "/home/madorin/gitlab/labrepo/main/revision_materials"
-RAW = P + "/rebuttal/R2/R2-2_segmentation_dependency/output/D_retrain_eval_raw/reaper2/danbooregion_model/dataset_name"
+P   = "/home/USER/gitlab/labrepo/main/revision_materials"
+RAW = P + "/rebuttal/R2/R2-2_segmentation_dependency/output/D_retrain_eval_raw/HOST_B/danbooregion_model/dataset_name"
 FIGS= P + "/paper_src/figs/revision_figs/revise/R2/R2-2_segdep"
-SEGMAP = {"felz":"/home/madorin/datasets/labrepo/main_exp_felzenszwalb_fixdot/illust/segmentation_regions/felzenszwalb",
+SEGMAP = {"felz":"/home/USER/datasets/labrepo/main_exp_felzenszwalb_fixdot/illust/segmentation_regions/felzenszwalb",
           "slic":P+"/rebuttal/R2/R2-2_segmentation_dependency/retrain_data/slic",
           "danboo":P+"/rebuttal/R2/R2-2_segmentation_dependency/retrain_data/danbooregion"}
 EVALSEG = {"felz":"on_felz","danboo":"on_danbooregion","slic":"on_slic"}

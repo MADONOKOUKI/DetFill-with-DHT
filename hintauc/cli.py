@@ -29,7 +29,7 @@ def main(argv=None):
     g.add_argument("--tie_break", default="default", choices=["default", "stable"],
                    help="order of equal-area regions when selecting by --ratio: 'default' (paper: NumPy argsort) or 'stable' (ascending label; version-independent)")
     g.add_argument("--dot_method", default="medoid", choices=["medoid", "mean", "nearest_mean"],
-                   help="dot placement: 'mean' (paper: truncated mean of the path, may leave the region) or 'medoid' (in-region path pixel nearest to the mean)")
+                   help="dot placement: 'medoid' (paper's stored maps: in-region path pixel with the smallest total distance to the others), 'mean' (truncated mean of the path, may leave the region) or 'nearest_mean' (in-region path pixel nearest to the mean)")
     g.add_argument("-v", "--verbose", action="store_true")
 
     e = sub.add_parser("eval", help="evaluate colorization(s) against ground truth")
@@ -75,7 +75,7 @@ def main(argv=None):
         if os.path.isdir(args.pred):
             scores = evaluate_dirs(args.pred, args.gt, evaluator=ev,
                                    pairing=args.pairing, limit=args.limit)
-            if args.set_metrics:
+            if args.set_metrics is not None:
                 from .metrics import evaluate_set
                 scores.update(evaluate_set(args.pred, args.gt, metrics=args.set_metrics or ("fid", "kid"),
                                            device=args.device, resize=args.resize))

@@ -3,7 +3,7 @@
 # (the approach='proposed' deterministic-hint loader), with only the hardcoded
 # data root replaced by DATA_ROOT (env DIFFUSART_DET_DATA_ROOT).
 #
-# DATE: __getitem__ aligned to the PROPOSED (BBDM) HintColorizationDataset flow:
+# __getitem__ aligned to the PROPOSED (BBDM) HintColorizationDataset flow:
 #   (1) hint channel order -> cat([mask, hint*mask]) (mask-FIRST, matches proposed)
 #   (2) region sampling     -> np.random.shuffle (random subset, matches proposed train)
 #   (3) GT/sketch transform -> PIL + Resize(NEAREST->size) + Resize(BICUBIC)+ToTensor+Normalize
@@ -24,7 +24,7 @@ from PIL import ImageFile
 import cv2
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
-DATA_ROOT = os.environ.get('DIFFUSART_DET_DATA_ROOT', '/scratch/madono/diffusart_det_R3-2')
+DATA_ROOT = os.environ.get('DIFFUSART_DET_DATA_ROOT', '/scratch/USER/diffusart_det_R3-2')
 
 def pil2opencv(in_image):
     out_image = np.array(in_image, dtype=np.uint8)

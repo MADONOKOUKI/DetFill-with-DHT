@@ -1,15 +1,15 @@
 #!/bin/bash
-# RUN ON naga1. Parallel DanbooRegion eval across naga1's 4 GPUs (SLIC eval is already done).
+# RUN ON HOST_A. Parallel DanbooRegion eval across HOST_A's 4 GPUs (SLIC eval is already done).
 # Distributes the (ratio x sketch_type) combos round-robin over GPU 0..3. Resume-safe:
 # the runner skips any test image whose output PNG already exists, so killing the slow
 # single-GPU run and relaunching here wastes nothing.
-#   usage:  bash naga1_danboo_4gpu.sh "0 1 2"     (sketch types; use "0" for 1 type = ~3x faster)
+#   usage:  bash danboo_4gpu.sh "0 1 2"     (sketch types; use "0" for 1 type = ~3x faster)
 set -u
 TYPES="${1:-0 1 2}"
-CODE=/home/madorin/gitlab/labrepo/main/revision_materials/rebuttal/R2/R2-2_segmentation_dependency/BBDM_seg_retrain
-PY=/home/madorin/anaconda3/envs/BBDM/bin/python
-CKPT=/home/madorin/gitlab/labrepo/main/revision_materials/rebuttal/R2/R2-2_segmentation_dependency/checkpoints/proposed_96ch_scribble.pth
-EVAL=/scratch/madono/seg_eval
+CODE=/home/USER/gitlab/labrepo/main/revision_materials/rebuttal/R2/R2-2_segmentation_dependency/BBDM_seg_retrain
+PY=/home/USER/anaconda3/envs/BBDM/bin/python
+CKPT=/home/USER/gitlab/labrepo/main/revision_materials/rebuttal/R2/R2-2_segmentation_dependency/checkpoints/proposed_96ch_scribble.pth
+EVAL=/scratch/USER/seg_eval
 RATIOS="0.00 0.01 0.03 0.05 0.10 0.25 0.50 1.00"
 export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
 

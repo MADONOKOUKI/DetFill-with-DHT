@@ -16,7 +16,9 @@ command-line version that writes the released `per_ratio_summary.csv` format.
 ## Pipeline used for the revision results (`dense/`)
 
 Works on the output layout of `../detfill/run_inference.sh`
-(`.../sample_to_eval/illust/<hint>/<sketch_type>/<ratio>/{200,ground_truth}/`):
+(`.../sample_to_eval/illust/<hint>/<sketch_type>/<ratio>/{200,ground_truth}/`). Note: these archived scripts label
+sketch index 0 "XDoG" and 1 "pysimp", the reverse of the loader's mapping (0 = sketch simplification, 1 = XDoG); the
+maintained `reproduce/scripts/eval_per_ratio.py` uses the loader's names:
 
 ```bash
 python evaluation/dense/eval_curve.py --results_root <.../sample_to_eval/illust/scribble> \

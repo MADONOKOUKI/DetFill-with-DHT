@@ -16,7 +16,7 @@ data:
   dataset_name: 'dataset_name_nop'
   dataset_type: 'custom_train_our_model'
   dataset_config:
-    dataset_path: '/scratch/madono/main_exp_felzenszwalb/illust/'
+    dataset_path: '/scratch/USER/main_exp_felzenszwalb/illust/'
     hint_type: 'scribble'
     domain: "illust"
     image_size: 256

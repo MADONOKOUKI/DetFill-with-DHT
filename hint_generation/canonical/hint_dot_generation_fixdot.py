@@ -1,9 +1,9 @@
-# Archival copy (verbatim, from cayenne1:/scratch/madono/archives_submission/main_hg_illust_64.py, DATE) of the
+# Archival copy (verbatim) of the
 # 64-px hint generation script whose DOT RULE produced the paper's stored hint maps
 # (main_exp_felzenszwalb_fixdot, earlier, and the revision test-split maps released with this repository):
 #   dot = the in-region longest-path pixel with the smallest total Manhattan distance to the other in-region
 #         path pixels (first index on ties); a single-pixel region whose path was pruned gets the pixel itself.
-# Verified DATE on 5,335 regions of six test images: 100% of the stored dots follow this rule.
+# Verified on 5,335 regions of six test images: 100% of the stored dots follow this rule.
 # canonical/hint_dot_generation.py is the earlier version of the same script, which placed the dot at the
 # truncated mean of the whole path; that earlier rule is NOT the one behind the released maps.
 # Not meant to be run as-is (hard-coded paths).
@@ -284,12 +284,12 @@ if __name__=='__main__':
 
     # path = "/data/datasets/ImageNet"
 
-    # region_path = os.path.join("/scratch/madono/tog_created/segmentation_regions/imagenet", str(sys.argv[1]) )
-    # out_path = os.path.join("/scratch/madono/tog_created/hint_from_regions/imagenet", str(sys.argv[1]) )
-    # region_path = os.path.join("/home/madorin/datasets/labrepo/hint_eval/illust/superpixel", str(sys.argv[1]) )
-    # out_path = os.path.join("/home/madorin/datasets/labrepo/hint_eval/illust/superpixel_hint", str(sys.argv[1]) )
-    region_path = os.path.join("/scratch/madono/tog_created/segmentation_regions", str(sys.argv[1]) )
-    out_path = os.path.join("/scratch/madono/tog_created/hint_from_regions/", str(sys.argv[1]) )       
+    # region_path = os.path.join("/scratch/USER/tog_created/segmentation_regions/imagenet", str(sys.argv[1]) )
+    # out_path = os.path.join("/scratch/USER/tog_created/hint_from_regions/imagenet", str(sys.argv[1]) )
+    # region_path = os.path.join("/home/USER/datasets/labrepo/hint_eval/illust/superpixel", str(sys.argv[1]) )
+    # out_path = os.path.join("/home/USER/datasets/labrepo/hint_eval/illust/superpixel_hint", str(sys.argv[1]) )
+    region_path = os.path.join("/scratch/USER/tog_created/segmentation_regions", str(sys.argv[1]) )
+    out_path = os.path.join("/scratch/USER/tog_created/hint_from_regions/", str(sys.argv[1]) )       
     path = region_path
     dirs =  ['0000', '0001', '0002', '0003', '0004', '0005', '0006', '0007', '0008', '0009', '0010', '0011', '0012', '0013', '0014', '0015', '0016', '0017', '0018', '0019', '0020']
 

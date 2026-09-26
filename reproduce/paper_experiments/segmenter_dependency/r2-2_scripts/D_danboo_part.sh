@@ -1,14 +1,14 @@
 #!/bin/bash
-# RUN ON reaper2 or reaper3. Launch a SLICE [FROM..TO] of the DanbooRegion-model 72-combo
-# eval matrix across 10 GPUs (resume-safe). Combo order matches D_reaper_eval_matrix.sh:
+# RUN ON HOST_B or HOST_B. Launch a SLICE [FROM..TO] of the DanbooRegion-model 72-combo
+# eval matrix across 10 GPUs (resume-safe). Combo order matches D_eval_matrix.sh:
 #   index = hint*24 + ratio*3 + type,  hints = felz(0-23) slic(24-47) danbooregion(48-71)
-# Static split: reaper2 takes 0-35, reaper3 takes 36-71 -> zero overlap, no sync needed.
+# Static split: HOST_B takes 0-35, HOST_B takes 36-71 -> zero overlap, no sync needed.
 #   usage: D_danboo_part.sh <ckpt_path> <from> <to> ["gpu list"]   (default GPUs: 0..9)
 set -u
 CKPT=${1:?ckpt path}; FROM=${2:?from idx}; TO=${3:?to idx}; GPUS="${4:-0 1 2 3 4 5 6 7 8 9}"
-CODE=/home/madorin/gitlab/labrepo/main/revision_materials/rebuttal/R2/R2-2_segmentation_dependency/BBDM_seg_retrain
-PY=/home/madorin/anaconda3/envs/BBDM/bin/python
-SR=/scratch/madono/seg_retrain
+CODE=/home/USER/gitlab/labrepo/main/revision_materials/rebuttal/R2/R2-2_segmentation_dependency/BBDM_seg_retrain
+PY=/home/USER/anaconda3/envs/BBDM/bin/python
+SR=/scratch/USER/seg_retrain
 RESULT=$SR/results_eval/danbooregion_model
 LOG=$SR/logs/eval_matrix_danbooregion
 RATIOS="0.00 0.01 0.03 0.05 0.10 0.25 0.50 1.00"

@@ -1,23 +1,23 @@
 #!/bin/bash
-# Launch parallel hint-gen shards for ONE segmenter on THIS node (cayenne1-4).
+# Launch parallel hint-gen shards for ONE segmenter on THIS node (HOST_C-4).
 # Writes to LOCAL /scratch by default (fast); gather to NFS afterwards with D_gather.sh.
 #
 # Usage:
 #   D_run_node.sh <segmenter> <nshards_total> <shard_start> <shard_end> [out_root]
 #
-# Single-node (cayenne1 only), 48-way parallel:
+# Single-node (HOST_C only), 48-way parallel:
 #   D_run_node.sh slic       48 0 48
 #   D_run_node.sh quickshift 48 0 48
 #
 # 4-node split (nshards_total=192, 48 per node), run ONE line per node:
-#   cayenne1:  D_run_node.sh quickshift 192   0  48
-#   cayenne2:  D_run_node.sh quickshift 192  48  96
-#   cayenne3:  D_run_node.sh quickshift 192  96 144
-#   cayenne4:  D_run_node.sh quickshift 192 144 192
+#   HOST_C:  D_run_node.sh quickshift 192   0  48
+#   HOST_C:  D_run_node.sh quickshift 192  48  96
+#   HOST_C:  D_run_node.sh quickshift 192  96 144
+#   HOST_C:  D_run_node.sh quickshift 192 144 192
 set -u
 SEG=${1:?segmenter}; NTOT=${2:?nshards_total}; S0=${3:?shard_start}; S1=${4:?shard_end}
-OUT=${5:-/scratch/madono/seg_retrain_R2-2}
-PY=/home/madorin/anaconda3/envs/py37/bin/python
+OUT=${5:-/scratch/USER/seg_retrain_R2-2}
+PY=/home/USER/anaconda3/envs/py37/bin/python
 HERE=$(cd "$(dirname "$0")" && pwd)
 LOG="$OUT/logs"; mkdir -p "$LOG"
 export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1

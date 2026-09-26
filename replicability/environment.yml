@@ -9,7 +9,7 @@
 name: detfill-grsi
 channels:
   - conda-forge
-  - defaults
+  - nodefaults
 dependencies:
   - python=3.9.16
   - pip

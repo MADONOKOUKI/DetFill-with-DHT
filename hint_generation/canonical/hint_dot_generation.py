@@ -223,41 +223,41 @@ if __name__=='__main__':
 
 
 
-    # with open(os.path.join('/scratch/madono/configs', 'ablation', 'illust', 'train_paper_64.txt'), "r") as a:
+    # with open(os.path.join('/scratch/USER/configs', 'ablation', 'illust', 'train_paper_64.txt'), "r") as a:
     #     list_train_imgs = a.readlines()
 
-    # with open(os.path.join('/scratch/madono/configs', 'ablation', 'illust', 'valid_paper_64.txt'), "r") as a:
+    # with open(os.path.join('/scratch/USER/configs', 'ablation', 'illust', 'valid_paper_64.txt'), "r") as a:
     #     list_valid_imgs = a.readlines()
 
-    # with open(os.path.join('/scratch/madono/configs', 'ablation', 'illust', 'test_paper_64.txt'), "r") as a:
+    # with open(os.path.join('/scratch/USER/configs', 'ablation', 'illust', 'test_paper_64.txt'), "r") as a:
     #     list_test_imgs = a.readlines()    
 
-    # with open(os.path.join('/scratch/madono/configs', 'ablation', 'real', 'train_paper_64.txt'), "r") as a:
+    # with open(os.path.join('/scratch/USER/configs', 'ablation', 'real', 'train_paper_64.txt'), "r") as a:
     #     list_train_imgs_r = a.readlines()
 
-    # with open(os.path.join('/scratch/madono/configs', 'ablation', 'real', 'valid_paper_64.txt'), "r") as a:
+    # with open(os.path.join('/scratch/USER/configs', 'ablation', 'real', 'valid_paper_64.txt'), "r") as a:
     #     list_valid_imgs_r = a.readlines()
 
-    # with open(os.path.join('/scratch/madono/configs', 'ablation', 'real', 'test_paper_64.txt'), "r") as a:
+    # with open(os.path.join('/scratch/USER/configs', 'ablation', 'real', 'test_paper_64.txt'), "r") as a:
     #     list_test_imgs_r = a.readlines()    
 
 
-    with open(os.path.join('/scratch/madono/configs',  'train_paper.txt'), "r") as a:
+    with open(os.path.join('/scratch/USER/configs',  'train_paper.txt'), "r") as a:
         list_train_imgs = a.readlines()
 
-    with open(os.path.join('/scratch/madono/configs', 'valid_paper.txt'), "r") as a:
+    with open(os.path.join('/scratch/USER/configs', 'valid_paper.txt'), "r") as a:
         list_valid_imgs = a.readlines()
 
-    with open(os.path.join('/scratch/madono/configs', 'test_paper.txt'), "r") as a:
+    with open(os.path.join('/scratch/USER/configs', 'test_paper.txt'), "r") as a:
         list_test_imgs = a.readlines()    
 
-    # with open(os.path.join('/scratch/madono/configs', 'ablation', 'real', 'train_paper_64.txt'), "r") as a:
+    # with open(os.path.join('/scratch/USER/configs', 'ablation', 'real', 'train_paper_64.txt'), "r") as a:
     #     list_train_imgs_r = a.readlines()
 
-    # with open(os.path.join('/scratch/madono/configs', 'ablation', 'real', 'valid_paper_64.txt'), "r") as a:
+    # with open(os.path.join('/scratch/USER/configs', 'ablation', 'real', 'valid_paper_64.txt'), "r") as a:
     #     list_valid_imgs_r = a.readlines()
 
-    # with open(os.path.join('/scratch/madono/configs', 'ablation', 'real', 'test_paper_64.txt'), "r") as a:
+    # with open(os.path.join('/scratch/USER/configs', 'ablation', 'real', 'test_paper_64.txt'), "r") as a:
     #     list_test_imgs_r = a.readlines()        
                 
             
@@ -273,11 +273,11 @@ if __name__=='__main__':
     #                 , 'superpixel/superpixel_750_0.01', 'superpixel/superpixel_750_1', 'superpixel/superpixel_750_10'  ]
     dirs = ['']
     
-    # base_path = '/home/madorin/datasets/labrepo/main_exp/illust/segmentation'
-    base_path = '/scratch/madono/tog_created/segmentation'
+    # base_path = '/home/USER/datasets/labrepo/main_exp/illust/segmentation'
+    base_path = '/scratch/USER/tog_created/segmentation'
 
-    # /home/madorin/datasets/labrepo/main_exp/illust/deep_illust_pretrained/
-    save_path = '/scratch/madono/tog_created/illust/deep_illust_pretrained/'
+    # /home/USER/datasets/labrepo/main_exp/illust/deep_illust_pretrained/
+    save_path = '/scratch/USER/tog_created/illust/deep_illust_pretrained/'
 
     
 
@@ -292,7 +292,7 @@ if __name__=='__main__':
                 file_r = flists[kk][cnt]
                 fname = file_r.replace('\n', '').split('/')[-1].split('.png')[0].split('.jpg')[0].split('.image')[0]
                 dname = file_r.replace('\n', '').split('/')[-2]
-                # /home/madorin/datasets/labrepo/main_exp/illust/segmentation/0008/1870008.image.png
+                # /home/USER/datasets/labrepo/main_exp/illust/segmentation/0008/1870008.image.png
                 # region_path_o = file_r[:-10]+'png'
                 image_path = os.path.join(base_path, dirs[jj], dname, fname + '.image.png' )
                 region_path_o = os.path.join(base_path, dirs[jj], dname, fname + '.png' )

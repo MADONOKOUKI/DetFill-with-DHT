@@ -36,8 +36,8 @@ an individual is representing the project in public spaces.
 
 ## Enforcement
 
-Instances of abusive, harassing or otherwise unacceptable behaviour may be reported to the maintainers through the
-contact information on the repository profile. All complaints will be reviewed and investigated promptly and
+Instances of abusive, harassing or otherwise unacceptable behaviour may be reported to the maintainers at
+madonomadonorunning@gmail.com or through the repository's issue tracker. All complaints will be reviewed and investigated promptly and
 fairly, and the privacy of the reporter will be respected.
 
 ## Attribution

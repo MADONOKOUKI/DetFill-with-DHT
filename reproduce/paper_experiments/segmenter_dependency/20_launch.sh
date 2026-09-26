@@ -12,7 +12,7 @@
 #   NUM_GPUS_MAX      : cap number of auto-detected GPUs (default unlimited)
 #
 # Examples:
-#   MODEL=/scratch/madono/model_cache/latest_model_200.pth \
+#   MODEL=/scratch/USER/model_cache/latest_model_200.pth \
 #   RATIOS="0.00 0.02 0.04 0.06 0.08 0.10 0.12 0.14 0.16 0.18 0.20 0.22 0.24 \
 #           0.26 0.28 0.30 0.32 0.34 0.36 0.38 0.40 0.42 0.44 0.46 0.48 0.50" \
 #   bash 20_launch.sh
@@ -31,7 +31,7 @@ TYPES="${TYPES:-0 1 2}"
 POLL_INTERVAL=2
 
 # ── logs symlink to /scratch (keep NFS write pressure low) ────────────────
-SCRATCH_LOGS=/scratch/madono/revision_logs
+SCRATCH_LOGS=/scratch/USER/revision_logs
 mkdir -p "$SCRATCH_LOGS"
 if [ -L logs ]; then
     rm -f logs

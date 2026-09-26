@@ -1502,14 +1502,14 @@ class BaseRunner(ABC):
                                      batch_size=self.config.data.test.batch_size,
                                      shuffle=False,
                                      num_workers=1,
-                                     drop_last=True,
+                                     drop_last=False,
                                      sampler=test_sampler)
         else:
             test_loader = DataLoader(test_dataset,
                                      batch_size=self.config.data.test.batch_size,
                                      shuffle=False,
                                      num_workers=1,
-                                     drop_last=True)
+                                     drop_last=False)
 
         if self.use_ema:
             self.apply_ema()

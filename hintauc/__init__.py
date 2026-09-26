@@ -47,7 +47,7 @@ from .auc import (
     trapz,
 )
 
-__version__ = "0.2.1"
+__version__ = "0.2.2"
 
 __all__ = [
     "ALL_METRICS",
@@ -65,6 +65,7 @@ __all__ = [
     "evaluate_hint_curve",
     "evaluate_pair",
     "generate_hints",
+    "geodesic_longest_path",
     "hint_auc",
     "hint_auc_table",
     "region_ids",

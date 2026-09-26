@@ -104,6 +104,8 @@ class Evaluator:
 
     # ------------------------------------------------------------------
     def _to_pil(self, image: ImageLike):
+        """Paths are decoded as RGB; ndarray inputs are taken as RGB (HxWx3 or HxW). The arrays returned by
+        ``hintauc.generate_hints`` / ``HintResult.at_ratio`` are BGR (OpenCV): pass ``arr[:, :, ::-1]``."""
         from PIL import Image
         if isinstance(image, np.ndarray):
             arr = image
@@ -292,8 +294,13 @@ class Evaluator:
                 return float(ssim_fn(xt, yt, data_range=1.0).item())
             except ImportError:
                 pass
+        import warnings
         from skimage.metrics import structural_similarity
-        return float(structural_similarity(x, y, channel_axis=2, data_range=1.0))
+        warnings.warn("torchmetrics is not installed: SSIM falls back to scikit-image with an 11x11 Gaussian window "
+                      "(sigma 1.5); the published values used torchmetrics 1.4.0 (pip install torchmetrics==1.4.0).",
+                      stacklevel=2)
+        return float(structural_similarity(x, y, channel_axis=2, data_range=1.0, gaussian_weights=True,
+                                           sigma=1.5, use_sample_covariance=False))
 
 
 # --------------------------------------------------------------------------

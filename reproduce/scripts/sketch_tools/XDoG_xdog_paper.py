@@ -42,12 +42,12 @@ def make_xdog(img):
 # if not os.path.exists(Pout_dir): os.mkdir(Pout_dir)
 # for num in ('01', '02', '03', '04', '05', '06', '07', '08', '09', '10a', '10b'):
     # in_dir = "Osketch_out_raw/" + num + "/raw/"
-# in_dir = '/home/madorin/gitlab/yuan/lac_eval_v1-main/DanbooRegion2020/train/'
-# out_dir = '/home/madorin/gitlab/yuan/lac_eval_v1-main/DanbooRegion2020_sketch/XDoG/train'    
+# in_dir = '/home/USER/gitlab/yuan/lac_eval_v1-main/DanbooRegion2020/train/'
+# out_dir = '/home/USER/gitlab/yuan/lac_eval_v1-main/DanbooRegion2020_sketch/XDoG/train'    
 
-in_dir_root = '/scratch/madono/danbooru2021/original/'
+in_dir_root = '/scratch/USER/danbooru2021/original/'
 # out_dir = 'sketch_out'
-out_dir_root = '/scratch/madono/tog_created/sketch/XDoG/' 
+out_dir_root = '/scratch/USER/tog_created/sketch/XDoG/' 
 
 # out_dir = os.path.join(Pout_dir, num)
 

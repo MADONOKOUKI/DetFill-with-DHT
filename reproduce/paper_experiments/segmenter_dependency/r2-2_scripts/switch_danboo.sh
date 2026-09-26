@@ -1,15 +1,15 @@
 #!/bin/bash
-# RUN ON naga1. Replace the running Quickshift eval with a DanbooRegion eval
+# RUN ON HOST_A. Replace the running Quickshift eval with a DanbooRegion eval
 # (the SLIC eval on the other GPU keeps running). gt/sketch were already staged by
-# naga1_eval.sh; this only stages the DanbooRegion test hints + launches.
-#   usage:  bash naga1_switch_danboo.sh [gpu]      (default 1 = the GPU QS was using)
+# eval_all.sh; this only stages the DanbooRegion test hints + launches.
+#   usage:  bash switch_danboo.sh [gpu]      (default 1 = the GPU QS was using)
 set -u
 GPU=${1:-1}
-CODE=/home/madorin/gitlab/labrepo/main/revision_materials/rebuttal/R2/R2-2_segmentation_dependency/BBDM_seg_retrain
-PY=/home/madorin/anaconda3/envs/BBDM/bin/python
-CKPT=/home/madorin/gitlab/labrepo/main/revision_materials/rebuttal/R2/R2-2_segmentation_dependency/checkpoints/proposed_96ch_scribble.pth
-RD=/home/madorin/gitlab/labrepo/main/revision_materials/rebuttal/R2/R2-2_segmentation_dependency/retrain_data
-EVAL=/scratch/madono/seg_eval
+CODE=/home/USER/gitlab/labrepo/main/revision_materials/rebuttal/R2/R2-2_segmentation_dependency/BBDM_seg_retrain
+PY=/home/USER/anaconda3/envs/BBDM/bin/python
+CKPT=/home/USER/gitlab/labrepo/main/revision_materials/rebuttal/R2/R2-2_segmentation_dependency/checkpoints/proposed_96ch_scribble.pth
+RD=/home/USER/gitlab/labrepo/main/revision_materials/rebuttal/R2/R2-2_segmentation_dependency/retrain_data
+EVAL=/scratch/USER/seg_eval
 RATIOS="0.00 0.01 0.03 0.05 0.10 0.25 0.50 1.00"
 export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
 

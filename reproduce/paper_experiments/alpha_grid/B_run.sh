@@ -1,6 +1,6 @@
 #!/bin/bash
 # ============================================================================
-# R2-1 — B_eval_dense_curve runner (reaper6 default)
+# R2-1 — B_eval_dense_curve runner (HOST_B default)
 # ============================================================================
 # Sequential per-sketch run, NFS-friendly (workers=2, batch_size=8).
 # Resumable: kills/OOMs OK — restart and it skips already-done (sketch, ratio,
@@ -17,13 +17,13 @@
 set -e
 cd "$(dirname "$0")"
 
-PY=${PY:-/home/madorin/anaconda3/envs/BBDM/bin/python3}
+PY=${PY:-/home/USER/anaconda3/envs/BBDM/bin/python3}
 GPU=${GPU:-0}
 BATCH_SIZE=${BATCH_SIZE:-8}
 WORKERS=${WORKERS:-2}
 
 OUT_DIR="${OUT_DIR:-$(pwd)/../output/B_dense_curve}"
-RESULTS_ROOT="${RESULTS_ROOT:-/home/madorin/gitlab/labrepo/main/revision_materials/rebuttal/R2/R2-1_alpha_grid_sensitivity/inference_results/scribble}"
+RESULTS_ROOT="${RESULTS_ROOT:-/home/USER/gitlab/labrepo/main/revision_materials/rebuttal/R2/R2-1_alpha_grid_sensitivity/inference_results/scribble}"
 
 # Smoke / debug mode
 EXTRA=()

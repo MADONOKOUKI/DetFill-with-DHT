@@ -167,7 +167,7 @@ def make_scribbling(img_path, region_path_o, save_path):
 if __name__=='__main__':
 
     path = "tog_created"
-    out_path = "/scratch/madono/ablation_study_analysis/segmentation_regions/"  
+    out_path = "/scratch/USER/ablation_study_analysis/segmentation_regions/"  
 
 
     dirs =  ['0000', '0001', '0002', '0003', '0004']

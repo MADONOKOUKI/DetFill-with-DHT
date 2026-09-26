@@ -17,9 +17,9 @@ data:
   dataset_type: 'custom_train_our_model'
   dataset_config:
     # R1-3/R2-2 seg-retrain (Quickshift). Data staged on local /scratch (NFS-free).
-    root_region: '/scratch/madono/seg_eval/gt'
-    root_sketch: '/scratch/madono/seg_eval/sketch'
-    root_scr:    '/scratch/madono/seg_eval/quickshift'
+    root_region: '/scratch/USER/seg_eval/gt'
+    root_sketch: '/scratch/USER/seg_eval/sketch'
+    root_scr:    '/scratch/USER/seg_eval/quickshift'
     hint_type: 'scribble'
     domain: "illust"
     image_size: 256

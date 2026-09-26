@@ -30,7 +30,7 @@ from skimage.segmentation import slic, felzenszwalb
 
 HERE = Path(__file__).resolve().parent
 OUT = HERE.parent / "output" / "C-1"; OUT.mkdir(parents=True, exist_ok=True)
-IMG_ROOT = Path("/home/madorin/gitlab/labrepo/main/usertest/imgs")
+IMG_ROOT = Path("/home/USER/gitlab/labrepo/main/usertest/imgs")
 ALPHAS = [1, 3, 5, 10, 25, 50, 100]
 
 

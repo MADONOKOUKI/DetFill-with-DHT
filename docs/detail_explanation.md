@@ -36,8 +36,8 @@ What the library produces for one illustration:
 
 - `hintauc.generate_hints(image, size=64, path_method="filfinder", dot_method="medoid", segmenter="felzenszwalb")`
   → `HintResult` with `.at_ratio(alpha, hint_type="scribble"|"dot", tie_break="default"|"stable")` (returns colour and
-  mask arrays in OpenCV BGR order) and `.save(prefix)` (writes the canonical `*_region64`, `*_scribble_col64`,
-  `*_scribble_mask64`, `*_dot_col64`, `*_dot_mask64` files used by the DetFill loader).
+  mask arrays in OpenCV BGR order) and `.save(prefix)` (writes the six canonical files `*_region64`, `*_scribble_col64`,
+  `*_scribble_mask64`, `*_dot_col64`, `*_dot_mask64` and `*_flatten_img64` used by the DetFill loader).
 - `hintauc.Evaluator(metrics=(...))` — MSE, PSNR, SSIM (256×256, values in [0, 1]), LPIPS (AlexNet), OpenCLIP
   (ViT-B-32, laion2b), DINOv2-base, DreamSim; the same formulas as the paper's `evaluation/eval_single_run.py`.
 - Metrics added after the paper (opt-in, never used for a published number): `mae`, `ms_ssim` (torchmetrics),
@@ -58,8 +58,8 @@ Two longest-path implementations:
 | `geodesic` | longest shortest path (geodesic diameter) of the 8-connected skeleton, no corner cutting, raster-order ties | NumPy only | yes, bit-exact |
 
 Do not mix maps produced with different methods in one evaluation; the paper's numbers and the released stored maps
-correspond to `filfinder`. On 20 stored test maps (16,098 regions) the two methods return an identical path in 91.8 % of
-the regions (mean IoU 0.969) and the dot coincides in 95.5 %.
+correspond to `filfinder`. On 20 stored test maps (16,098 regions, of which FilFinder returns a path for 15,684) the
+two methods return an identical path in 91.8 % of those regions (mean IoU 0.969) and the dot coincides in 95.5 %.
 
 ## DetFill
 
@@ -101,10 +101,10 @@ Four layers, documented in [reproduce/README.md](../reproduce/README.md):
   (DetFill scribble row), Table III (DetFill scribble row) and the supplementary α-grid, segmentation-dependency,
   seed-sensitivity and Diffusart-retrain tables from the per-ratio metric files in `reproduce/expected/`, checking every
   printed cell (322 of 324 match; the two exceptions are the SSIM rounding and the Diffusart-retrain SSIM provenance gap
-  listed in the README). `A2_userstudy_glmm.py` rebuilds Tables IV/V and the GLMM statistics from the anonymised trial
+  listed in `reproduce/README.md`). `A2_userstudy_glmm.py` rebuilds Tables IV/V and the GLMM statistics from the anonymised trial
   table (all values match).
-- **B. Example suite** — `reproduce/examples/run_examples.sh` (no arguments) re-runs each experiment on 12 example
-  illustrations with the released checkpoints and compares with the authors' reference run and with the paper's
+- **B. Example suite** — `reproduce/examples/run_examples.sh` (no arguments) re-runs each experiment on example
+  illustrations (4 by default, 12 with `EXAMPLES_MODE=full`) with the released checkpoints and compares with the authors' reference run and with the paper's
   archived outputs of the same images; [reproduce/examples/README.md](../reproduce/examples/README.md).
 - **C. Verbatim launchers** — `reproduce/paper_experiments/`.
 - **D. Full-scale rows** — `reproduce/scripts/run_hauc_pipeline.sh` + `eval_per_ratio.py` (needs the Danbooru2021
@@ -159,7 +159,7 @@ Sizes and SHA-256 of every file: [checkpoints/README.md](../checkpoints/README.m
 - `hintauc` library + CLI; `path_method="geodesic"`; `dot_method` and `tie_break` options; `hint_order` protocol switch;
   `include_full_hint` training option; CPU inference; flat user-configurable data layout; deterministic region-id colours;
   segmenter options in the generator; metrics beyond the paper's seven (MAE, MS-SSIM, CIEDE2000, LPIPS-VGG, DISTS,
-  set-level FID / KID); the replicability script; the reproduction package; releases v1.1–v1.3 and v1.4.
+  set-level FID / KID); the replicability script; the reproduction package; releases v1.1–v1.4.
 - A few minor issues of the original implementation were fixed along the way to make the library more usable; what is
   bit-exact with respect to the published numbers and what is not is listed in
   [reproduce/README.md](../reproduce/README.md#known-deviations-and-gaps-honest-list).

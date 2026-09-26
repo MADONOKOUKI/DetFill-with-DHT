@@ -11,7 +11,7 @@ architecture/schedule on the PROPOSED deterministic hints instead.
   Diffusion_v1/data/data_load.py::MyData_train_scrib (approach='proposed'):
   region map (image_region256) -> regions sorted by size desc -> random-ratio PREFIX
   -> mask applied to deterministic scribble/dot col+mask 256 files -> random dilate 1-4 + blur.
-  Only change: hardcoded /scratch/madono/main_exp root -> env DIFFUSART_DET_DATA_ROOT.
+  Only change: hardcoded /scratch/USER/main_exp root -> env DIFFUSART_DET_DATA_ROOT.
 - Trainer: training/training_det.py = training_multi.py with:
   (1) t sampled with original.shape[0] (was module-global batch_size),
   (2) warmup scaled by accumulation_steps (no-op at accum=1),
@@ -27,15 +27,15 @@ architecture/schedule on the PROPOSED deterministic hints instead.
 - compare at matched step: our checkpoint_198000.pth (non-EMA) vs comp checkpoint_198000.pth.
 
 ## Data
-- /scratch/madono/diffusart_det_R3-2/illust/{hint_from_regions,segmentation_regions}/felzenszwalb,
+- /scratch/USER/diffusart_det_R3-2/illust/{hint_from_regions,segmentation_regions}/felzenszwalb,
   sketch/{pysimp,XDoG,sketchkeras} — staged from
-  /home/madorin/datasets/labrepo/main_exp_felzenszwalb_fixdot/illust (same source the felz/
+  /home/USER/datasets/labrepo/main_exp_felzenszwalb_fixdot/illust (same source the felz/
   DetFill pipeline uses; see rebuttal/R2/R2-2_segmentation_dependency/D_RETRAIN_DATA.md).
 - Train list: configs/illust/train_paper.txt (19,999 ids) — identical to comp run.
 
 ## Run
 bash run_train_R3-2.sh            # waits for staging + GPU3 free, scribble then dot
-# logs: /scratch/madono/diffusart_det_R3-2/logs/train_det_{scribble,dot}.log
+# logs: /scratch/USER/diffusart_det_R3-2/logs/train_det_{scribble,dot}.log
 
 ## After training (TODO)
 - inference: test_labrepo.py-style det + rand runs (8 ratios x 3 sketches) with both new ckpts

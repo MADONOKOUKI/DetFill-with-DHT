@@ -17,7 +17,7 @@ from pathlib import Path
 import pandas as pd
 import numpy as np
 
-CSV_DIR = Path("/home/madorin/gitlab/labrepo/main/usertest/csv_revs")
+CSV_DIR = Path("/home/USER/gitlab/labrepo/main/usertest/csv_revs")
 ALPHAS = [0, 1, 3, 5, 10, 25, 50, 100]  # hint ratios (%)
 METHODS = ["proposed", "painttorch", "diffusart"]
 

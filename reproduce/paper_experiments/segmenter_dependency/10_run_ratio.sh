@@ -10,17 +10,17 @@
 #   MODEL       : checkpoint path (default: results/.../latest_model_200.pth)
 #   CONFIG      : config yaml path (default: configs/<hint>_proposed_illust_200epoch_mr.yaml)
 #   TYPES       : sketch types to run (default "0 1 2")
-#   RESULT_PATH : where to write outputs (default /scratch/madono/major_revision/results)
+#   RESULT_PATH : where to write outputs (default /scratch/USER/major_revision/results)
 set -e
 
 RATIO="${RATIO:?RATIO env var required (e.g., 0.02)}"
 GPU_ID="${GPU_ID:-0}"
 HINT_TYPE="${HINT_TYPE:-dot}"
 TYPES="${TYPES:-0 1 2}"
-RESULT_PATH="${RESULT_PATH:-/scratch/madono/major_revision/results}"
+RESULT_PATH="${RESULT_PATH:-/scratch/USER/major_revision/results}"
 
 # Use BBDM conda env (compatible transformers / dreamsim / torch+cuda).
-export PATH=/home/madorin/anaconda3/envs/BBDM/bin:$PATH
+export PATH=/home/USER/anaconda3/envs/BBDM/bin:$PATH
 
 # Reduce fragmentation-related OOM for 96-channel model on 11 GB 2080Ti.
 : ${PYTORCH_CUDA_ALLOC_CONF:=expandable_segments:True}

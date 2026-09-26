@@ -1,16 +1,16 @@
 #!/bin/bash
-# RUN ON naga1. Launch the SLIC eval on one GPU (the DanbooRegion eval keeps running on
+# RUN ON HOST_A. Launch the SLIC eval on one GPU (the DanbooRegion eval keeps running on
 # its own GPU). 8 hint ratios x 3 sketch types, batch 24, 200 steps, full 3000 test set.
 # Resume-safe (the runner skips any test image whose output PNG already exists).
-#   usage:  bash naga1_eval_slic.sh [gpu]      (default 0)
+#   usage:  bash eval_slic.sh [gpu]      (default 0)
 set -u
 GPU=${1:-0}
-CODE=/home/madorin/gitlab/labrepo/main/revision_materials/rebuttal/R2/R2-2_segmentation_dependency/BBDM_seg_retrain
-PY=/home/madorin/anaconda3/envs/BBDM/bin/python
-CKPT=/home/madorin/gitlab/labrepo/main/revision_materials/rebuttal/R2/R2-2_segmentation_dependency/checkpoints/proposed_96ch_scribble.pth
-FX=/home/madorin/datasets/labrepo/main_exp_felzenszwalb_fixdot/illust
-RD=/home/madorin/gitlab/labrepo/main/revision_materials/rebuttal/R2/R2-2_segmentation_dependency/retrain_data
-EVAL=/scratch/madono/seg_eval
+CODE=/home/USER/gitlab/labrepo/main/revision_materials/rebuttal/R2/R2-2_segmentation_dependency/BBDM_seg_retrain
+PY=/home/USER/anaconda3/envs/BBDM/bin/python
+CKPT=/home/USER/gitlab/labrepo/main/revision_materials/rebuttal/R2/R2-2_segmentation_dependency/checkpoints/proposed_96ch_scribble.pth
+FX=/home/USER/datasets/labrepo/main_exp_felzenszwalb_fixdot/illust
+RD=/home/USER/gitlab/labrepo/main/revision_materials/rebuttal/R2/R2-2_segmentation_dependency/retrain_data
+EVAL=/scratch/USER/seg_eval
 RATIOS="0.00 0.01 0.03 0.05 0.10 0.25 0.50 1.00"
 export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
 cd "$CODE"

@@ -4,7 +4,7 @@
 # JOBS_FILE lines: "<ratio> <sketch_type> [<shard_off>]"
 set -e
 : "${CODE_DIR:?}"; : "${CONFIG:?}"; : "${MODEL:?}"; : "${RESULT_PATH:?}"; : "${LOGDIR:?}"; : "${GPUS:?}"; : "${JOBS_FILE:?}"
-export PATH=/home/madorin/anaconda3/envs/BBDM/bin:$PATH
+export PATH=/home/USER/anaconda3/envs/BBDM/bin:$PATH
 export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
 mkdir -p "$LOGDIR"
 cd "$CODE_DIR"
