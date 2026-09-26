@@ -87,19 +87,7 @@ Results are compared automatically with the paper's numbers, the paper's archive
 authors' reference run. Guide, coverage table and the list of what is bit-exact and what is not:
 [reproduce/README.md](reproduce/README.md). Background on every component: [detail_explanation.md](detail_explanation.md).
 
-## Differences from the paper
-
-Minor fixes (documented; results unaffected):
-
-- **Dot placement.** The text describes a truncated mean of the longest-path pixels; the data use the *medoid* pixel.
-  The library defaults to the data's rule; the text's rule is `dot_method="mean"`.
-- **SSIM.** The published SSIM values need `torchmetrics==1.4.0` (pinned); newer versions changed the implementation.
-- **Natural-image configs** corrected to 96 base channels.
-- **Table II, DetFill scribble SSIM** is printed as 0.724; the value is 0.7235.
-- **Line-art labels.** `sketch_type` 0 / 1 / 2 = sketch simplification / XDoG / SketchKeras; archived metric files had
-  0 and 1 swapped in name only.
-
-Added features (not in the paper):
+## Added features (since the paper) for improving our library
 
 - `hintauc` pip library and command line (hint generation, the seven metrics, Hint-AUC).
 - Dependency-free, bit-exact longest path `path_method="geodesic"`; dot options `medoid` / `mean` / `nearest_mean`;
@@ -107,6 +95,9 @@ Added features (not in the paper):
 - Protocol switch `hint_order: area | label` (Table II vs. Table III) in the DetFill loader; training option `include_full_hint`.
 - CPU inference, a flat user-configurable data layout, deterministic region-id colours, other segmenters in the generator.
 - The replicability script, the reproduction package and the additional releases (v1.1–v1.3, legacy-2024).
+
+Small documented differences between the paper's text and the released code/data are listed in
+[detail_explanation.md](detail_explanation.md#changes-relative-to-the-paper).
 
 ## Repository structure
 
