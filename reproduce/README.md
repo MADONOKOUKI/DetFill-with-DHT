@@ -72,7 +72,7 @@ What each table is rebuilt from:
    deterministic per environment but not bit-identical across environments (FilFinder medial-axis tie-breaking).
 4. **Checkpoints.** `checkpoints/README.md` (v1.0: scribble 96-ch, dot 64-ch; v1.1: the two segmenter-retrained
    scribble models of the supplementary study; v1.2: the Diffusart-retrain models and the natural-image (ImageNet)
-   DetFill models with the ImageNet test-split region maps).
+   DetFill models with the ImageNet test-split hint maps).
 
 ### B.2 One table row = one command
 
@@ -150,7 +150,7 @@ agreed with Table II to the printed precision.
 * **Not covered by released per-ratio data:** the Table II/III *dot* rows of DetFill, all baseline rows
   (PaintsTorch, Diffusart, ColorizeDiffusion v1/v2), the natural-image (ImageNet) tables and the legacy per-sketch
   tables of the supplement (2024 checkpoints). The dot row and the baselines can be regenerated with layer B and the
-  respective official code. The natural-image DetFill models and the ImageNet test hint maps are released (v1.2),
+  respective official code. The natural-image DetFill models and the ImageNet test-split hint maps are released (v1.2),
   but the natural-image loader path still uses the lab's absolute split lists (`detfill/configs/real/*.txt`) and
   the archive cannot tie the printed ImageNet values to one checkpoint file (see `checkpoints/README.md`), so
   those tables are "same protocol", not bit-exact, reproductions.
