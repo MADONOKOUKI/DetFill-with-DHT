@@ -1,0 +1,100 @@
+{
+  "paper_front_loaded": {
+    "order": [
+      "proposed",
+      "diffusart",
+      "painttorch"
+    ],
+    "aucs": {
+      "proposed": 0.9477916666666666,
+      "painttorch": 0.089,
+      "diffusart": 0.46320833333333333
+    },
+    "prop_minus_diff": 0.48458333333333325,
+    "prop_minus_paint": 0.8587916666666666
+  },
+  "uniform_index": {
+    "order": [
+      "proposed",
+      "diffusart",
+      "painttorch"
+    ],
+    "aucs": {
+      "proposed": 0.8156249999999999,
+      "painttorch": 0.1519345238095238,
+      "diffusart": 0.5324404761904762
+    },
+    "prop_minus_diff": 0.28318452380952375,
+    "prop_minus_paint": 0.6636904761904762
+  },
+  "uniform_linear_0_to_1_step_0.05": {
+    "order": [
+      "proposed",
+      "diffusart",
+      "painttorch"
+    ],
+    "aucs": {
+      "proposed": 0.9455208333333333,
+      "painttorch": 0.09578125,
+      "diffusart": 0.45869791666666665
+    },
+    "prop_minus_diff": 0.4868229166666666,
+    "prop_minus_paint": 0.8497395833333332
+  },
+  "log_spaced": {
+    "order": [
+      "proposed",
+      "diffusart",
+      "painttorch"
+    ],
+    "aucs": {
+      "proposed": 0.9474707971180811,
+      "painttorch": 0.08915807865377129,
+      "diffusart": 0.46337112422814764
+    },
+    "prop_minus_diff": 0.4840996728899335,
+    "prop_minus_paint": 0.8583127184643098
+  },
+  "back_loaded": {
+    "order": [
+      "proposed",
+      "diffusart",
+      "painttorch"
+    ],
+    "aucs": {
+      "proposed": 0.903125,
+      "painttorch": 0.14609375,
+      "diffusart": 0.45078125
+    },
+    "prop_minus_diff": 0.45234374999999993,
+    "prop_minus_paint": 0.7570312499999999
+  },
+  "uniform_linear_0_to_1_step_0.1": {
+    "order": [
+      "proposed",
+      "diffusart",
+      "painttorch"
+    ],
+    "aucs": {
+      "proposed": 0.9366041666666666,
+      "painttorch": 0.10811805555555555,
+      "diffusart": 0.4552777777777778
+    },
+    "prop_minus_diff": 0.4813263888888888,
+    "prop_minus_paint": 0.828486111111111
+  },
+  "dense_low": {
+    "order": [
+      "proposed",
+      "diffusart",
+      "painttorch"
+    ],
+    "aucs": {
+      "proposed": 0.7820833333333332,
+      "painttorch": 0.14833333333333332,
+      "diffusart": 0.5695833333333333
+    },
+    "prop_minus_diff": 0.2124999999999999,
+    "prop_minus_paint": 0.6337499999999999
+  }
+}

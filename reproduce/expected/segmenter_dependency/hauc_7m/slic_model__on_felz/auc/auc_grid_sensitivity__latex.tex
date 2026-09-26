@@ -1,0 +1,20 @@
+\begin{table*}[t]
+  \centering
+  \caption{Sensitivity of the seven-metric Hint-AUC to the choice of $\alpha$ grid. Each AUC is the trapezoidal integral over $[0,1]$ of the metric--hint curve interpolated onto the listed grid, averaged over the three sketch types. Higher is better for PSNR/SSIM/OpenCLIP/DINO; lower is better for MSE/LPIPS/DreamSim.}
+  \label{tab:S-R2-1-B-2-7m}
+  \small
+  \begin{tabular}{l c rrrrrrr c}
+    \toprule
+    Grid & $N$ & MSE $\downarrow$ & PSNR $\uparrow$ & SSIM $\uparrow$ & LPIPS $\downarrow$ & OPENCLIP $\uparrow$ & DINO $\uparrow$ & DREAMSIM $\downarrow$ & $\max\!\big|\Delta\big|/\mathrm{orig}$ \\
+    \midrule
+    Original front-loaded      &   8 & 0.0203 & 18.26 & 0.683 & 0.2182 & 0.945 & 0.940 & 0.1012 &  0.00\% \\
+    Uniform (N=5)              &   5 & 0.0308 & 17.53 & 0.668 & 0.2394 & 0.939 & 0.935 & 0.1257 & 51.58\% \\
+    Uniform (N=8)              &   8 & 0.0258 & 17.89 & 0.675 & 0.2290 & 0.942 & 0.938 & 0.1134 & 26.97\% \\
+    Uniform (N=11)             &  11 & 0.0237 & 18.05 & 0.679 & 0.2244 & 0.944 & 0.939 & 0.1081 & 16.81\% \\
+    Uniform (N=21)             &  21 & 0.0216 & 18.19 & 0.682 & 0.2203 & 0.945 & 0.940 & 0.1033 &  6.28\% \\
+    Low-α reduced              &   6 & 0.0237 & 18.05 & 0.679 & 0.2242 & 0.944 & 0.939 & 0.1079 & 16.64\% \\
+    High-α shifted             &   8 & 0.0237 & 18.05 & 0.679 & 0.2242 & 0.944 & 0.939 & 0.1079 & 16.64\% \\
+    Dense reference (N=101)    & 101 & 0.0203 & 18.26 & 0.683 & 0.2182 & 0.945 & 0.940 & 0.1012 &  0.00\% \\
+    \bottomrule
+  \end{tabular}
+\end{table*}

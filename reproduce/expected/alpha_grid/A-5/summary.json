@@ -1,0 +1,16 @@
+{
+  "tops_per_grid": {
+    "paper_front_loaded": "proposed",
+    "uniform_index": "proposed",
+    "uniform_linear_0_to_1_step_0.05": "proposed",
+    "log_spaced": "proposed",
+    "back_loaded": "proposed",
+    "uniform_linear_0_to_1_step_0.1": "proposed",
+    "dense_low": "proposed"
+  },
+  "top_changes": 1,
+  "proposed_minus_diffusart_range": [
+    0.2124999999999999,
+    0.4868229166666666
+  ]
+}

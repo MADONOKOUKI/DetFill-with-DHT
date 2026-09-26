@@ -56,3 +56,20 @@ test_split_hint_maps_64/test_image_ids.txt
 These stored maps are the reference evaluation inputs. Regenerating them from the
 source images is not bit-exact: the medial-axis tie-breaking inside the skeleton
 extraction and the region-label palette were not seeded when the dataset was built.
+
+## v1.1 assets — segmenter-retrained scribble models (supplementary segmentation-dependency study)
+
+Attached to the [v1.1 GitHub Release](https://github.com/MADONOKOUKI/DetFill-with-DHT/releases/tag/v1.1)
+together with `SHA256SUMS.txt`. Both are DetFill scribble models (96 base channels, 200 epochs, same protocol
+and training split as the v1.0 scribble model) trained on hints generated from a different region segmenter;
+they are the "DanbooRegion" and "SLIC" *training* rows of the supplementary table reproduced by
+`reproduce/scripts/A1_tables_from_released_metrics.py` [3].
+
+| File | Size | SHA-256 | Training segmenter |
+|---|---|---|---|
+| `detfill_scribble_illust_danbooregion_200ep.pth` | 1.08 GB | `1770cd61bb496060b4ff9bd8c2ec2e72b549fa99187a0429912100628cad9a78` | DanbooRegion |
+| `detfill_scribble_illust_slic_200ep.pth` | 1.08 GB | `eb25667c1955584f46f34abf98db10eef6d702e4c1078fe3cff388f646cf4217` | SLIC |
+
+Use them with `configs/scribble_illust.yaml` and `--resume_model <file>` (or `CKPT=<file>` with
+`reproduce/scripts/run_hauc_pipeline.sh`); the evaluation data root must contain hint maps produced from the
+matching segmenter (`reproduce/paper_experiments/segmenter_dependency/`, `reproduce/README.md` B.3).

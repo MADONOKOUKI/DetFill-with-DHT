@@ -124,7 +124,8 @@ GitHub Release of this repository:
 - `detfill_dot_illust_200ep.pth` (0.48 GB) — dot-hint model, 64 base channels (Table II/III dot results)
 
 Place them under `detfill/results/dataset_name/BrownianBridge_{scribble,dot}_illust/checkpoint/latest_model_200.pth`
-(or pass `--resume_model` explicitly; see `checkpoints/README.md` for SHA-256 checksums). DetFill is pixel-space: no VQGAN / latent-diffusion weights are required.
+(or pass `--resume_model` explicitly; see `checkpoints/README.md` for SHA-256 checksums and the v1.1
+segmenter-retrained models of the supplementary study). DetFill is pixel-space: no VQGAN / latent-diffusion weights are required.
 Metric backbones (LPIPS, OpenCLIP, DINOv2, DreamSim) are downloaded automatically by their pip packages.
 
 ## Longest-path extraction: two implementations
@@ -186,25 +187,25 @@ The FilFinder failure count of this run (414/16,098) is higher than the share of
 without a stored scribble in the released test-split maps (0.26%), which illustrates the environment sensitivity of the
 FilFinder path (randomized medial-axis tie-breaking, library versions); the geodesic method has no such dependence.
 
-## Reproducing the paper experiments
+## Reproducing the paper's tables and supplementary results
+
+`reproduce/` is the reproduction package (see [reproduce/README.md](reproduce/README.md)):
 
 ```bash
-# environment for training / inference
-conda env create -f detfill/environment.yml && conda activate BBDM   # import-verified pins (numpy 2.0.2, torch 2.5.1, CUDA 12.4)
-
-# 1. generate the deterministic hint dataset (or use the hintauc library)
-python hint_generation/generate_hints.py --help
-
-# 2. point the configs at your data, then run inference over the hint-ratio grid
-#    (set data.dataset_config.dataset_path / scratch_root in detfill/configs/*.yaml;
-#     expected directory layout: detfill/README.md)
-(cd detfill && GPU=0 bash run_inference.sh scribble)
-(cd detfill && GPU=0 RATIOS="0.10" TYPES="2" bash run_inference.sh scribble)   # single cell
-
-# 3. per-ratio metrics + Hint-AUC
-python evaluation/dense/eval_curve.py --help
-python evaluation/calc_hint_auc.py --help
+# A. rebuild every Hint-AUC table of the paper from the released per-ratio metrics and check each printed cell (CPU, <1 min)
+python reproduce/scripts/A1_tables_from_released_metrics.py
+# A. user study: Tables IV/V and the GLMM statistics from the released trial table
+python reproduce/scripts/A2_userstudy_glmm.py
+# B. re-run DetFill inference over the hint-ratio grid + 7-metric Hint-AUC with the released checkpoints (GPU)
+DATA_ROOT=/data/danbooru_test GPU=0 bash reproduce/scripts/run_hauc_pipeline.sh            # Table II scribble row
+DATA_ROOT=/data/danbooru_test HINT_ORDER=label bash reproduce/scripts/run_hauc_pipeline.sh  # Table III scribble row
+# C. the verbatim experiment/training launchers used for the paper and its revision (example code)
+ls reproduce/paper_experiments/
 ```
+
+Status: A1 rebuilds 322 of 324 printed cells to the printed precision and A2 reproduces all user-study
+numbers exactly; the remaining two cells and everything that is *not* covered are listed in
+`reproduce/README.md` ("Known deviations"). Training from scratch: `reproduce/scripts/B9_train_detfill.sh`.
 
 ## Notes
 

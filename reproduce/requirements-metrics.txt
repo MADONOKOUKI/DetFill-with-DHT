@@ -1,0 +1,8 @@
+# Perceptual metrics used by hintauc.metrics.Evaluator / reproduce/scripts/eval_per_ratio.py
+# (LPIPS is already in replicability/environment.yml). Pins = versions used for the checks on 2026-09-26;
+# they install on top of torch 2.5.1 / numpy 1.26.4 without changing either.
+open_clip_torch==3.3.0
+dreamsim==0.2.1
+transformers==4.57.6
+torchmetrics==1.4.0.post0   # SSIM: the paper's numbers were computed with torchmetrics 1.4.0; 1.8.x changed the SSIM implementation (per-image differences up to 0.04)
+lpips==0.1.4

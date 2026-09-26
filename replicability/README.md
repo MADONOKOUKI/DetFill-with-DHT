@@ -53,7 +53,7 @@ pixels; the selected regions and the overall figure are unaffected.
 
 Run time (after the one-time environment creation), measured on the authors' server (NVIDIA RTX A6000, 32-core CPU):
 - GPU: **about 3 minutes** in total (hint generation ≈ 1–2.5 min per image on the CPU; four DetFill runs of 18–26 s each).
-- CPU only (`GRSI_GPU=-1`, 16 threads): the four DetFill runs take on the order of an hour in total (see `output/summary.json` for the exact per-run seconds of your machine).
+- CPU only (`GRSI_GPU=-1`, 16 threads): **about 30 minutes** in total (the four DetFill runs took 4–9 min each; `output/summary.json` records the per-run seconds of your machine).
 
 Optional environment variables: `GRSI_GPU=<id>` to pick a GPU (`GRSI_GPU=-1` forces CPU), `GRSI_ENV=<name>` to use
 an existing conda environment, `GRSI_CKPT_DIR=<dir>` if the checkpoints were downloaded manually.

@@ -1,0 +1,5 @@
+method,DetFill,PaintsTorch,Diffusart,ColDiffv2
+DetFill,-,85.0,67.4,67.8
+PaintsTorch,15.0,-,20.8,24.8
+Diffusart,32.6,79.2,-,44.9
+ColDiffv2,32.2,75.2,55.1,-

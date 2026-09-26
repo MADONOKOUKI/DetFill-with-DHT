@@ -14,3 +14,6 @@ eval_out/
 build/
 dist/
 *.egg-info/
+
+# reproduction outputs
+reproduce/output/

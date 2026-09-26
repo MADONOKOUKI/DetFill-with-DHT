@@ -1,0 +1,18 @@
+{
+  "overall_winrate": {
+    "proposed": 0.8018229166666666,
+    "painttorch": 0.1768229166666667,
+    "diffusart": 0.5213541666666667
+  },
+  "overall_top": "proposed",
+  "prob_top_method_is_not_overall_top_at_alpha": {
+    "0": 0.9996,
+    "1": 1.0,
+    "3": 0,
+    "5": 0,
+    "10": 0,
+    "25": 0,
+    "50": 0,
+    "100": 0
+  }
+}

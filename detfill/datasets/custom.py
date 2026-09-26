@@ -284,6 +284,9 @@ class HintColorizationDataset(Dataset):
         # i.e. p in {0,...,n-1} (the full-hint case p = n never occurs in training).
         # include_full_hint: true samples p uniformly on {0,...,n}. Default false (paper).
         self.include_full_hint = bool(getattr(dataset_config, 'include_full_hint', False))
+        self.hint_order = str(getattr(dataset_config, 'hint_order', 'area'))  # 'area' (Table II) | 'label' (Table III)
+        if self.hint_order not in ('area', 'label'):
+            raise ValueError(f"dataset_config.hint_order must be 'area' or 'label', got {self.hint_order!r}")
 
         # Two user-configurable layouts (set the roots in the yaml config):
         #  A) dataset_config.scratch_root — flat evaluation layout:
@@ -425,7 +428,10 @@ class HintColorizationDataset(Dataset):
 
 
         if self.sample_ratio is not None:
-            cand_vals = cand_vals[np.argsort(-count)]
+            # hint_order: 'area' (paper Table II; largest regions first, NumPy default argsort tie order)
+            #             'label' (paper Table III; the fixed, area-independent ascending-label order)
+            if getattr(self, 'hint_order', 'area') != 'label':
+                cand_vals = cand_vals[np.argsort(-count)]
             length_samples = int(len(cand_vals) * self.sample_ratio )
         else:
             np.random.shuffle(cand_vals) # randomly sampled region

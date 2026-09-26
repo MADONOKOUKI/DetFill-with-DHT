@@ -1,0 +1,325 @@
+table,row,metric,recomputed,paper,match
+"Table II (DetFill, scribble)",mean,mse,0.014887919081703338,0.015,True
+"Table II (DetFill, scribble)",sd,mse,0.004957684566087895,0.005,True
+"Table II (DetFill, scribble)",mean,psnr,19.722656156777806,19.723,True
+"Table II (DetFill, scribble)",sd,psnr,1.413703135953526,1.41,True
+"Table II (DetFill, scribble)",mean,ssim,0.7234767516473375,0.724,False
+"Table II (DetFill, scribble)",sd,ssim,0.08602903620317284,0.086,True
+"Table II (DetFill, scribble)",mean,lpips,0.1829462085853454,0.183,True
+"Table II (DetFill, scribble)",sd,lpips,0.047208613104651714,0.047,True
+"Table II (DetFill, scribble)",mean,openclip,0.9542631754557291,0.954,True
+"Table II (DetFill, scribble)",sd,openclip,0.010101302490347899,0.010,True
+"Table II (DetFill, scribble)",mean,dino,0.9508721088634928,0.951,True
+"Table II (DetFill, scribble)",sd,dino,0.011435459959492588,0.011,True
+"Table II (DetFill, scribble)",mean,dreamsim,0.08390581980251594,0.084,True
+"Table II (DetFill, scribble)",sd,dreamsim,0.02118724737679419,0.021,True
+Supp alpha-grid,"Uniform, Δα=0.02 (dense ref.)",mse,0.014833461996659332,0.0148,True
+Supp alpha-grid,"Uniform, Δα=0.02 (dense ref.)",mse sd,0.004944448354117828,0.0049,True
+Supp alpha-grid,"Uniform, Δα=0.02 (dense ref.)",psnr,19.778955918685863,19.779,True
+Supp alpha-grid,"Uniform, Δα=0.02 (dense ref.)",psnr sd,1.4196633656649478,1.420,True
+Supp alpha-grid,"Uniform, Δα=0.02 (dense ref.)",ssim,0.7253859371118501,0.7254,True
+Supp alpha-grid,"Uniform, Δα=0.02 (dense ref.)",ssim sd,0.08583453900106276,0.0858,True
+Supp alpha-grid,"Uniform, Δα=0.02 (dense ref.)",lpips,0.1806933290545518,0.1807,True
+Supp alpha-grid,"Uniform, Δα=0.02 (dense ref.)",lpips sd,0.046607306452653645,0.0466,True
+Supp alpha-grid,"Uniform, Δα=0.02 (dense ref.)",openclip,0.9549232118055556,0.9549,True
+Supp alpha-grid,"Uniform, Δα=0.02 (dense ref.)",openclip sd,0.00993735868423816,0.0099,True
+Supp alpha-grid,"Uniform, Δα=0.02 (dense ref.)",dino,0.9514282362762425,0.9514,True
+Supp alpha-grid,"Uniform, Δα=0.02 (dense ref.)",dino sd,0.011241195307352755,0.0112,True
+Supp alpha-grid,"Uniform, Δα=0.02 (dense ref.)",dreamsim,0.08227999877353499,0.0823,True
+Supp alpha-grid,"Uniform, Δα=0.02 (dense ref.)",dreamsim sd,0.020737455054817784,0.0207,True
+Supp alpha-grid,Front-loaded (paper grid),mse,0.014887919081703338,0.0149,True
+Supp alpha-grid,Front-loaded (paper grid),mse sd,0.004957684566087895,0.0050,True
+Supp alpha-grid,Front-loaded (paper grid),psnr,19.722656156777806,19.723,True
+Supp alpha-grid,Front-loaded (paper grid),psnr sd,1.413703135953526,1.414,True
+Supp alpha-grid,Front-loaded (paper grid),ssim,0.7234767516473375,0.7235,True
+Supp alpha-grid,Front-loaded (paper grid),ssim sd,0.08602903620317284,0.0860,True
+Supp alpha-grid,Front-loaded (paper grid),lpips,0.1829462085853454,0.1829,True
+Supp alpha-grid,Front-loaded (paper grid),lpips sd,0.047208613104651714,0.0472,True
+Supp alpha-grid,Front-loaded (paper grid),openclip,0.9542631754557291,0.9543,True
+Supp alpha-grid,Front-loaded (paper grid),openclip sd,0.010101302490347899,0.0101,True
+Supp alpha-grid,Front-loaded (paper grid),dino,0.9508721088634928,0.9509,True
+Supp alpha-grid,Front-loaded (paper grid),dino sd,0.011435459959492588,0.0114,True
+Supp alpha-grid,Front-loaded (paper grid),dreamsim,0.08390581980251594,0.0839,True
+Supp alpha-grid,Front-loaded (paper grid),dreamsim sd,0.02118724737679419,0.0212,True
+Supp alpha-grid,"Uniform, Δα=0.04",mse,0.01539755299113939,0.0154,True
+Supp alpha-grid,"Uniform, Δα=0.04",mse sd,0.004999009601130263,0.0050,True
+Supp alpha-grid,"Uniform, Δα=0.04",psnr,19.7454481251457,19.745,True
+Supp alpha-grid,"Uniform, Δα=0.04",psnr sd,1.4163862188742036,1.416,True
+Supp alpha-grid,"Uniform, Δα=0.04",ssim,0.7246292820307446,0.7246,True
+Supp alpha-grid,"Uniform, Δα=0.04",ssim sd,0.0857480067694041,0.0857,True
+Supp alpha-grid,"Uniform, Δα=0.04",lpips,0.1816854527813113,0.1817,True
+Supp alpha-grid,"Uniform, Δα=0.04",lpips sd,0.04645348041509572,0.0465,True
+Supp alpha-grid,"Uniform, Δα=0.04",openclip,0.9546350130208333,0.9546,True
+Supp alpha-grid,"Uniform, Δα=0.04",openclip sd,0.009890916711238663,0.0099,True
+Supp alpha-grid,"Uniform, Δα=0.04",dino,0.9511991315339672,0.9512,True
+Supp alpha-grid,"Uniform, Δα=0.04",dino sd,0.011204392516373831,0.0112,True
+Supp alpha-grid,"Uniform, Δα=0.04",dreamsim,0.08330445360329408,0.0833,True
+Supp alpha-grid,"Uniform, Δα=0.04",dreamsim sd,0.020600289263215048,0.0206,True
+Supp alpha-grid,"Uniform-like, nominal Δα=0.08",mse,0.016769922292680733,0.0168,True
+Supp alpha-grid,"Uniform-like, nominal Δα=0.08",mse sd,0.005144172563455369,0.0051,True
+Supp alpha-grid,"Uniform-like, nominal Δα=0.08",psnr,19.65323904298147,19.653,True
+Supp alpha-grid,"Uniform-like, nominal Δα=0.08",psnr sd,1.4082956999909528,1.408,True
+Supp alpha-grid,"Uniform-like, nominal Δα=0.08",ssim,0.7226219799458807,0.7226,True
+Supp alpha-grid,"Uniform-like, nominal Δα=0.08",ssim sd,0.08556903343456272,0.0856,True
+Supp alpha-grid,"Uniform-like, nominal Δα=0.08",lpips,0.18442525015959302,0.1844,True
+Supp alpha-grid,"Uniform-like, nominal Δα=0.08",lpips sd,0.04614192065616008,0.0461,True
+Supp alpha-grid,"Uniform-like, nominal Δα=0.08",openclip,0.9537364626736112,0.9537,True
+Supp alpha-grid,"Uniform-like, nominal Δα=0.08",openclip sd,0.009819938839411296,0.0098,True
+Supp alpha-grid,"Uniform-like, nominal Δα=0.08",dino,0.9505503353406324,0.9506,True
+Supp alpha-grid,"Uniform-like, nominal Δα=0.08",dino sd,0.01115783282537591,0.0112,True
+Supp alpha-grid,"Uniform-like, nominal Δα=0.08",dreamsim,0.0864049104570017,0.0864,True
+Supp alpha-grid,"Uniform-like, nominal Δα=0.08",dreamsim sd,0.020363239168068384,0.0204,True
+Supp alpha-grid,"Uniform-like, nominal Δα=0.16",mse,0.019909060006201313,0.0199,True
+Supp alpha-grid,"Uniform-like, nominal Δα=0.16",mse sd,0.005512590729805673,0.0055,True
+Supp alpha-grid,"Uniform-like, nominal Δα=0.16",psnr,19.40988124347581,19.410,True
+Supp alpha-grid,"Uniform-like, nominal Δα=0.16",psnr sd,1.3892531390774938,1.389,True
+Supp alpha-grid,"Uniform-like, nominal Δα=0.16",ssim,0.7174481218520589,0.7174,True
+Supp alpha-grid,"Uniform-like, nominal Δα=0.16",ssim sd,0.08528079582083437,0.0853,True
+Supp alpha-grid,"Uniform-like, nominal Δα=0.16",lpips,0.19153476340486764,0.1915,True
+Supp alpha-grid,"Uniform-like, nominal Δα=0.16",lpips sd,0.04557532442286706,0.0456,True
+Supp alpha-grid,"Uniform-like, nominal Δα=0.16",openclip,0.9513010763888889,0.9513,True
+Supp alpha-grid,"Uniform-like, nominal Δα=0.16",openclip sd,0.009759346872957752,0.0098,True
+Supp alpha-grid,"Uniform-like, nominal Δα=0.16",dino,0.9488589943839445,0.9489,True
+Supp alpha-grid,"Uniform-like, nominal Δα=0.16",dino sd,0.011159465638397318,0.0112,True
+Supp alpha-grid,"Uniform-like, nominal Δα=0.16",dreamsim,0.09447267228987473,0.0945,True
+Supp alpha-grid,"Uniform-like, nominal Δα=0.16",dreamsim sd,0.020089994779506192,0.0201,True
+Supp segmentation dependency,DanbooRegion->Felzenszwalb,mse,0.016035258454513743,0.0160,True
+Supp segmentation dependency,DanbooRegion->Felzenszwalb,mse sd,0.004543324242729878,0.0045,True
+Supp segmentation dependency,DanbooRegion->Felzenszwalb,lpips,0.19599111407416145,0.1960,True
+Supp segmentation dependency,DanbooRegion->Felzenszwalb,lpips sd,0.04687254428122135,0.0469,True
+Supp segmentation dependency,DanbooRegion->Felzenszwalb,dreamsim,0.09427041785240164,0.0943,True
+Supp segmentation dependency,DanbooRegion->Felzenszwalb,dreamsim sd,0.02210806976764064,0.0221,True
+Supp segmentation dependency,DanbooRegion->DanbooRegion,mse,0.01717268074347304,0.0172,True
+Supp segmentation dependency,DanbooRegion->DanbooRegion,mse sd,0.004855961764812443,0.0049,True
+Supp segmentation dependency,DanbooRegion->DanbooRegion,lpips,0.20448162731198694,0.2045,True
+Supp segmentation dependency,DanbooRegion->DanbooRegion,lpips sd,0.046979933583501575,0.0470,True
+Supp segmentation dependency,DanbooRegion->DanbooRegion,dreamsim,0.09898097862796644,0.0990,True
+Supp segmentation dependency,DanbooRegion->DanbooRegion,dreamsim sd,0.022293490924526947,0.0223,True
+Supp segmentation dependency,DanbooRegion->SLIC,mse,0.026904177609916025,0.0269,True
+Supp segmentation dependency,DanbooRegion->SLIC,mse sd,0.00436609246304129,0.0044,True
+Supp segmentation dependency,DanbooRegion->SLIC,lpips,0.2755814505972692,0.2756,True
+Supp segmentation dependency,DanbooRegion->SLIC,lpips sd,0.05404474892009639,0.0540,True
+Supp segmentation dependency,DanbooRegion->SLIC,dreamsim,0.15542803003423736,0.1554,True
+Supp segmentation dependency,DanbooRegion->SLIC,dreamsim sd,0.03313927325982104,0.0331,True
+Supp segmentation dependency,SLIC->Felzenszwalb,mse,0.02032266866781474,0.0203,True
+Supp segmentation dependency,SLIC->Felzenszwalb,mse sd,0.0059285435407460075,0.0059,True
+Supp segmentation dependency,SLIC->Felzenszwalb,lpips,0.218247481602689,0.2182,True
+Supp segmentation dependency,SLIC->Felzenszwalb,lpips sd,0.044472745001315005,0.0445,True
+Supp segmentation dependency,SLIC->Felzenszwalb,dreamsim,0.10121101831982525,0.1012,True
+Supp segmentation dependency,SLIC->Felzenszwalb,dreamsim sd,0.018934242926187044,0.0189,True
+Supp segmentation dependency,SLIC->DanbooRegion,mse,0.02093770754815445,0.0209,True
+Supp segmentation dependency,SLIC->DanbooRegion,mse sd,0.006146689418910148,0.0061,True
+Supp segmentation dependency,SLIC->DanbooRegion,lpips,0.23207201465260344,0.2321,True
+Supp segmentation dependency,SLIC->DanbooRegion,lpips sd,0.04868511120653176,0.0487,True
+Supp segmentation dependency,SLIC->DanbooRegion,dreamsim,0.11035667314240999,0.1104,True
+Supp segmentation dependency,SLIC->DanbooRegion,dreamsim sd,0.020896507001547222,0.0209,True
+Supp segmentation dependency,SLIC->SLIC,mse,0.026940234611847868,0.0269,True
+Supp segmentation dependency,SLIC->SLIC,mse sd,0.006253411660615243,0.0063,True
+Supp segmentation dependency,SLIC->SLIC,lpips,0.23695895803182068,0.2370,True
+Supp segmentation dependency,SLIC->SLIC,lpips sd,0.04363904087268962,0.0436,True
+Supp segmentation dependency,SLIC->SLIC,dreamsim,0.1213830241864919,0.1214,True
+Supp segmentation dependency,SLIC->SLIC,dreamsim sd,0.021374258898480925,0.0214,True
+Supp segmentation dependency,Felzenszwalb->Felzenszwalb†,mse,0.014887919081703338,0.0149,True
+Supp segmentation dependency,Felzenszwalb->Felzenszwalb†,mse sd,0.004957684566087895,0.0050,True
+Supp segmentation dependency,Felzenszwalb->Felzenszwalb†,lpips,0.1829462085853454,0.1829,True
+Supp segmentation dependency,Felzenszwalb->Felzenszwalb†,lpips sd,0.047208613104651714,0.0472,True
+Supp segmentation dependency,Felzenszwalb->Felzenszwalb†,dreamsim,0.08390581980251594,0.0839,True
+Supp segmentation dependency,Felzenszwalb->Felzenszwalb†,dreamsim sd,0.02118724737679419,0.0212,True
+Supp segmentation dependency,Felzenszwalb->DanbooRegion,mse,0.016404165252470487,0.0164,True
+Supp segmentation dependency,Felzenszwalb->DanbooRegion,mse sd,0.005128000852886226,0.0051,True
+Supp segmentation dependency,Felzenszwalb->DanbooRegion,lpips,0.19991021276107465,0.1999,True
+Supp segmentation dependency,Felzenszwalb->DanbooRegion,lpips sd,0.0486768019967649,0.0487,True
+Supp segmentation dependency,Felzenszwalb->DanbooRegion,dreamsim,0.0945150289792815,0.0945,True
+Supp segmentation dependency,Felzenszwalb->DanbooRegion,dreamsim sd,0.022525462181353997,0.0225,True
+Supp segmentation dependency,Felzenszwalb->SLIC,mse,0.024316772057165956,0.0243,True
+Supp segmentation dependency,Felzenszwalb->SLIC,mse sd,0.004871461265350889,0.0049,True
+Supp segmentation dependency,Felzenszwalb->SLIC,lpips,0.261514958202191,0.2615,True
+Supp segmentation dependency,Felzenszwalb->SLIC,lpips sd,0.056299401813157554,0.0563,True
+Supp segmentation dependency,Felzenszwalb->SLIC,dreamsim,0.13971557231092033,0.1397,True
+Supp segmentation dependency,Felzenszwalb->SLIC,dreamsim sd,0.0323691855012998,0.0324,True
+"Table III (DetFill, scribble)",mean,mse,0.021360076227055658,0.021,True
+"Table III (DetFill, scribble)",sd,mse,0.006580245810439988,0.007,True
+"Table III (DetFill, scribble)",mean,lpips,0.19427191073271963,0.194,True
+"Table III (DetFill, scribble)",sd,lpips,0.04505040775227776,0.045,True
+"Table III (DetFill, scribble)",mean,dreamsim,0.09078598254137567,0.091,True
+"Table III (DetFill, scribble)",sd,dreamsim,0.020498335426334894,0.020,True
+Supp additional training (Diffusart-retrain),scribble,psnr,19.457245191812596,19.457,True
+Supp additional training (Diffusart-retrain),scribble,psnr sd,1.0644291849401457,1.06,True
+Supp additional training (Diffusart-retrain),scribble,ssim,0.7084629119694473,0.717,False
+Supp additional training (Diffusart-retrain),scribble,lpips,0.17687508127783633,0.177,True
+Supp additional training (Diffusart-retrain),scribble,lpips sd,0.03090293491799488,0.031,True
+Supp seed table (random),mse,alpha=0,0.10029765599717691,0.1003,True
+Supp seed table (random),mse,alpha=1,0.0705719694446306,0.0706,True
+Supp seed table (random),mse,alpha=1 sd,0.0017386540643867722,0.0017,True
+Supp seed table (random),mse,alpha=3,0.05350691810351166,0.0535,True
+Supp seed table (random),mse,alpha=3 sd,0.0010969034436625552,0.0011,True
+Supp seed table (random),mse,alpha=5,0.04392916968775283,0.0439,True
+Supp seed table (random),mse,alpha=5 sd,0.0006464912142345307,0.0006,True
+Supp seed table (random),mse,alpha=10,0.03161502607166758,0.0316,True
+Supp seed table (random),mse,alpha=10 sd,0.0004509841069560912,0.0005,True
+Supp seed table (random),mse,alpha=25,0.01830232533659234,0.0183,True
+Supp seed table (random),mse,alpha=25 sd,0.00027801082696750313,0.0003,True
+Supp seed table (random),mse,alpha=50,0.01169487551624954,0.0117,True
+Supp seed table (random),mse,alpha=50 sd,0.00017700936579109902,0.0002,True
+Supp seed table (random),mse,alpha=100,0.0074852645063461,0.0075,True
+Supp seed table (random),mse,HAUC,0.017246589242462255,0.0172,True
+Supp seed table (random),mse,HAUC sd,0.00011319831340651005,0.0001,True
+Supp seed table (size-sort),mse,alpha=0,0.1002976559971769,0.1003,True
+Supp seed table (size-sort),mse,alpha=1,0.0500929710431955,0.0501,True
+Supp seed table (size-sort),mse,alpha=3,0.030979918190084,0.0310,True
+Supp seed table (size-sort),mse,alpha=5,0.0238690009263033,0.0239,True
+Supp seed table (size-sort),mse,alpha=10,0.0166240301025875,0.0166,True
+Supp seed table (size-sort),mse,alpha=25,0.0112823248493562,0.0113,True
+Supp seed table (size-sort),mse,alpha=50,0.0089499365103741,0.0089,True
+Supp seed table (size-sort),mse,alpha=100,0.0074852645063461,0.0075,True
+Supp seed table (size-sort),mse,HAUC,0.011854306539962915,0.0119,True
+Supp seed table (random),psnr,alpha=0,10.42575839360555,10.43,True
+Supp seed table (random),psnr,alpha=1,12.268582580010095,12.27,True
+Supp seed table (random),psnr,alpha=1 sd,0.07899311465290952,0.08,True
+Supp seed table (random),psnr,alpha=3,13.555947658061982,13.56,True
+Supp seed table (random),psnr,alpha=3 sd,0.0727532926938549,0.07,True
+Supp seed table (random),psnr,alpha=5,14.409465919971463,14.41,True
+Supp seed table (random),psnr,alpha=5 sd,0.053031805054677375,0.05,True
+Supp seed table (random),psnr,alpha=10,15.848327493508657,15.85,True
+Supp seed table (random),psnr,alpha=10 sd,0.037831390940857336,0.04,True
+Supp seed table (random),psnr,alpha=25,18.28595946598053,18.29,True
+Supp seed table (random),psnr,alpha=25 sd,0.04783780784141412,0.05,True
+Supp seed table (random),psnr,alpha=50,20.318260550498966,20.32,True
+Supp seed table (random),psnr,alpha=50 sd,0.03183950413241372,0.03,True
+Supp seed table (random),psnr,alpha=100,22.30155256907145,22.30,True
+Supp seed table (random),psnr,HAUC,19.448368282280363,19.45,True
+Supp seed table (random),psnr,HAUC sd,0.016414221151144628,0.02,True
+Supp seed table (size-sort),psnr,alpha=0,10.42575839360555,10.43,True
+Supp seed table (size-sort),psnr,alpha=1,13.74169783115387,13.74,True
+Supp seed table (size-sort),psnr,alpha=3,15.814166990915934,15.81,True
+Supp seed table (size-sort),psnr,alpha=5,16.95656827290853,16.96,True
+Supp seed table (size-sort),psnr,alpha=10,18.570496292114257,18.57,True
+Supp seed table (size-sort),psnr,alpha=25,20.3356151008606,20.34,True
+Supp seed table (size-sort),psnr,alpha=50,21.433247696558634,21.43,True
+Supp seed table (size-sort),psnr,alpha=100,22.30155256907145,22.30,True
+Supp seed table (size-sort),psnr,HAUC,20.70504616666635,20.71,True
+Supp seed table (random),ssim,alpha=0,0.5317499533543985,0.5317,True
+Supp seed table (random),ssim,alpha=1,0.5811860433059435,0.5812,True
+Supp seed table (random),ssim,alpha=1 sd,0.0025131320829859145,0.0025,True
+Supp seed table (random),ssim,alpha=3,0.6205885666385293,0.6206,True
+Supp seed table (random),ssim,alpha=3 sd,0.001971005370653772,0.0020,True
+Supp seed table (random),ssim,alpha=5,0.6456232898334662,0.6456,True
+Supp seed table (random),ssim,alpha=5 sd,0.001315879516820263,0.0013,True
+Supp seed table (random),ssim,alpha=10,0.6863586704482636,0.6864,True
+Supp seed table (random),ssim,alpha=10 sd,0.0007819228824634023,0.0008,True
+Supp seed table (random),ssim,alpha=25,0.7477498465577762,0.7477,True
+Supp seed table (random),ssim,alpha=25 sd,0.0009730699340899048,0.0010,True
+Supp seed table (random),ssim,alpha=50,0.7920895032087962,0.7921,True
+Supp seed table (random),ssim,alpha=50 sd,0.0005856772356802427,0.0006,True
+Supp seed table (random),ssim,alpha=100,0.8284396835168202,0.8284,True
+Supp seed table (random),ssim,HAUC,0.7687144478321882,0.7687,True
+Supp seed table (random),ssim,HAUC sd,0.00041766693146085405,0.0004,True
+Supp seed table (size-sort),ssim,alpha=0,0.5317499533543985,0.5317,True
+Supp seed table (size-sort),ssim,alpha=1,0.6213285390535991,0.6213,True
+Supp seed table (size-sort),ssim,alpha=3,0.6690785600741704,0.6691,True
+Supp seed table (size-sort),ssim,alpha=5,0.6939658315976461,0.6940,True
+Supp seed table (size-sort),ssim,alpha=10,0.7277671815951665,0.7278,True
+Supp seed table (size-sort),ssim,alpha=25,0.7704645391305288,0.7705,True
+Supp seed table (size-sort),ssim,alpha=50,0.8015431579947472,0.8015,True
+Supp seed table (size-sort),ssim,alpha=100,0.8284396835168203,0.8284,True
+Supp seed table (size-sort),ssim,HAUC,0.7842072842728347,0.7842,True
+Supp seed table (random),lpips,alpha=0,0.4405391532182693,0.4405,True
+Supp seed table (random),lpips,alpha=1,0.35920762690901753,0.3592,True
+Supp seed table (random),lpips,alpha=1 sd,0.0028225021426392617,0.0028,True
+Supp seed table (random),lpips,alpha=3,0.3061602228383223,0.3062,True
+Supp seed table (random),lpips,alpha=3 sd,0.0020916113547837074,0.0021,True
+Supp seed table (random),lpips,alpha=5,0.2763758971778055,0.2764,True
+Supp seed table (random),lpips,alpha=5 sd,0.001173272758734122,0.0012,True
+Supp seed table (random),lpips,alpha=10,0.23218093480666474,0.2322,True
+Supp seed table (random),lpips,alpha=10 sd,0.000991661405264288,0.0010,True
+Supp seed table (random),lpips,alpha=25,0.17207188657050326,0.1721,True
+Supp seed table (random),lpips,alpha=25 sd,0.0009397547751084593,0.0009,True
+Supp seed table (random),lpips,alpha=50,0.1315641620916624,0.1316,True
+Supp seed table (random),lpips,alpha=50 sd,0.00046837349803191216,0.0005,True
+Supp seed table (random),lpips,alpha=100,0.0990692734469969,0.0991,True
+Supp seed table (random),lpips,HAUC,0.155123520968606,0.1551,True
+Supp seed table (random),lpips,HAUC sd,0.00035981119623552384,0.0004,True
+Supp seed table (size-sort),lpips,alpha=0,0.4405391532182693,0.4405,True
+Supp seed table (size-sort),lpips,alpha=1,0.3315195179233948,0.3315,True
+Supp seed table (size-sort),lpips,alpha=3,0.2672713751842578,0.2673,True
+Supp seed table (size-sort),lpips,alpha=5,0.2357223322242498,0.2357,True
+Supp seed table (size-sort),lpips,alpha=10,0.1954205127184589,0.1954,True
+Supp seed table (size-sort),lpips,alpha=25,0.1496005586658914,0.1496,True
+Supp seed table (size-sort),lpips,alpha=50,0.120641974620521,0.1206,True
+Supp seed table (size-sort),lpips,alpha=100,0.0990692734469969,0.0991,True
+Supp seed table (size-sort),lpips,HAUC,0.14024141951594493,0.1402,True
+Supp seed table (random),openclip,alpha=0,0.8767106119791668,0.8767,True
+Supp seed table (random),openclip,alpha=1,0.9014803059895833,0.9015,True
+Supp seed table (random),openclip,alpha=1 sd,0.0013136580111364933,0.0013,True
+Supp seed table (random),openclip,alpha=3,0.9209358723958335,0.9209,True
+Supp seed table (random),openclip,alpha=3 sd,0.0008486627030632118,0.0008,True
+Supp seed table (random),openclip,alpha=5,0.9303481445312499,0.9303,True
+Supp seed table (random),openclip,alpha=5 sd,0.000809448151165074,0.0008,True
+Supp seed table (random),openclip,alpha=10,0.9434493815104167,0.9434,True
+Supp seed table (random),openclip,alpha=10 sd,0.0006591884171161226,0.0007,True
+Supp seed table (random),openclip,alpha=25,0.9584335937499999,0.9584,True
+Supp seed table (random),openclip,alpha=25 sd,0.0005899252243853705,0.0006,True
+Supp seed table (random),openclip,alpha=50,0.9670157877604166,0.9670,True
+Supp seed table (random),openclip,alpha=50 sd,0.0003349845484397403,0.0003,True
+Supp seed table (random),openclip,alpha=100,0.9729231770833332,0.9729,True
+Supp seed table (random),openclip,HAUC,0.9607800317382813,0.9608,True
+Supp seed table (random),openclip,HAUC sd,0.00025206834076086276,0.0003,True
+Supp seed table (size-sort),openclip,alpha=0,0.8767106119791667,0.8767,True
+Supp seed table (size-sort),openclip,alpha=1,0.90501953125,0.9050,True
+Supp seed table (size-sort),openclip,alpha=3,0.9286246744791666,0.9286,True
+Supp seed table (size-sort),openclip,alpha=5,0.9397265625,0.9397,True
+Supp seed table (size-sort),openclip,alpha=10,0.9518245442708332,0.9518,True
+Supp seed table (size-sort),openclip,alpha=25,0.9628548177083334,0.9629,True
+Supp seed table (size-sort),openclip,alpha=50,0.9685514322916666,0.9686,True
+Supp seed table (size-sort),openclip,alpha=100,0.9729231770833332,0.9729,True
+Supp seed table (size-sort),openclip,HAUC,0.9636127685546874,0.9636,True
+Supp seed table (random),dino,alpha=0,0.8991631976763408,0.8992,True
+Supp seed table (random),dino,alpha=1,0.9121932449340822,0.9122,True
+Supp seed table (random),dino,alpha=1 sd,0.001157452572040857,0.0012,True
+Supp seed table (random),dino,alpha=3,0.9231034355759622,0.9231,True
+Supp seed table (random),dino,alpha=3 sd,0.0008020391352030205,0.0008,True
+Supp seed table (random),dino,alpha=5,0.930421310285727,0.9304,True
+Supp seed table (random),dino,alpha=5 sd,0.0007201608927318154,0.0007,True
+Supp seed table (random),dino,alpha=10,0.9410570684075354,0.9411,True
+Supp seed table (random),dino,alpha=10 sd,0.000514430992922141,0.0005,True
+Supp seed table (random),dino,alpha=25,0.9554375456968943,0.9554,True
+Supp seed table (random),dino,alpha=25 sd,0.0007369819470175316,0.0007,True
+Supp seed table (random),dino,alpha=50,0.9645555395086607,0.9646,True
+Supp seed table (random),dino,alpha=50 sd,0.0003270438107677189,0.0003,True
+Supp seed table (random),dino,alpha=100,0.970901406009992,0.9709,True
+Supp seed table (random),dino,HAUC,0.9588324240322909,0.9588,True
+Supp seed table (random),dino,HAUC sd,0.0002749190399628363,0.0003,True
+Supp seed table (size-sort),dino,alpha=0,0.8991631976763408,0.8992,True
+Supp seed table (size-sort),dino,alpha=1,0.9229017194112142,0.9229,True
+Supp seed table (size-sort),dino,alpha=3,0.9366982694466908,0.9367,True
+Supp seed table (size-sort),dino,alpha=5,0.9433866117397944,0.9434,True
+Supp seed table (size-sort),dino,alpha=10,0.9521427369117736,0.9521,True
+Supp seed table (size-sort),dino,alpha=25,0.9612193936109544,0.9612,True
+Supp seed table (size-sort),dino,alpha=50,0.9663722588618596,0.9664,True
+Supp seed table (size-sort),dino,alpha=100,0.970901406009992,0.9709,True
+Supp seed table (size-sort),dino,HAUC,0.9626649395684401,0.9627,True
+Supp seed table (random),dreamsim,alpha=0,0.34630831281344093,0.3463,True
+Supp seed table (random),dreamsim,alpha=1,0.25745054556926084,0.2575,True
+Supp seed table (random),dreamsim,alpha=1 sd,0.0022291967032869765,0.0022,True
+Supp seed table (random),dreamsim,alpha=3,0.19339089586337402,0.1934,True
+Supp seed table (random),dreamsim,alpha=3 sd,0.001781938982909401,0.0018,True
+Supp seed table (random),dreamsim,alpha=5,0.16319043036301922,0.1632,True
+Supp seed table (random),dreamsim,alpha=5 sd,0.0011744096468936057,0.0012,True
+Supp seed table (random),dreamsim,alpha=10,0.12218923393885284,0.1222,True
+Supp seed table (random),dreamsim,alpha=10 sd,0.0009735879964695134,0.0010,True
+Supp seed table (random),dreamsim,alpha=25,0.07797341173887243,0.0780,True
+Supp seed table (random),dreamsim,alpha=25 sd,0.0009941405122417875,0.0010,True
+Supp seed table (random),dreamsim,alpha=50,0.05459893916050582,0.0546,True
+Supp seed table (random),dreamsim,alpha=50 sd,0.0002382945853590629,0.0002,True
+Supp seed table (random),dreamsim,alpha=100,0.0399069839715957,0.0399,True
+Supp seed table (random),dreamsim,HAUC,0.07343773664732765,0.0734,True
+Supp seed table (random),dreamsim,HAUC sd,0.00025035171720066203,0.0003,True
+Supp seed table (size-sort),dreamsim,alpha=0,0.3463083128134409,0.3463,True
+Supp seed table (size-sort),dreamsim,alpha=1,0.2518289188543955,0.2518,True
+Supp seed table (size-sort),dreamsim,alpha=3,0.1708727421363194,0.1709,True
+Supp seed table (size-sort),dreamsim,alpha=5,0.1346230852603911,0.1346,True
+Supp seed table (size-sort),dreamsim,alpha=10,0.0969102426369984,0.0969,True
+Supp seed table (size-sort),dreamsim,alpha=25,0.0651618619759877,0.0652,True
+Supp seed table (size-sort),dreamsim,alpha=50,0.0499063581228255,0.0499,True
+Supp seed table (size-sort),dreamsim,alpha=100,0.0399069839715957,0.0399,True
+Supp seed table (size-sort),dreamsim,HAUC,0.06505326512157908,0.0651,True

@@ -1,0 +1,118 @@
+{
+  "overall_mean_iou": {
+    "iou_slic100": 0.13263400966729988,
+    "iou_slic300": 0.12870597564234862,
+    "iou_felzen_scale200": 0.08545611571274227,
+    "iou_felzen_scale400": 0.09209471701497457,
+    "iou_watershed": 0.18998405154052236
+  },
+  "overall_mean_containment": {
+    "contain_slic100": 0.2218793938642796,
+    "contain_slic300": 0.21080233527418743,
+    "contain_felzen_scale200": 0.20505216432506426,
+    "contain_felzen_scale400": 0.24426080887064763,
+    "contain_watershed": 0.9086847267418081
+  },
+  "per_alpha_mean_iou": {
+    "1": {
+      "iou_slic100": 0.010919081227478271,
+      "iou_slic300": 0.008572012877495015,
+      "iou_felzen_scale200": 0.04280122354788643,
+      "iou_felzen_scale400": 0.03510383201164725,
+      "iou_watershed": 0.03224865343311611
+    },
+    "3": {
+      "iou_slic100": 0.029058398341544812,
+      "iou_slic300": 0.026969756898394474,
+      "iou_felzen_scale200": 0.0544763790358365,
+      "iou_felzen_scale400": 0.05162706733599054,
+      "iou_watershed": 0.07096345394752092
+    },
+    "5": {
+      "iou_slic100": 0.048818931583117266,
+      "iou_slic300": 0.044266189626741996,
+      "iou_felzen_scale200": 0.05993823401831813,
+      "iou_felzen_scale400": 0.061064454934465544,
+      "iou_watershed": 0.09907051266072862
+    },
+    "10": {
+      "iou_slic100": 0.08648640436521782,
+      "iou_slic300": 0.08006695999769521,
+      "iou_felzen_scale200": 0.07084930033222532,
+      "iou_felzen_scale400": 0.08048768754933301,
+      "iou_watershed": 0.14833068675174793
+    },
+    "25": {
+      "iou_slic100": 0.16602469648015752,
+      "iou_slic300": 0.1602545312491549,
+      "iou_felzen_scale200": 0.08988198423482044,
+      "iou_felzen_scale400": 0.10442330309348984,
+      "iou_watershed": 0.23781866726530268
+    },
+    "50": {
+      "iou_slic100": 0.24817435580368313,
+      "iou_slic300": 0.24440636686933148,
+      "iou_felzen_scale200": 0.11904320518428171,
+      "iou_felzen_scale400": 0.13505763911740173,
+      "iou_watershed": 0.3240695237824813
+    },
+    "100": {
+      "iou_slic100": 0.33692761772923663,
+      "iou_slic300": 0.3344037792648797,
+      "iou_felzen_scale200": 0.16049156876641307,
+      "iou_felzen_scale400": 0.17594918697910525,
+      "iou_watershed": 0.414757939640969
+    }
+  },
+  "per_alpha_mean_containment": {
+    "1": {
+      "contain_slic100": 0.02647496169380512,
+      "contain_slic300": 0.017573802575261924,
+      "contain_felzen_scale200": 0.25144275220785123,
+      "contain_felzen_scale400": 0.2833228416959865,
+      "contain_watershed": 0.8667665032945018
+    },
+    "3": {
+      "contain_slic100": 0.06273335028228605,
+      "contain_slic300": 0.053738780698294,
+      "contain_felzen_scale200": 0.18633532742272862,
+      "contain_felzen_scale400": 0.22631887955168756,
+      "contain_watershed": 0.8894159935008151
+    },
+    "5": {
+      "contain_slic100": 0.1004151956381407,
+      "contain_slic300": 0.0864220033089656,
+      "contain_felzen_scale200": 0.17042021623127232,
+      "contain_felzen_scale400": 0.21164683786825375,
+      "contain_watershed": 0.9013760233197294
+    },
+    "10": {
+      "contain_slic100": 0.16643598717324087,
+      "contain_slic300": 0.14969511689077225,
+      "contain_felzen_scale200": 0.1657065235039674,
+      "contain_felzen_scale400": 0.21609467321586043,
+      "contain_watershed": 0.9096285789960585
+    },
+    "25": {
+      "contain_slic100": 0.29020694035254696,
+      "contain_slic300": 0.2768720597285318,
+      "contain_felzen_scale200": 0.17952960036128726,
+      "contain_felzen_scale400": 0.22326038662947098,
+      "contain_watershed": 0.9214836505053121
+    },
+    "50": {
+      "contain_slic100": 0.40101818610258566,
+      "contain_slic300": 0.39179695790290825,
+      "contain_felzen_scale200": 0.215536781797088,
+      "contain_felzen_scale400": 0.2520835505296128,
+      "contain_watershed": 0.9321405467611145
+    },
+    "100": {
+      "contain_slic100": 0.5026143952711771,
+      "contain_slic300": 0.4962971502695959,
+      "contain_felzen_scale200": 0.2671671252159683,
+      "contain_felzen_scale400": 0.29774952648408376,
+      "contain_watershed": 0.9392831537576698
+    }
+  }
+}

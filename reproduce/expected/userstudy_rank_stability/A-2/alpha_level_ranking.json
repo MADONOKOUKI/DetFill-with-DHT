@@ -1,0 +1,194 @@
+{
+  "0": {
+    "ranking": [
+      "painttorch",
+      "diffusart",
+      "proposed"
+    ],
+    "winrates": {
+      "proposed": {
+        "winrate": 0.43333333333333335,
+        "k": 208,
+        "n": 480
+      },
+      "painttorch": {
+        "winrate": 0.5958333333333333,
+        "k": 286,
+        "n": 480
+      },
+      "diffusart": {
+        "winrate": 0.4708333333333333,
+        "k": 226,
+        "n": 480
+      }
+    }
+  },
+  "1": {
+    "ranking": [
+      "diffusart",
+      "proposed",
+      "painttorch"
+    ],
+    "winrates": {
+      "proposed": {
+        "winrate": 0.5333333333333333,
+        "k": 256,
+        "n": 480
+      },
+      "painttorch": {
+        "winrate": 0.26666666666666666,
+        "k": 128,
+        "n": 480
+      },
+      "diffusart": {
+        "winrate": 0.7,
+        "k": 336,
+        "n": 480
+      }
+    }
+  },
+  "3": {
+    "ranking": [
+      "proposed",
+      "diffusart",
+      "painttorch"
+    ],
+    "winrates": {
+      "proposed": {
+        "winrate": 0.78125,
+        "k": 375,
+        "n": 480
+      },
+      "painttorch": {
+        "winrate": 0.12708333333333333,
+        "k": 61,
+        "n": 480
+      },
+      "diffusart": {
+        "winrate": 0.5916666666666667,
+        "k": 284,
+        "n": 480
+      }
+    }
+  },
+  "5": {
+    "ranking": [
+      "proposed",
+      "diffusart",
+      "painttorch"
+    ],
+    "winrates": {
+      "proposed": {
+        "winrate": 0.8458333333333333,
+        "k": 406,
+        "n": 480
+      },
+      "painttorch": {
+        "winrate": 0.09375,
+        "k": 45,
+        "n": 480
+      },
+      "diffusart": {
+        "winrate": 0.5604166666666667,
+        "k": 269,
+        "n": 480
+      }
+    }
+  },
+  "10": {
+    "ranking": [
+      "proposed",
+      "diffusart",
+      "painttorch"
+    ],
+    "winrates": {
+      "proposed": {
+        "winrate": 0.9125,
+        "k": 438,
+        "n": 480
+      },
+      "painttorch": {
+        "winrate": 0.08125,
+        "k": 39,
+        "n": 480
+      },
+      "diffusart": {
+        "winrate": 0.50625,
+        "k": 243,
+        "n": 480
+      }
+    }
+  },
+  "25": {
+    "ranking": [
+      "proposed",
+      "diffusart",
+      "painttorch"
+    ],
+    "winrates": {
+      "proposed": {
+        "winrate": 0.95625,
+        "k": 459,
+        "n": 480
+      },
+      "painttorch": {
+        "winrate": 0.07083333333333333,
+        "k": 34,
+        "n": 480
+      },
+      "diffusart": {
+        "winrate": 0.47291666666666665,
+        "k": 227,
+        "n": 480
+      }
+    }
+  },
+  "50": {
+    "ranking": [
+      "proposed",
+      "diffusart",
+      "painttorch"
+    ],
+    "winrates": {
+      "proposed": {
+        "winrate": 0.975,
+        "k": 468,
+        "n": 480
+      },
+      "painttorch": {
+        "winrate": 0.07291666666666667,
+        "k": 35,
+        "n": 480
+      },
+      "diffusart": {
+        "winrate": 0.45208333333333334,
+        "k": 217,
+        "n": 480
+      }
+    }
+  },
+  "100": {
+    "ranking": [
+      "proposed",
+      "diffusart",
+      "painttorch"
+    ],
+    "winrates": {
+      "proposed": {
+        "winrate": 0.9770833333333333,
+        "k": 469,
+        "n": 480
+      },
+      "painttorch": {
+        "winrate": 0.10625,
+        "k": 51,
+        "n": 480
+      },
+      "diffusart": {
+        "winrate": 0.4166666666666667,
+        "k": 200,
+        "n": 480
+      }
+    }
+  }
+}

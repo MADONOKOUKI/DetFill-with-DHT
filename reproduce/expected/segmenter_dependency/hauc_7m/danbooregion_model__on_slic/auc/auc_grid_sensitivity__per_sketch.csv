@@ -1,0 +1,169 @@
+grid,N,sketch,sketch_name,metric,auc
+Original front-loaded,8,0,XDoG,mse,0.031945297084901916
+Original front-loaded,8,0,XDoG,psnr,16.311691881699563
+Original front-loaded,8,0,XDoG,ssim,0.5366073223075151
+Original front-loaded,8,0,XDoG,lpips,0.3359661974558358
+Original front-loaded,8,0,XDoG,openclip,0.9105159700520833
+Original front-loaded,8,0,XDoG,dino,0.9063342857400576
+Original front-loaded,8,0,XDoG,dreamsim,0.19194593284726136
+Original front-loaded,8,1,pysimp,mse,0.024439288556040675
+Original front-loaded,8,1,pysimp,psnr,17.687292232400576
+Original front-loaded,8,1,pysimp,ssim,0.6682557330760616
+Original front-loaded,8,1,pysimp,lpips,0.2590308016174969
+Original front-loaded,8,1,pysimp,openclip,0.929411982421875
+Original front-loaded,8,1,pysimp,dino,0.9196316601962844
+Original front-loaded,8,1,pysimp,dreamsim,0.14707077104836697
+Original front-loaded,8,2,sketchkeras,mse,0.02432794718880549
+Original front-loaded,8,2,sketchkeras,psnr,17.816929113818805
+Original front-loaded,8,2,sketchkeras,ssim,0.6878863232208727
+Original front-loaded,8,2,sketchkeras,lpips,0.23174735271847494
+Original front-loaded,8,2,sketchkeras,openclip,0.9391257023111979
+Original front-loaded,8,2,sketchkeras,dino,0.937870363583962
+Original front-loaded,8,2,sketchkeras,dreamsim,0.1272673862070838
+Uniform (N=5),5,0,XDoG,mse,0.03650459022928155
+Uniform (N=5),5,0,XDoG,psnr,16.171130435764788
+Uniform (N=5),5,0,XDoG,ssim,0.5363702860552294
+Uniform (N=5),5,0,XDoG,lpips,0.34148876568861297
+Uniform (N=5),5,0,XDoG,openclip,0.9071764322916667
+Uniform (N=5),5,0,XDoG,dino,0.9055973788996537
+Uniform (N=5),5,0,XDoG,dreamsim,0.20491746482501422
+Uniform (N=5),5,1,pysimp,mse,0.02941918023700653
+Uniform (N=5),5,1,pysimp,psnr,17.528221168140572
+Uniform (N=5),5,1,pysimp,ssim,0.6658362057026048
+Uniform (N=5),5,1,pysimp,lpips,0.2661365729317379
+Uniform (N=5),5,1,pysimp,openclip,0.9257904459635417
+Uniform (N=5),5,1,pysimp,dino,0.9187320590068897
+Uniform (N=5),5,1,pysimp,dreamsim,0.1608830350811282
+Uniform (N=5),5,2,sketchkeras,mse,0.02990493309363949
+Uniform (N=5),5,2,sketchkeras,psnr,17.6236023568511
+Uniform (N=5),5,2,sketchkeras,ssim,0.684092424981398
+Uniform (N=5),5,2,sketchkeras,lpips,0.23967786470893768
+Uniform (N=5),5,2,sketchkeras,openclip,0.9360008138020833
+Uniform (N=5),5,2,sketchkeras,dino,0.9370687943026422
+Uniform (N=5),5,2,sketchkeras,dreamsim,0.14091837620238457
+Uniform (N=8),8,0,XDoG,mse,0.03427260089481579
+Uniform (N=8),8,0,XDoG,psnr,16.215541922157986
+Uniform (N=8),8,0,XDoG,ssim,0.5360736565933214
+Uniform (N=8),8,0,XDoG,lpips,0.3388137194528293
+Uniform (N=8),8,0,XDoG,openclip,0.9090074716926627
+Uniform (N=8),8,0,XDoG,dino,0.905882083746369
+Uniform (N=8),8,0,XDoG,dreamsim,0.19792158572552634
+Uniform (N=8),8,1,pysimp,mse,0.026992632909306778
+Uniform (N=8),8,1,pysimp,psnr,17.575130409460275
+Uniform (N=8),8,1,pysimp,ssim,0.666615825359518
+Uniform (N=8),8,1,pysimp,lpips,0.2628660449476685
+Uniform (N=8),8,1,pysimp,openclip,0.9277471070753776
+Uniform (N=8),8,1,pysimp,dino,0.919073434911913
+Uniform (N=8),8,1,pysimp,dreamsim,0.1535497594284438
+Uniform (N=8),8,2,sketchkeras,mse,0.027115029846740565
+Uniform (N=8),8,2,sketchkeras,psnr,17.6934321586249
+Uniform (N=8),8,2,sketchkeras,ssim,0.6857733285858717
+Uniform (N=8),8,2,sketchkeras,lpips,0.23564027118773384
+Uniform (N=8),8,2,sketchkeras,openclip,0.9377312576977572
+Uniform (N=8),8,2,sketchkeras,dino,0.9374485822137906
+Uniform (N=8),8,2,sketchkeras,dreamsim,0.13358914417547818
+Uniform (N=11),11,0,XDoG,mse,0.03305347604639106
+Uniform (N=11),11,0,XDoG,psnr,16.268465616299842
+Uniform (N=11),11,0,XDoG,ssim,0.5365233880461792
+Uniform (N=11),11,0,XDoG,lpips,0.3371674911073843
+Uniform (N=11),11,0,XDoG,openclip,0.9098375857204861
+Uniform (N=11),11,0,XDoG,dino,0.9061224189556306
+Uniform (N=11),11,0,XDoG,dreamsim,0.194781950322522
+Uniform (N=11),11,1,pysimp,mse,0.025723865255670702
+Uniform (N=11),11,1,pysimp,psnr,17.63304812070264
+Uniform (N=11),11,1,pysimp,ssim,0.6674935797942755
+Uniform (N=11),11,1,pysimp,lpips,0.2608050558925875
+Uniform (N=11),11,1,pysimp,openclip,0.9286859825303819
+Uniform (N=11),11,1,pysimp,dino,0.9193825012931558
+Uniform (N=11),11,1,pysimp,dreamsim,0.15013323074552742
+Uniform (N=11),11,2,sketchkeras,mse,0.025715265274503747
+Uniform (N=11),11,2,sketchkeras,psnr,17.759572231165567
+Uniform (N=11),11,2,sketchkeras,ssim,0.687074525335207
+Uniform (N=11),11,2,sketchkeras,lpips,0.23331606183723438
+Uniform (N=11),11,2,sketchkeras,openclip,0.9385700320095487
+Uniform (N=11),11,2,sketchkeras,dino,0.9377551995080047
+Uniform (N=11),11,2,sketchkeras,dreamsim,0.13020980477359553
+Uniform (N=21),21,0,XDoG,mse,0.03222618938974618
+Uniform (N=21),21,0,XDoG,psnr,16.30277370383342
+Uniform (N=21),21,0,XDoG,ssim,0.5366908942359829
+Uniform (N=21),21,0,XDoG,lpips,0.33605974960923196
+Uniform (N=21),21,0,XDoG,openclip,0.9104301106770832
+Uniform (N=21),21,0,XDoG,dino,0.9063091577231883
+Uniform (N=21),21,0,XDoG,dreamsim,0.19248217086543631
+Uniform (N=21),21,1,pysimp,mse,0.02478358274628352
+Uniform (N=21),21,1,pysimp,psnr,17.675946855223177
+Uniform (N=21),21,1,pysimp,ssim,0.6681116515245948
+Uniform (N=21),21,1,pysimp,lpips,0.25936158096265666
+Uniform (N=21),21,1,pysimp,openclip,0.9293109456380209
+Uniform (N=21),21,1,pysimp,dino,0.9196005824635426
+Uniform (N=21),21,1,pysimp,dreamsim,0.1476486544683575
+Uniform (N=21),21,2,sketchkeras,mse,0.02468631683203463
+Uniform (N=21),21,2,sketchkeras,psnr,17.804934398114682
+Uniform (N=21),21,2,sketchkeras,ssim,0.6878140176749682
+Uniform (N=21),21,2,sketchkeras,lpips,0.2319219034008061
+Uniform (N=21),21,2,sketchkeras,openclip,0.9390820800781251
+Uniform (N=21),21,2,sketchkeras,dino,0.9378810734853149
+Uniform (N=21),21,2,sketchkeras,dreamsim,0.1278060469468434
+Low-α reduced,6,0,XDoG,mse,0.03285583295587265
+Low-α reduced,6,0,XDoG,psnr,16.286481595917543
+Low-α reduced,6,0,XDoG,ssim,0.5367991308865487
+Low-α reduced,6,0,XDoG,lpips,0.3367857308436184
+Low-α reduced,6,0,XDoG,openclip,0.9099382893880208
+Low-α reduced,6,0,XDoG,dino,0.9062052199199795
+Low-α reduced,6,0,XDoG,dreamsim,0.19446205926537508
+Low-α reduced,6,1,pysimp,mse,0.025534444179722945
+Low-α reduced,6,1,pysimp,psnr,17.654035231113433
+Low-α reduced,6,1,pysimp,ssim,0.6677765931363605
+Low-α reduced,6,1,pysimp,lpips,0.26039452504028254
+Low-α reduced,6,1,pysimp,openclip,0.9288014973958333
+Low-α reduced,6,1,pysimp,dino,0.9194732667947809
+Low-α reduced,6,1,pysimp,dreamsim,0.14978520941734308
+Low-α reduced,6,2,sketchkeras,mse,0.025535122842885838
+Low-α reduced,6,2,sketchkeras,psnr,17.780390980625153
+Low-α reduced,6,2,sketchkeras,ssim,0.6874344270975117
+Low-α reduced,6,2,sketchkeras,lpips,0.2328629459302251
+Low-α reduced,6,2,sketchkeras,openclip,0.9386740844726562
+Low-α reduced,6,2,sketchkeras,dino,0.9378439103399713
+Low-α reduced,6,2,sketchkeras,dreamsim,0.1298762839203079
+High-α shifted,8,0,XDoG,mse,0.03285583295587265
+High-α shifted,8,0,XDoG,psnr,16.286481595917543
+High-α shifted,8,0,XDoG,ssim,0.5367991308865487
+High-α shifted,8,0,XDoG,lpips,0.33678573084361846
+High-α shifted,8,0,XDoG,openclip,0.9099382893880208
+High-α shifted,8,0,XDoG,dino,0.9062052199199795
+High-α shifted,8,0,XDoG,dreamsim,0.19446205926537508
+High-α shifted,8,1,pysimp,mse,0.025534444179722945
+High-α shifted,8,1,pysimp,psnr,17.654035231113436
+High-α shifted,8,1,pysimp,ssim,0.6677765931363605
+High-α shifted,8,1,pysimp,lpips,0.26039452504028254
+High-α shifted,8,1,pysimp,openclip,0.9288014973958334
+High-α shifted,8,1,pysimp,dino,0.9194732667947807
+High-α shifted,8,1,pysimp,dreamsim,0.14978520941734308
+High-α shifted,8,2,sketchkeras,mse,0.025535122842885838
+High-α shifted,8,2,sketchkeras,psnr,17.780390980625153
+High-α shifted,8,2,sketchkeras,ssim,0.6874344270975116
+High-α shifted,8,2,sketchkeras,lpips,0.2328629459302251
+High-α shifted,8,2,sketchkeras,openclip,0.9386740844726562
+High-α shifted,8,2,sketchkeras,dino,0.9378439103399713
+High-α shifted,8,2,sketchkeras,dreamsim,0.1298762839203079
+Dense reference (N=101),101,0,XDoG,mse,0.031945297084901916
+Dense reference (N=101),101,0,XDoG,psnr,16.311691881699563
+Dense reference (N=101),101,0,XDoG,ssim,0.536607322307515
+Dense reference (N=101),101,0,XDoG,lpips,0.3359661974558357
+Dense reference (N=101),101,0,XDoG,openclip,0.9105159700520832
+Dense reference (N=101),101,0,XDoG,dino,0.9063342857400575
+Dense reference (N=101),101,0,XDoG,dreamsim,0.1919459328472614
+Dense reference (N=101),101,1,pysimp,mse,0.024439288556040675
+Dense reference (N=101),101,1,pysimp,psnr,17.68729223240058
+Dense reference (N=101),101,1,pysimp,ssim,0.6682557330760616
+Dense reference (N=101),101,1,pysimp,lpips,0.259030801617497
+Dense reference (N=101),101,1,pysimp,openclip,0.929411982421875
+Dense reference (N=101),101,1,pysimp,dino,0.9196316601962845
+Dense reference (N=101),101,1,pysimp,dreamsim,0.14707077104836694
+Dense reference (N=101),101,2,sketchkeras,mse,0.024327947188805488
+Dense reference (N=101),101,2,sketchkeras,psnr,17.816929113818805
+Dense reference (N=101),101,2,sketchkeras,ssim,0.6878863232208727
+Dense reference (N=101),101,2,sketchkeras,lpips,0.23174735271847494
+Dense reference (N=101),101,2,sketchkeras,openclip,0.9391257023111977
+Dense reference (N=101),101,2,sketchkeras,dino,0.9378703635839623
+Dense reference (N=101),101,2,sketchkeras,dreamsim,0.1272673862070838
