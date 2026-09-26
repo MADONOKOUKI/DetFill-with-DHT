@@ -212,6 +212,10 @@ not re-run a complete table row on different hardware; expect small differences 
   SketchKeras; the archived per-ratio files name index 0 "XDoG" and 1 "pysimp" (a label swap in the old evaluation
   script). Every published value is a mean ± SD over the three sources, so no number depends on this; the per-source
   tables written by A1 use the loader's mapping.
+- **Dot rows.** The DetFill dot rows date from the original submission and have no released per-ratio record. Re-running
+  the released dot checkpoint on the released maps (300 test images, SketchKeras line art, `run_hauc_pipeline.sh`
+  protocol) gives PSNR Hint-AUC 17.46 against 17.94 printed and LPIPS 0.24 against 0.18, i.e. the same model within
+  the spread expected from a subset and a different sampling batch composition, not a bit-exact reproduction.
 - **Not covered by released per-ratio data:** the Table II/III *dot* rows of DetFill, all baseline rows
   (PaintsTorch, Diffusart, ColorizeDiffusion v1/v2), the natural-image (ImageNet) tables and the legacy per-source
   tables of the supplement (earlier checkpoints). The dot row and the baselines can be regenerated with layer D and the
