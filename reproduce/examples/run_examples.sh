@@ -41,16 +41,15 @@ fetch() { # tag file sha256
   echo "$3  $f" | sha256sum -c --status - || { echo "SHA-256 mismatch for $2"; exit 1; }
 }
 fetch v1.0        detfill_scribble_illust_200ep.pth               fa85d6838a28b853e82f16ce28e3f5d9e6452879685b1313d84be11431226ee4
-fetch v1.0        detfill_dot_illust_200ep.pth                    fd872563e17cb1ac09957ed5ef993fac4dbeb2710f43a7ee29203444928d6fd4
+fetch v1.0        detfill_dot_illust_200ep.pth                    b4779946f24b5f52cdf640418c73bef67925c845e50c8f36610aeac7d50f212b
 fetch v1.1        detfill_scribble_illust_danbooregion_200ep.pth  1770cd61bb496060b4ff9bd8c2ec2e72b549fa99187a0429912100628cad9a78
 fetch v1.1        detfill_scribble_illust_slic_200ep.pth          eb25667c1955584f46f34abf98db10eef6d702e4c1078fe3cff388f646cf4217
 fetch v1.3        examples_data.tar.gz                            3d7f699da9f8de5a5def35a997e7bb42461abd56babd3ce6c30adfbee9f71c87
 if [ "$MODE" = full ]; then
   while read -r tag file sha; do fetch "$tag" "$file" "$sha"; done <<'LIST'
-legacy-2024 detfill_scribble_illust_32ch_200ep.pth 4eef804755b9adc4fc0b5234501666138a4a6ecddfbdb28245fd7fc32443ecda
-legacy-2024 detfill_scribble_illust_64ch_200ep.pth 8eeee341331ed949cc216049c9fecebc70900d54fb709eee3b97a2b1fc34845b
-legacy-2024 legacy2024_detfill_scribble_illust_200ep.pth 7d74ebe7d6c8862286fe9944b7cf9d2448a6e473880c383b13af8a36e6ce0002
-legacy-2024 legacy2024_detfill_dot_illust_200ep.pth b4779946f24b5f52cdf640418c73bef67925c845e50c8f36610aeac7d50f212b
+v1.4        detfill_scribble_illust_32ch_200ep.pth 4eef804755b9adc4fc0b5234501666138a4a6ecddfbdb28245fd7fc32443ecda
+v1.4        detfill_scribble_illust_64ch_200ep.pth 8eeee341331ed949cc216049c9fecebc70900d54fb709eee3b97a2b1fc34845b
+v1.4        detfill_scribble_illust_earlier_64ch_200ep.pth 7d74ebe7d6c8862286fe9944b7cf9d2448a6e473880c383b13af8a36e6ce0002
 LIST
 fi
 [ -d "$DATA_DIR/examples_data" ] || tar xzf "$DATA_DIR/examples_data.tar.gz" -C "$DATA_DIR"

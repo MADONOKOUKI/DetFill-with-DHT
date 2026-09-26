@@ -5,7 +5,7 @@ DetFill is the pixel-space diffusion colorization model of the paper: a fork of
 deterministic colour hints. This directory holds its training and inference code and configs.
 
 - **Models:** scribble-hint model (96 base channels) and dot-hint model (64 base channels), 200 epochs on
-  Danbooru2021; see the [model zoo](../README.md#model-zoo) and [checkpoints/README.md](../checkpoints/README.md).
+  Danbooru2021; see the [model zoo](../checkpoints/README.md).
 - **Protocols:** hints of the largest regions first (Table II, `hint_order: area`) or in a fixed random order
   (Table III, `hint_order: label`); hint ratio set per run with `--sample_ratio`.
 - **Runs on:** one NVIDIA GPU (< 4 GB) or CPU (`--gpu_ids -1`, slow).

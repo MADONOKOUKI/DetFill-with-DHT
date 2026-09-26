@@ -7,6 +7,22 @@ This directory is the reproduction package for
 > hint-ratio-grid (α-grid) study, the segmentation-dependency study, the seed-sensitivity study, the additional
 > training comparisons, the natural-image tables and the user study.
 
+## Quick index
+
+| Goal | Command (no arguments) | Time |
+|---|---|---|
+| **Fig. 9** end to end (the Replicability-Stamp script) | `bash replicability/run.sh` | GPU ≈ 3 min, CPU ≈ 30 min |
+| **Every table** rebuilt from the released metric files | `python reproduce/scripts/A1_tables_from_released_metrics.py` (322/324 cells match)<br>`python reproduce/scripts/A2_userstudy_glmm.py` (all values match) | < 2 min, CPU |
+| **Every experiment** re-run on 12 example illustrations | `bash reproduce/examples/run_examples.sh` | smoke ≈ 5 min, default ≈ 1 h, full = hours |
+| **A whole table row** on the 3,000 test images | `DATA_ROOT=… bash reproduce/scripts/run_hauc_pipeline.sh` | ≈ 14 GPU-h per row |
+| **Training** from scratch | `bash reproduce/scripts/B9_train_detfill.sh` | days, 10 GPUs |
+
+All scripts fetch what they need from the releases (SHA-256 verified) and compare their results with the paper's
+numbers, the paper's archived images of the same examples and the authors' reference run. Requirements and hardware:
+[docs/setup.md](../docs/setup.md). The Replicability-Stamp submission sheet is `replicability/GRSI_SUBMISSION.txt`.
+
+## The four layers
+
 It has four layers, from cheapest to most expensive. Everything runs from this repository plus the files attached to
 its GitHub releases (see `checkpoints/README.md`); nothing else is needed except the Danbooru2021 originals for
 layer D.
@@ -91,7 +107,7 @@ entry point and the same `hintauc` evaluator as the full-scale experiments, and 
 | E5 Dense ratio curve | supp. α-grid study | per-image metric curves on a fine ratio grid and the Hint-AUC on the dense vs. the paper grid |
 | E8 Channel ablation | supp. channel-ablation figure | 32 / 64 / 96 base-channel scribble models on the two images of that figure |
 | E9 Hint regeneration | Sec. IV, supp. Sec. I | the deterministic hint generator re-run with the `hintauc` library vs. the stored maps |
-| E11 Earlier checkpoints | (provenance) | the scribble/dot models of the earlier submission on the same images |
+| E11 Earlier checkpoint | (provenance) | the scribble model of the earlier submission on the same images |
 
 `reproduce/examples/README.md` documents each experiment, the images used and the authors' numbers.
 

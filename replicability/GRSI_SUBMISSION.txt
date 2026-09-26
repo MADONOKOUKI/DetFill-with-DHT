@@ -1,0 +1,31 @@
+Graphics Replicability Stamp submission
+=======================================
+
+Title
+  Hint-AUC: Deterministic Region-based Hint Generation for Line Art Colorization Evaluation
+
+Authors
+  Koki Madono, Yuan Mingcheng, Edgar Simo-Serra
+
+Venue
+  IEEE Transactions on Visualization and Computer Graphics (TVCG), DOI 10.1109/TVCG.2026.3738401
+
+Operating system
+  Linux, Ubuntu 22.04 LTS (tested). Any x86-64 Linux with a bash shell and internet access works; an NVIDIA GPU
+  with >= 4 GB of memory is recommended (CUDA 12), and the script also runs on CPU only (about 30 minutes).
+
+Entry point
+  bash replicability/run.sh
+  (no arguments; installs Miniconda if no conda is found, creates the conda environment, downloads the two
+  paper checkpoints from the v1.0 GitHub release, and writes replicability/output/fig9.png, the reproduction of
+  Figure 9 of the paper). Details: replicability/README.md.
+
+Repository
+  https://github.com/MADONOKOUKI/DetFill-with-DHT
+
+Permission
+  The authors grant the Graphics Replicability Stamp Initiative committee and its reviewers permission to
+  review this code and to advertise the review publicly after the stamp is approved.
+
+Contact
+  Koki Madono (see the repository profile)

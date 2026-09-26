@@ -24,11 +24,11 @@ What the library produces for one illustration:
 
 | Input | Region map | Flatten (region mean) | Scribble hints | Dot hints |
 |:---:|:---:|:---:|:---:|:---:|
-| ![input](assets/readme/demo_input.png) | ![region](assets/readme/demo_region.png) | ![flatten](assets/readme/demo_flatten.png) | ![scribble](assets/readme/demo_scribble100.png) | ![dot](assets/readme/demo_dot100.png) |
+| ![input](../assets/readme/demo_input.png) | ![region](../assets/readme/demo_region.png) | ![flatten](../assets/readme/demo_flatten.png) | ![scribble](../assets/readme/demo_scribble100.png) | ![dot](../assets/readme/demo_dot100.png) |
 
 | α = 1 % | α = 10 % | α = 50 % | α = 100 % |
 |:---:|:---:|:---:|:---:|
-| ![r1](assets/readme/demo_scribble_r1.png) | ![r10](assets/readme/demo_scribble_r10.png) | ![r50](assets/readme/demo_scribble_r50.png) | ![r100](assets/readme/demo_scribble_r100.png) |
+| ![r1](../assets/readme/demo_scribble_r1.png) | ![r10](../assets/readme/demo_scribble_r10.png) | ![r50](../assets/readme/demo_scribble_r50.png) | ![r100](../assets/readme/demo_scribble_r100.png) |
 
 ## Library
 
@@ -67,7 +67,7 @@ the regions (mean IoU 0.969) and the dot coincides in 95.5 %.
   art and the hint maps. State: 5 channels (line art, hint mask, RGB); condition: 5 channels (line art, hint mask,
   masked RGB hints); U-Net input 10 channels. Scribble model: 96 base channels; dot model: 64 base channels; 200 epochs,
   effective batch 20 (10 GPUs × batch 1 × gradient accumulation 2), seed 1234, 200 sampling steps at inference.
-- Data layout, configs, training and inference commands: [detfill/README.md](detfill/README.md).
+- Data layout, configs, training and inference commands: [detfill/README.md](../detfill/README.md).
   `detfill/run_inference.sh` runs the ratio grid; `dataset_config.hint_order` selects the Table II (`area`) or Table III
   (`label`) protocol; `--gpu_ids -1` runs on CPU.
 - Training-time hint sampling follows the paper (p = ⌊n·u⌋, u ~ U[0, 1), so the fully hinted case is never seen in
@@ -75,7 +75,7 @@ the regions (mean IoU 0.969) and the dot coincides in 95.5 %.
 
 ## Hint-AUC
 
-![Hint-AUC overview](assets/readme/hintauc_overview.png)
+![Hint-AUC overview](../assets/readme/hintauc_overview.png)
 
 For each ratio α of the grid the model colorizes the test set with the deterministic hints at that ratio; the per-ratio
 mean of each metric is integrated over α with the trapezoidal rule (the α range has length 1, so the integral is the
@@ -86,16 +86,16 @@ DetFill colorizations for one sketch as the scribble hint ratio grows:
 
 | Input sketch | Ground truth |
 |:---:|:---:|
-| ![sketch](assets/readme/ex_sketch.png) | ![gt](assets/readme/ex_gt.png) |
+| ![sketch](../assets/readme/ex_sketch.png) | ![gt](../assets/readme/ex_gt.png) |
 
 | | α = 1 % | α = 10 % | α = 50 % | α = 100 % |
 |:--|:---:|:---:|:---:|:---:|
-| Scribble hints | ![h1](assets/readme/ex_hint_r1.png) | ![h10](assets/readme/ex_hint_r10.png) | ![h50](assets/readme/ex_hint_r50.png) | ![h100](assets/readme/ex_hint_r100.png) |
-| DetFill | ![d1](assets/readme/ex_detfill_r1.png) | ![d10](assets/readme/ex_detfill_r10.png) | ![d50](assets/readme/ex_detfill_r50.png) | ![d100](assets/readme/ex_detfill_r100.png) |
+| Scribble hints | ![h1](../assets/readme/ex_hint_r1.png) | ![h10](../assets/readme/ex_hint_r10.png) | ![h50](../assets/readme/ex_hint_r50.png) | ![h100](../assets/readme/ex_hint_r100.png) |
+| DetFill | ![d1](../assets/readme/ex_detfill_r1.png) | ![d10](../assets/readme/ex_detfill_r10.png) | ![d50](../assets/readme/ex_detfill_r50.png) | ![d100](../assets/readme/ex_detfill_r100.png) |
 
 ## Reproduction
 
-Four layers, documented in [reproduce/README.md](reproduce/README.md):
+Four layers, documented in [reproduce/README.md](../reproduce/README.md):
 
 - **A. Tables from released metrics** — `reproduce/scripts/A1_tables_from_released_metrics.py` rebuilds Table II
   (DetFill scribble row), Table III (DetFill scribble row) and the supplementary α-grid, segmentation-dependency,
@@ -105,11 +105,11 @@ Four layers, documented in [reproduce/README.md](reproduce/README.md):
   table (all values match).
 - **B. Example suite** — `reproduce/examples/run_examples.sh` (no arguments) re-runs each experiment on 12 example
   illustrations with the released checkpoints and compares with the authors' reference run and with the paper's
-  archived outputs of the same images; [reproduce/examples/README.md](reproduce/examples/README.md).
+  archived outputs of the same images; [reproduce/examples/README.md](../reproduce/examples/README.md).
 - **C. Verbatim launchers** — `reproduce/paper_experiments/`.
 - **D. Full-scale rows** — `reproduce/scripts/run_hauc_pipeline.sh` + `eval_per_ratio.py` (needs the Danbooru2021
   originals; line art and hint maps are released).
-- **Fig. 9** — `replicability/run.sh` ([replicability/README.md](replicability/README.md)).
+- **Fig. 9** — `replicability/run.sh` ([replicability/README.md](../replicability/README.md)).
 
 ## What is exact and what is not
 
@@ -152,7 +152,7 @@ full-scale estimates: measured on B; an A6000-class GPU is roughly twice as fast
 | v1.3 | test-split line art (SketchKeras / sketch simplification / XDoG), DanbooRegion / SLIC / Felzenszwalb test hint maps, example bundle, user-study stimuli |
 | v1.4 | earlier-submission models, 32 / 64-channel scribble models, archived configs |
 
-Sizes and SHA-256 of every file: [checkpoints/README.md](checkpoints/README.md).
+Sizes and SHA-256 of every file: [checkpoints/README.md](../checkpoints/README.md).
 
 ## Added features since the paper
 
@@ -162,6 +162,6 @@ Sizes and SHA-256 of every file: [checkpoints/README.md](checkpoints/README.md).
   set-level FID / KID); the replicability script; the reproduction package; releases v1.1–v1.3 and v1.4.
 - A few minor issues of the original implementation were fixed along the way to make the library more usable; what is
   bit-exact with respect to the published numbers and what is not is listed in
-  [reproduce/README.md](reproduce/README.md#known-deviations-and-gaps-honest-list).
+  [reproduce/README.md](../reproduce/README.md#known-deviations-and-gaps-honest-list).
 
-Third-party components and their licenses: [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+Third-party components and their licenses: [THIRD_PARTY_NOTICES.md](../THIRD_PARTY_NOTICES.md).

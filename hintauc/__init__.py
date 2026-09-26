@@ -47,7 +47,7 @@ from .auc import (
     trapz,
 )
 
-__version__ = "0.2.0"
+__version__ = "0.2.1"
 
 __all__ = [
     "ALL_METRICS",

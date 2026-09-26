@@ -13,6 +13,7 @@ bash replicability/run.sh
 - **Result:** `replicability/output/fig9.png`
 - **Reference:** `replicability/expected/fig9_paper.png` (the figure as printed) and `expected/paper_panels/`
 - **Time:** about 3 minutes on an RTX A6000 (4–5 minutes on an RTX 2080 Ti), about 30 minutes on 16 CPU threads, plus a one-time environment setup
+- **Submission sheet:** `GRSI_SUBMISSION.txt` (title, authors, operating system, entry point, permission statement)
 
 ## What the figure shows
 
@@ -23,7 +24,8 @@ first and the colorization is faithful and repeatable. Both the dot-hint and the
 
 ## What the script does
 
-1. Creates a conda environment (`detfill-grsi`) from `environment.yml` and installs this repository into it.
+1. Installs Miniconda into `~/miniconda3` if no conda is found (skip with `GRSI_NO_AUTO_CONDA=1`), creates a conda
+   environment (`detfill-grsi`) from `environment.yml` and installs this repository into it.
 2. Downloads the two paper checkpoints from the v1.0 release and verifies their checksums.
 3. Generates the deterministic hints for the two illustrations with the `hintauc` library.
 4. Selects 10 % of the regions in each of the two orders.
@@ -39,7 +41,8 @@ first and the colorization is faithful and repeatable. Both the dot-hint and the
 
 ## Requirements
 
-- Linux (tested on Ubuntu 22.04), Miniconda or Anaconda installed.
+- Linux (tested on Ubuntu 22.04). Conda is installed automatically if missing (Miniconda, no root needed); an existing
+  Miniconda/Anaconda/Miniforge is used when present.
 - An NVIDIA GPU with a CUDA 12 driver is recommended; without a GPU the script falls back to CPU automatically.
 - Internet access on the first run (packages ≈ 3 GB, checkpoints 1.5 GB), ≈ 8 GB of disk, < 4 GB of GPU memory.
 - Reference machines: NVIDIA RTX A6000 48 GB + 2 × AMD EPYC 9124 (32 threads, 377 GB RAM) and NVIDIA RTX 2080 Ti 11 GB + 2 × Intel Xeon Gold 6226R (32 threads, 187 GB RAM); Ubuntu 22.04, driver 535, CUDA 12.2.

@@ -1,4 +1,4 @@
-# Released checkpoints and data
+# Model zoo: released checkpoints and data
 
 Everything needed to run or re-evaluate the paper's models is attached to the GitHub releases of this repository.
 Each release carries a `SHA256SUMS.txt`; the tables below repeat the hashes so a downloaded file can be checked
@@ -11,7 +11,7 @@ Release: https://github.com/MADONOKOUKI/DetFill-with-DHT/releases/tag/v1.0
 | File | Size | SHA-256 | What it is |
 |---|---|---|---|
 | `detfill_scribble_illust_200ep.pth` | 1.08 GB | `fa85d6838a28b853e82f16ce28e3f5d9e6452879685b1313d84be11431226ee4` | DetFill **scribble-hint** model, 96 base channels, 200 epochs. Behind every scribble result of the paper (Table II, Table III, Fig. 9 scribble row, the supplementary α-grid and seed studies, the "Felzenszwalb" training row of the segmentation-dependency table). |
-| `detfill_dot_illust_200ep.pth` | 0.48 GB | `fd872563e17cb1ac09957ed5ef993fac4dbeb2710f43a7ee29203444928d6fd4` | DetFill **dot-hint** model, 64 base channels, 200 epochs. Behind every dot result of the paper (Table II, Table III, Fig. 9 dot row). |
+| `detfill_dot_illust_200ep.pth` | 0.48 GB | `b4779946f24b5f52cdf640418c73bef67925c845e50c8f36610aeac7d50f212b` | DetFill **dot-hint** model, 64 base channels, 200 epochs. Behind every dot result of the paper (Table II, Table III, Fig. 9 dot row). |
 | `test_split_hint_maps_64.tar.gz` | 60 MB | `01c0aa92ae976d9e0a5c48a02881c7ed9db9f0e98d77fd14e44c396471ac0dfd` | The stored 64×64 deterministic hint maps (scribble and dot, colour + mask) and region maps of the 3,000 test images. These are the exact evaluation inputs of all reported numbers. |
 
 Where the code expects the two models (the default of `detfill/run_inference.sh`, `replicability/run.sh` and
@@ -56,7 +56,9 @@ Release: https://github.com/MADONOKOUKI/DetFill-with-DHT/releases/tag/v1.2
 | File | Size | SHA-256 | What it is |
 |---|---|---|---|
 | `diffusart_retrain_scribble_dethint_200ep_ema.pth` | 373 MB | `03ed65e385cab3947e52f9bbdf00c709d84af1ec7d05631624d2266dc40fb15b` | Diffusart (our re-implementation, `reproduce/paper_experiments/diffusart_retrain/code/`) retrained with the deterministic scribble hints, 200 epochs, EMA weights. The **Diffusart-retrain** scribble row of the supplementary "additional training comparisons" table; its PSNR 19.457 / LPIPS 0.177 are reproduced from the per-ratio record shipped in `reproduce/expected/`. |
-| `diffusart_retrain_dot_dethint_200ep_ema.pth` | 373 MB | `8c78717ac73f111ca31e00b43f4c7686e618c4191ce5ea38a437f2ed6b8964d1` | Same for dot hints (the dot row of that table; same training batch, earlier). |
+| `diffusart_retrain_dot_dethint_200ep_ema.pth` | 373 MB | `8c78717ac73f111ca31e00b43f4c7686e618c4191ce5ea38a437f2ed6b8964d1` | Same for dot hints (the dot row of that table; same training batch). |
+
+Both Diffusart-retrain models take **256 × 256 deterministic hint maps** (`<id>.image_{scribble,dot}_{col,mask}256.png`), not the 64 × 64 maps of v1.0; generate them with `hintauc.generate_hints(image, size=256).save(...)`. Inference: `reproduce/paper_experiments/diffusart_retrain/code/infer_det_proposed.py` (needs `diffusers`; see the README in that directory).
 | `detfill_scribble_imagenet_200ep.pth` | 1.08 GB | `0f8514000110be43927b9031912b4331e2753e3028ea8a0ab680630857d1d329` | DetFill scribble model trained on the natural-image (ImageNet subset) split, 96 base channels, 200 epochs. Config: `detfill/configs/scribble_real.yaml`. |
 | `detfill_dot_imagenet_200ep.pth` | 1.08 GB | `1fdf881981c9a4e415711a8bdb6bab36c3e0251243e5d04544e7fc6b9811fd2e` | DetFill dot model on natural images, 96 base channels, 200 epochs. Config: `detfill/configs/dot_real.yaml`. |
 | `test_split_hint_maps_64_imagenet.tar.gz` | 40 MB | `870db22dd7526c2fb3fe7d9bd5d3b7d10b90c9fa776ac901c1b04ab52bf01847` | The stored 64×64 hint maps (scribble/dot colour + mask) and region maps of the 2,999 ImageNet test images (`detfill/configs/real/test.txt`), i.e. the evaluation inputs of the supplementary ImageNet tables. |
@@ -95,10 +97,9 @@ the supplementary channel ablation; **not** the models behind the main tables (t
 | `detfill_scribble_illust_32ch_200ep.pth` | 129 MB | `4eef804755b9adc4fc0b5234501666138a4a6ecddfbdb28245fd7fc32443ecda` | Scribble model with 32 base channels (supplementary channel-ablation figure, "C = 32"); use `scribble_illust.yaml` with `model_channels: 32` |
 | `detfill_scribble_illust_64ch_200ep.pth` | 485 MB | `8eeee341331ed949cc216049c9fecebc70900d54fb709eee3b97a2b1fc34845b` | Scribble model with 64 base channels (channel ablation) |
 | `detfill_scribble_illust_earlier_64ch_200ep.pth` | 485 MB | `7d74ebe7d6c8862286fe9944b7cf9d2448a6e473880c383b13af8a36e6ce0002` | Scribble model of the earlier submission (64 channels; its archived config sampled with 1,000 steps). Superseded by the 96-channel v1.0 model retrained for the revision |
-| `detfill_dot_illust_earlier_64ch_200ep.pth` | 485 MB | `b4779946f24b5f52cdf640418c73bef67925c845e50c8f36610aeac7d50f212b` | Dot model of the earlier submission (64 channels; earlier training run of the same architecture as v1.0) |
 | `detfill_scribble_imagenet_earlier_64ch_200ep.pth` | 485 MB | `84dc2e4363b0fd9964338b019a35cecf29e5ef4687d6b167b59f958503520f09` | Natural-image scribble model of the earlier submission (64 channels) |
 | `detfill_dot_imagenet_earlier_64ch_200ep.pth` | 485 MB | `41089d46313943fdac66aaf5a022c0aa365cff47c0bbaed581436e040d122a9e` | Natural-image dot model of the earlier submission (64 channels; its config uses a 3-channel conditioning stage, see the archived config) |
-| `earlier_run_configs.tar.gz` | 2 KB | `aed088e20ebe5ee436b73a61d6c05f830df8d943f9bc44a138292b20f1886aed` | The archived training configs of the 2024 models and of the 32/64-channel models |
+| `earlier_run_configs.tar.gz` | 2 KB | `1e3944bcb9aafa45d9359ee2ab12f0a2a1dffd03d404c65d6e8353224588b275` | The archived training configs of the earlier-submission scribble and natural-image models and of the 32/64-channel models |
 
 ## Which release do I need?
 

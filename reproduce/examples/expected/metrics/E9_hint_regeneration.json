@@ -1,0 +1,138 @@
+{
+  "ids": [
+    "514016",
+    "4262016",
+    "1625016",
+    "3421016",
+    "4417016",
+    "1019016",
+    "1023016",
+    "4731016",
+    "4942016",
+    "100016",
+    "1001016",
+    "10016"
+  ],
+  "per_image": {
+    "514016": {
+      "seconds": 39.6426260471344,
+      "regions_stored": 1223,
+      "regions_regenerated": 747,
+      "scribble_pixels_stored": 2570,
+      "scribble_pixels_regenerated": 2055,
+      "scribble_mask_iou_vs_stored": 0.6211005958640028,
+      "dot_pixels_stored": 1218,
+      "dot_pixels_regenerated": 744
+    },
+    "4262016": {
+      "seconds": 16.111684799194336,
+      "regions_stored": 1834,
+      "regions_regenerated": 364,
+      "scribble_pixels_stored": 3072,
+      "scribble_pixels_regenerated": 1274,
+      "scribble_mask_iou_vs_stored": 0.3217761557177616,
+      "dot_pixels_stored": 1823,
+      "dot_pixels_regenerated": 357
+    },
+    "1625016": {
+      "seconds": 16.38471245765686,
+      "regions_stored": 664,
+      "regions_regenerated": 362,
+      "scribble_pixels_stored": 1850,
+      "scribble_pixels_regenerated": 1534,
+      "scribble_mask_iou_vs_stored": 0.5992438563327032,
+      "dot_pixels_stored": 654,
+      "dot_pixels_regenerated": 354
+    },
+    "3421016": {
+      "seconds": 17.2624568939209,
+      "regions_stored": 1049,
+      "regions_regenerated": 392,
+      "scribble_pixels_stored": 1947,
+      "scribble_pixels_regenerated": 1322,
+      "scribble_mask_iou_vs_stored": 0.46723518850987433,
+      "dot_pixels_stored": 1049,
+      "dot_pixels_regenerated": 392
+    },
+    "4417016": {
+      "seconds": 3.093992233276367,
+      "regions_stored": 112,
+      "regions_regenerated": 63,
+      "scribble_pixels_stored": 236,
+      "scribble_pixels_regenerated": 208,
+      "scribble_mask_iou_vs_stored": 0.5470383275261324,
+      "dot_pixels_stored": 112,
+      "dot_pixels_regenerated": 63
+    },
+    "1019016": {
+      "seconds": 22.51588797569275,
+      "regions_stored": 543,
+      "regions_regenerated": 522,
+      "scribble_pixels_stored": 1473,
+      "scribble_pixels_regenerated": 1496,
+      "scribble_mask_iou_vs_stored": 0.6331133113311331,
+      "dot_pixels_stored": 543,
+      "dot_pixels_regenerated": 522
+    },
+    "1023016": {
+      "seconds": 27.642114877700806,
+      "regions_stored": 1130,
+      "regions_regenerated": 647,
+      "scribble_pixels_stored": 2184,
+      "scribble_pixels_regenerated": 1752,
+      "scribble_mask_iou_vs_stored": 0.5411119812059515,
+      "dot_pixels_stored": 1125,
+      "dot_pixels_regenerated": 645
+    },
+    "4731016": {
+      "seconds": 44.176507234573364,
+      "regions_stored": 1701,
+      "regions_regenerated": 1061,
+      "scribble_pixels_stored": 2927,
+      "scribble_pixels_regenerated": 2395,
+      "scribble_mask_iou_vs_stored": 0.6375384615384615,
+      "dot_pixels_stored": 1698,
+      "dot_pixels_regenerated": 1058
+    },
+    "4942016": {
+      "seconds": 25.580037832260132,
+      "regions_stored": 938,
+      "regions_regenerated": 598,
+      "scribble_pixels_stored": 1961,
+      "scribble_pixels_regenerated": 1586,
+      "scribble_mask_iou_vs_stored": 0.6174190606475148,
+      "dot_pixels_stored": 934,
+      "dot_pixels_regenerated": 595
+    },
+    "100016": {
+      "seconds": 32.363861322402954,
+      "regions_stored": 1136,
+      "regions_regenerated": 779,
+      "scribble_pixels_stored": 2239,
+      "scribble_pixels_regenerated": 1829,
+      "scribble_mask_iou_vs_stored": 0.5455927051671733,
+      "dot_pixels_stored": 1127,
+      "dot_pixels_regenerated": 775
+    },
+    "1001016": {
+      "seconds": 25.687092304229736,
+      "regions_stored": 826,
+      "regions_regenerated": 587,
+      "scribble_pixels_stored": 2154,
+      "scribble_pixels_regenerated": 1908,
+      "scribble_mask_iou_vs_stored": 0.4868228404099561,
+      "dot_pixels_stored": 826,
+      "dot_pixels_regenerated": 586
+    },
+    "10016": {
+      "seconds": 22.27340030670166,
+      "regions_stored": 484,
+      "regions_regenerated": 510,
+      "scribble_pixels_stored": 1694,
+      "scribble_pixels_regenerated": 1703,
+      "scribble_mask_iou_vs_stored": 0.6371084337349397,
+      "dot_pixels_stored": 483,
+      "dot_pixels_regenerated": 508
+    }
+  }
+}

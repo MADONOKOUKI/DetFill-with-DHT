@@ -15,7 +15,7 @@ new outputs with them. Everything is driven by the same ``detfill/main.py`` infe
     E5  Dense hint-ratio curve : per-image metric curves on a fine ratio grid (supplementary alpha-grid study)
     E8  Channel ablation       : 32 / 64 / 96 base-channel scribble models (supplementary channel ablation)
     E9  Hint-map regeneration  : deterministic hint generation re-run with the hintauc library vs. the stored maps
-    E11 Legacy 2024 checkpoints: the 2024-submission scribble/dot models on the same images (release legacy-2024)
+    E11 Earlier checkpoint     : the scribble model of the earlier submission on the same images (release v1.4)
     (E6 Diffusart-retrain and E7 natural-image models are run by the authors only; see README)
 
 Usage (normally via run_examples.sh):
@@ -43,9 +43,8 @@ CKPT = {  # key -> (release asset file, released config template, model_channels
     "scribble_slic": ("detfill_scribble_illust_slic_200ep.pth", "scribble_illust.yaml", None, None),
     "scribble_32ch": ("detfill_scribble_illust_32ch_200ep.pth", "scribble_illust.yaml", 32, None),
     "scribble_64ch": ("detfill_scribble_illust_64ch_200ep.pth", "scribble_illust.yaml", 64, None),
-    # the archived config of the 2024 scribble model used 1000 sampling steps (all other models: 200)
-    "legacy_scribble": ("legacy2024_detfill_scribble_illust_200ep.pth", "scribble_illust.yaml", 64, 1000),
-    "legacy_dot": ("legacy2024_detfill_dot_illust_200ep.pth", "dot_illust.yaml", 64, None),
+    # the archived config of the earlier scribble model used 1000 sampling steps (all other models: 200)
+    "earlier_scribble": ("detfill_scribble_illust_earlier_64ch_200ep.pth", "scribble_illust.yaml", 64, 1000),
 }
 MODES = {
     "smoke": dict(ids=ALL_IDS[:1], ratios=[0.10, 1.00], exps=["E1s", "E9"]),
@@ -504,8 +503,8 @@ def exp_E9(args, ids):
 
 
 def exp_E11(args, ids, ratios):
-    """Legacy 2024 checkpoints (release legacy-2024) on the same images."""
-    return exp_E1(args, ids, ratios, models=("legacy_scribble", "legacy_dot"), tag="E11_legacy_2024_checkpoints")
+    """The scribble model of the earlier submission (release v1.4) on the same images."""
+    return exp_E1(args, ids, ratios, models=("earlier_scribble",), tag="E11_earlier_checkpoints")
 
 
 # ----------------------------------------------------------------------------------------------------------

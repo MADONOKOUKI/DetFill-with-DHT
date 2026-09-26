@@ -386,9 +386,11 @@ class HintColorizationDataset(Dataset):
             else:
                 Simg = sketch_loader(os.path.join(self.root_sketch,  self.sketch_cands[rnd], dname, fname + '.png'))
             # Simg = sketch_loader(os.path.join(self.root_sketch,  self.sketch_cands[rnd],  fname + '.png'))  # for user study (FLAT layout, disabled by evalfix; real data is nested by dname)
-        else:
-            # Simg = sketch_loader(os.path.join(self.root_sketch,  self.sketch_cands[rnd], dname, fname + '.image.png'))
-            Simg = sketch_loader(os.path.join(self.root_sketch,  self.sketch_cands[rnd], fname + '.image.png')) # for user study
+        else:  # natural images: <sketch>/<type>/<bucket>/<id>.image.png (split layout) or <sketch>/<type>/<id>.image.png (flat layout)
+            if getattr(self, 'flat_sketch', False):
+                Simg = sketch_loader(os.path.join(self.root_sketch, self.sketch_cands[rnd], fname + '.image.png'))
+            else:
+                Simg = sketch_loader(os.path.join(self.root_sketch, self.sketch_cands[rnd], dname, fname + '.image.png'))
  
         # except:
         #     Simg = Image.fromarray(np.ones( (512,512)))
@@ -396,32 +398,15 @@ class HintColorizationDataset(Dataset):
 
         hint_dname = getattr(self, 'hint_subdir', dname)
         region_root = getattr(self, 'root_scr_region', self.root_scr)
+        # region-id map: <region_root>/<bucket>/<id>.image_region64.png (split layout) or <region_root>/<id>... (flat layout)
+        region_dir = os.path.join(region_root, dname) if os.path.isdir(os.path.join(region_root, dname)) else region_root
 
-        if self.sample_ratio is not None:
-            mask = sketch_loader(os.path.join(self.root_scr, hint_dname, fname + '.image_'+str(self.hint_type)+'_mask64.png'))
-            hint = color_loader(os.path.join(self.root_scr, hint_dname, fname + '.image_'+str(self.hint_type)+'_col64.png'))
-            region = cv2.imread(os.path.join(region_root, fname + '.image_region64.png'))
-            region = cv2.resize(region, (64,64), interpolation=cv2.INTER_NEAREST)
-        else:
-            mask = sketch_loader(os.path.join(self.root_scr, hint_dname, fname + '.image_'+str(self.hint_type)+'_mask64.png'))
-            hint = color_loader(os.path.join(self.root_scr, hint_dname, fname + '.image_'+str(self.hint_type)+'_col64.png'))
-            region = cv2.imread(os.path.join(region_root, fname + '.image_region64.png'))
-            region = cv2.resize(region, (64,64), interpolation=cv2.INTER_NEAREST)
-
-
-        mask = sketch_loader(os.path.join(self.root_scr, hint_dname, fname + '.image_'+str(self.hint_type)+'_mask64.png'))
-        hint = color_loader(os.path.join(self.root_scr, hint_dname, fname + '.image_'+str(self.hint_type)+'_col64.png'))
-
-        # mask = sketch_loader(os.path.join(self.root_scr, fname + '.image_'+str(self.hint_type)+'_mask256.png')) # for user study
-        # hint = color_loader(os.path.join(self.root_scr, fname + '.image_'+str(self.hint_type)+'_col256.png')) # for user study
-
-
-
-        # mask = cv2.imread(os.path.join(self.root_scr, dname, fname + '.image_'+str(self.hint_type)+'_mask64.png'))
-        # hint = cv2.imread(os.path.join(self.root_scr, dname, fname + '.image_'+str(self.hint_type)+'_col64.png')) #.convert('LAB')
-        
-        region = cv2.imread(os.path.join(region_root, fname + '.image_region64.png'))
-        region = cv2.resize(region, self.image_size, interpolation=cv2.INTER_NEAREST)            
+        mask = sketch_loader(os.path.join(self.root_scr, hint_dname, fname + '.image_' + str(self.hint_type) + '_mask64.png'))
+        hint = color_loader(os.path.join(self.root_scr, hint_dname, fname + '.image_' + str(self.hint_type) + '_col64.png'))
+        region = cv2.imread(os.path.join(region_dir, fname + '.image_region64.png'))
+        if region is None:
+            raise FileNotFoundError(os.path.join(region_dir, fname + '.image_region64.png'))
+        region = cv2.resize(region, self.image_size, interpolation=cv2.INTER_NEAREST)
         region_uint64 = region.astype(np.uint64)
         id_maps = region_uint64[:, :, 0] * 255 * 255 + region_uint64[:, :, 1] * 255  + region_uint64[:, :, 2]
         cand_vals, count = np.unique(id_maps.reshape(-1), axis=0, return_counts=True)
