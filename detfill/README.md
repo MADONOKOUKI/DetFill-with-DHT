@@ -1,102 +1,82 @@
-# DetFill
+# DetFill: the colorization model
 
-Pixel-space Brownian Bridge diffusion model for sketch + deterministic-hint line-art
-colorization. Fork of [BBDM](https://github.com/xuekt98/BBDM) (MIT, © 2023 xuekt98)
-adapted to the Hint-AUC protocol — see the repository root README for the full context.
+DetFill is the pixel-space diffusion colorization model of the paper: a fork of
+[BBDM](https://github.com/xuekt98/BBDM) (Brownian Bridge Diffusion Models, MIT) conditioned on line art and
+deterministic colour hints. This directory holds its training and inference code and configs.
 
-## 1. Environment
+- **Models:** scribble-hint model (96 base channels) and dot-hint model (64 base channels), 200 epochs on
+  Danbooru2021; see the [model zoo](../README.md#model-zoo) and [checkpoints/README.md](../checkpoints/README.md).
+- **Protocols:** hints of the largest regions first (Table II, `hint_order: area`) or in a fixed random order
+  (Table III, `hint_order: label`); hint ratio set per run with `--sample_ratio`.
+- **Runs on:** one NVIDIA GPU (< 4 GB) or CPU (`--gpu_ids -1`, slow).
+
+## Setup
 
 ```bash
-conda env create -f environment.yml && conda activate BBDM
+conda env create -f ../replicability/environment.yml && conda activate detfill-grsi   # PyTorch 2.5.1, CUDA 12.4 (runs on CPU too)
+# or the paper's original training environment: conda env create -f environment.yml && conda activate BBDM
 ```
 
-(Python 3.9.16, PyTorch 2.5.1 + CUDA 12.4, NumPy 2.0.2; see `environment.yml` for the import-verified pins used for the paper results.)
-
-## 2. Checkpoints
-
-Download from the [v1.0 release](https://github.com/MADONOKOUKI/DetFill-with-DHT/releases/tag/v1.0)
-and place as:
+Checkpoints: download from the [v1.0 release](https://github.com/MADONOKOUKI/DetFill-with-DHT/releases/tag/v1.0)
+and place them as
 
 ```
-results/dataset_name/BrownianBridge_scribble_illust/checkpoint/latest_model_200.pth   # detfill_scribble_illust_200ep.pth
-results/dataset_name/BrownianBridge_dot_illust/checkpoint/latest_model_200.pth        # detfill_dot_illust_200ep.pth
+results/dataset_name/BrownianBridge_scribble_illust/checkpoint/latest_model_200.pth   # <- detfill_scribble_illust_200ep.pth
+results/dataset_name/BrownianBridge_dot_illust/checkpoint/latest_model_200.pth        # <- detfill_dot_illust_200ep.pth
 ```
 
-(see `../checkpoints/README.md` for download commands and SHA-256 checksums; any other
-location works with `--resume_model <path>`).
+(any other location works with `--resume_model <file>`).
 
-## 3. Data layout (user-specified)
+## Data layout
 
-All data locations are set by you in `configs/*.yaml`; hints are the paper's 64×64
-setting by default.
-
-**A. Flat evaluation layout** — set `data.dataset_config.scratch_root` (used by the
-`*_illust.yaml` configs and `run_inference.sh`):
+Set the data root in `configs/*.yaml` (`data.dataset_config.scratch_root`). Hints are the paper's 64 × 64 maps.
 
 ```
-<scratch_root>/
-  segmentations/originals/<id>.image.png       # ground-truth color images
-  sketch/{XDoG,pysimp,sketchkeras}/<id>.png    # line art from the 3 extractors
-  hint_from_regions_64_rev/<id>.image_scribble_{col,mask}64.png
-                           <id>.image_dot_{col,mask}64.png
+<DATA_ROOT>/
+  segmentations/originals/<id>.image.png        ground-truth colour images (512 x 512)
+  sketch/{XDoG,pysimp,sketchkeras}/<id>.png     line art from the three extractors
+  hint_from_regions_64_rev/<id>.image_{scribble,dot}_{col,mask}64.png
   hint_from_regions_256/<id>.image_region64.png
 ```
 
-Hint files may also live in a `hint_from_regions_64_rev/0016/` subdirectory (the layout
-of the original experiments) — both are detected automatically.
+- Images: [Danbooru2021](https://gwern.net/danbooru2021) (split lists in `configs/illust/`); not redistributed.
+- Line art and hint maps of the test split: releases [v1.3](https://github.com/MADONOKOUKI/DetFill-with-DHT/releases/tag/v1.3)
+  and [v1.0](https://github.com/MADONOKOUKI/DetFill-with-DHT/releases/tag/v1.0); for new images use the `hintauc`
+  library (`hints.save(...)` writes exactly these files).
+- Hint files may also sit in a `hint_from_regions_64_rev/0016/` sub-directory (original experiment layout); both are detected.
+- The natural-image configs (`*_real.yaml`) use the split-based layout (`dataset_path` + `configs/real/*.txt`).
 
-**B. Split-based layout** — set `data.dataset_config.dataset_path` (used when
-`scratch_root` is absent, e.g. the `*_real_*.yaml` configs). Train/valid/test ids come
-from `configs/<domain>/{train,valid,test}.txt`:
-
-```
-<dataset_path>/
-  sketch/{XDoG,pysimp,sketchkeras}/...
-  hint_from_regions_64_rev/   hint_from_regions_256/
-  segmentation_regions/felzenszwalb/
-```
-
-Hint files are produced by the `hintauc` library or `../hint_generation/` (both
-implement the same deterministic pipeline).
-
-## 4. Inference over the Hint-AUC ratio grid (tested)
+## Inference over the hint-ratio grid
 
 ```bash
-GPU=0 bash run_inference.sh scribble                      # all ratios x 3 sketch types
-GPU=0 RATIOS="0.10" TYPES="2" bash run_inference.sh dot   # a single cell
+GPU=0 bash run_inference.sh scribble                      # 8 ratios x 3 line-art extractors
+GPU=0 RATIOS="0.10" TYPES="2" bash run_inference.sh dot   # one cell
 ```
 
-Outputs land in:
+- Outputs: `results/dataset_name/BrownianBridge_<hint>_illust/sample_to_eval/illust/<hint>/<sketch_type>/<ratio>/200/<id>.image.png`
+  (plus `ground_truth/` copies) — the layout consumed by `../reproduce/scripts/eval_per_ratio.py` and `../evaluation/`.
+- `sketch_type` 0 / 1 / 2 = sketch simplification / XDoG / SketchKeras; ratios follow the paper grid
+  {0, 0.01, 0.03, 0.05, 0.10, 0.25, 0.50, 1.00}; the sampler is seeded (`--seed 1234`).
+- Full row with metrics in one command: `../reproduce/scripts/run_hauc_pipeline.sh`.
 
-```
-results/dataset_name/BrownianBridge_<hint>_illust/sample_to_eval/illust/<hint>/
-    <sketch_type>/<ratio>/200/<id>.image.png        # colorizations
-    <sketch_type>/<ratio>/ground_truth/             # matching GT copies
-```
-
-which is exactly the layout `../evaluation/dense/eval_curve.py` consumes.
-Ratios follow the paper grid {0.00, 0.01, 0.03, 0.05, 0.10, 0.25, 0.50, 1.00}; sketch
-types are 0 = sketch simplification (pysimp), 1 = XDoG, 2 = SketchKeras.
-
-## 5. Training
-
-Training-time hint sampling follows the paper (Eq. 6): `p = floor(n*u)`, `u ~ U[0,1)`, so `p` is uniform on
-`{0,...,n-1}` and the full-hint case `p = n` is never seen in training (it appears only at evaluation, `alpha = 1`).
-This is an artifact of the original implementation rather than a design choice; set
-`dataset_config.include_full_hint: true` in the config to sample `p` uniformly on `{0,...,n}` instead.
-The released checkpoints were trained with the default (paper) sampling.
+## Training
 
 ```bash
-bash train.sh   # the two illustration configs; ~200 epochs
+bash train.sh          # the two illustration configs, 200 epochs (~4-5 days on 10 GPUs); or ../reproduce/scripts/B9_train_detfill.sh
 ```
 
-The natural-image (ImageNet) configs are included commented-out in `train.sh` — enable
-them once the corresponding dataset (layout B) is prepared. Adjust `--gpu_ids` to your
-hardware; the paper models were trained with batch size 20 and gradient accumulation.
+- Effective batch 20 (batch 1 per GPU × 10 GPUs × gradient accumulation 2), Adam 1e-4, EMA 0.995.
+- Training-time hint sampling follows the paper: the number of hinted regions is uniform on {0, …, n−1}, so the fully
+  hinted case is never seen in training. `dataset_config.include_full_hint: true` includes it. The released checkpoints
+  use the paper setting.
 
-## Notes
+## Files
 
-- `main.py` flags: `--train`, `--sample_to_eval`, `--resume_model`, `--sample_ratio`,
-  `--sketch_type`, `--gpu_ids`, `--port`.
-- The dataset loader raises a clear error if `dataset_path` / `scratch_root` is unset
-  or still a `/path/to/...` placeholder.
+| Path | Role |
+|---|---|
+| `main.py` | entry point (`--train`, `--sample_to_eval`, `--resume_model`, `--sample_ratio`, `--sketch_type`, `--gpu_ids`, `--seed`) |
+| `run_inference.sh`, `train.sh` | the inference-grid and training launchers |
+| `configs/` | `scribble_illust.yaml`, `dot_illust.yaml`, `scribble_real.yaml`, `dot_real.yaml`; split lists in `illust/`, `real/` |
+| `datasets/custom.py` | data loader (flat and split-based layouts, region selection, `hint_order`) |
+| `model/`, `runners/` | the Brownian Bridge model and training/sampling loops (from BBDM) |
+| `environment.yml` | the paper's training environment |

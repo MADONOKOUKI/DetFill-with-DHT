@@ -1,8 +1,8 @@
 # Reproduce every experiment on example images
 
 `run_examples.sh` re-runs each experiment of the paper and its supplement on a few test illustrations with the
-released checkpoints, using the same inference program (`detfill/main.py`) and the same evaluator (`hintauc`) as
-the full-scale experiments. It needs no data preparation: the checkpoints and the 12-image example bundle
+released checkpoints, using the same inference program (`detfill/main.py`) and the same evaluator (the `hintauc`
+library) as the full-scale experiments. It needs no data preparation: the checkpoints and the 12-image example bundle
 (release v1.3, `examples_data.tar.gz`) are downloaded automatically and checked against their SHA-256.
 
 ```bash
