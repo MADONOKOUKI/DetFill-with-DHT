@@ -72,7 +72,7 @@ What each table is rebuilt from:
    deterministic per environment but not bit-identical across environments (FilFinder medial-axis tie-breaking).
 4. **Checkpoints.** `checkpoints/README.md` (v1.0: scribble 96-ch, dot 64-ch; v1.1: the two segmenter-retrained
    scribble models of the supplementary study; v1.2: the Diffusart-retrain models and the natural-image (ImageNet)
-   DetFill models with the ImageNet test-split hint maps).
+   DetFill models with the ImageNet test-split region maps).
 
 ### B.2 One table row = one command
 

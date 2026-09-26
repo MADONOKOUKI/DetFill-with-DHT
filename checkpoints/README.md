@@ -85,7 +85,7 @@ with `SHA256SUMS.txt`.
 | `diffusart_retrain_dot_dethint_200ep_ema.pth` | 373 MB | `8c78717ac73f111ca31e00b43f4c7686e618c4191ce5ea38a437f2ed6b8964d1` | Same, dot hints (the dot row of that table; same training batch, June 2026). |
 | `detfill_scribble_imagenet_200ep.pth` | 1.08 GB | `0f8514000110be43927b9031912b4331e2753e3028ea8a0ab680630857d1d329` | DetFill scribble model trained on natural images (ImageNet subset), 96 base channels, 200 epochs (Nov 2024 run). Config: `detfill/configs/scribble_real.yaml`. |
 | `detfill_dot_imagenet_200ep.pth` | 1.08 GB | `1fdf881981c9a4e415711a8bdb6bab36c3e0251243e5d04544e7fc6b9811fd2e` | DetFill dot model on natural images, 96 base channels, 200 epochs (Nov 2024 run). Config: `detfill/configs/dot_real.yaml`. |
-| `test_split_hint_maps_64_imagenet.tar.gz` | see release | see `SHA256SUMS.txt` | The stored 64×64 deterministic hint maps (scribble/dot colour + mask) and region maps of the 2,999 ImageNet test images (`detfill/configs/real/test.txt`), layout as the Danbooru maps of v1.0. |
+| `test_split_region_maps_64_imagenet.tar.gz` | 13 MB | `841b6fef9fcb493c7419103646419295badf88e02f2ac9840bab3929654ea1b1` | 64×64 Felzenszwalb region maps of the 2,999 ImageNet test images (`detfill/configs/real/test.txt`). The scribble/dot hint maps of the 2024 natural-image run were not found in the archive; regenerate them from these region maps and the images with `hintauc`. |
 
 Notes on the natural-image models: every natural-image checkpoint in our archive is a 96-channel model
 (the released `*_real.yaml` configs were corrected accordingly in v1.2). The archive holds two training
