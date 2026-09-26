@@ -1,4 +1,4 @@
-# Example-based reproduction of every experiment
+# Reproduce every experiment on example images
 
 `run_examples.sh` re-runs each experiment of the paper and its supplement on a few test illustrations with the
 released checkpoints, using the same inference program (`detfill/main.py`) and the same evaluator (`hintauc`) as
