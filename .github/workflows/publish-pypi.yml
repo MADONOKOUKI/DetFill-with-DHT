@@ -1,18 +1,50 @@
 # Publish the `hintauc` package to PyPI with Trusted Publishing (no API token stored in the repository).
 #
-# One-time setup on PyPI (repository owner): https://pypi.org/manage/account/publishing/ -> "Add a new pending publisher"
-#   PyPI project name: hintauc   Owner: MADONOKOUKI   Repository: DetFill-with-DHT
-#   Workflow name: publish-pypi.yml   Environment name: pypi
-# Then push a tag such as `hintauc-v0.1.0` (version = the one in pyproject.toml) or run the workflow manually.
+# Automatic rule: on every push to `main` that touches the library, the metadata or the README, the workflow reads the
+# version in pyproject.toml; if that version is not on PyPI yet, it builds and publishes it. Pushing the same version
+# again does nothing (PyPI never accepts re-uploads), so releasing = bump `version` in pyproject.toml and push.
+# A tag `hintauc-v<version>` or a manual run also triggers it.
+#
+# One-time setup on PyPI (done): https://pypi.org/manage/account/publishing/ -> pending publisher
+#   project hintauc, owner MADONOKOUKI, repository DetFill-with-DHT, workflow publish-pypi.yml, environment pypi
 name: publish-pypi
 
 on:
   push:
+    branches: [main]
+    paths: ["pyproject.toml", "hintauc/**", "README.md", "LICENSE", ".github/workflows/publish-pypi.yml"]
     tags: ["hintauc-v*"]
   workflow_dispatch:
 
 jobs:
+  check:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.v.outputs.version }}
+      publish: ${{ steps.v.outputs.publish }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - id: v
+        shell: bash
+        run: |
+          python - <<'PY' | tee -a "$GITHUB_OUTPUT"
+          import json, tomllib, urllib.request
+          version = tomllib.load(open("pyproject.toml", "rb"))["project"]["version"]
+          try:
+              released = json.load(urllib.request.urlopen("https://pypi.org/pypi/hintauc/json"))["releases"].keys()
+          except Exception:
+              released = []
+          print(f"version={version}")
+          print(f"publish={'false' if version in released else 'true'}")
+          PY
+      - run: echo "pyproject version ${{ steps.v.outputs.version }} -> publish=${{ steps.v.outputs.publish }}"
+
   build:
+    needs: check
+    if: needs.check.outputs.publish == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -28,7 +60,8 @@ jobs:
           path: dist/
 
   publish:
-    needs: build
+    needs: [check, build]
+    if: needs.check.outputs.publish == 'true'
     runs-on: ubuntu-latest
     environment: pypi
     permissions:
