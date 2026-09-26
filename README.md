@@ -69,7 +69,10 @@ DetFill inference over the hint-ratio grid: `cd detfill && GPU=0 bash run_infere
 
 Data: the stored hint maps of the 3,000 test images (v1.0), the test-split line art from the three extractors, the
 alternative-segmenter hint maps, the example bundle and the user-study stimuli (v1.3). Every file with size and
-SHA-256: [checkpoints/README.md](checkpoints/README.md).
+SHA-256: [checkpoints/README.md](checkpoints/README.md). The illustrations themselves come from
+[Danbooru2021](https://gwern.net/danbooru2021) (download instructions on that page; our split lists are in
+`reproduce/data/splits/`), the natural-image experiments from an [ImageNet](https://www.image-net.org/download.php) subset;
+neither is redistributed here.
 
 ## Reproducing the paper
 
@@ -106,8 +109,7 @@ authors' reference run. Guide, coverage table and the list of what is bit-exact 
 - CPU inference, a flat user-configurable data layout, deterministic region-id colours, other segmenters in the generator.
 - The replicability script, the reproduction package and the additional releases (v1.1–v1.3, legacy-2024).
 
-Small documented differences between the paper's text and the released code/data are listed in
-[detail_explanation.md](detail_explanation.md#changes-relative-to-the-paper).
+We also fixed a few minor issues in the original implementation to make the library more usable.
 
 ## Repository structure
 

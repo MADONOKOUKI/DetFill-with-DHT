@@ -106,7 +106,8 @@ runnable equivalents are the scripts in `scripts/` and `examples/`.
 ### D.1 Data
 
 1. **Test images.** The test split is the 3,000 Danbooru2021 images listed in `data/splits/test.txt` (ids ending in
-   `016`). Obtain them from the Danbooru2021 distribution (we do not redistribute the images) and store them as
+   `016`). Obtain them from the Danbooru2021 distribution (https://gwern.net/danbooru2021 — the page documents the rsync
+   mirror; we do not redistribute the images) and store them as
    `<DATA_ROOT>/segmentations/originals/<id>.image.png` (512 × 512; the preprocessing of `hint_generation/canonical/all_segmentations.py`).
 2. **Line art.** Release v1.3 ships the exact line-art files used for every reported number
    (`test_split_sketch_{sketchkeras,pysimp,XDoG}.tar.gz` → `<DATA_ROOT>/sketch/<extractor>/<id>.png`). The wrappers

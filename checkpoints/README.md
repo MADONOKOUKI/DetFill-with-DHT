@@ -71,7 +71,8 @@ bit-exact reproduction. The natural-image data path of the loader still expects 
 ## v1.3 — data for full-scale and example-based reproduction
 
 Release: https://github.com/MADONOKOUKI/DetFill-with-DHT/releases/tag/v1.3 (all files derived from the Danbooru2021
-test split; originals not included; non-commercial research use).
+test split; the originals are not included — they are available from https://gwern.net/danbooru2021 by id; non-commercial
+research use).
 
 | File | Size | SHA-256 | Contents |
 |---|---|---|---|
