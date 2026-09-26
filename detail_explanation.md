@@ -2,7 +2,7 @@
 
 Companion to the README. Sections: [pipeline](#pipeline) · [library](#library) · [DetFill](#detfill) ·
 [Hint-AUC](#hint-auc) · [reproduction](#reproduction) · [determinism](#what-is-exact-and-what-is-not) ·
-[environment](#environment) · [releases](#releases) · [changes relative to the paper](#changes-relative-to-the-paper).
+[environment](#environment) · [releases](#releases) · [added features](#added-features-since-the-paper).
 
 ## Pipeline
 
@@ -154,21 +154,14 @@ full-scale estimates: measured on B; an A6000-class GPU is roughly twice as fast
 
 Sizes and SHA-256 of every file: [checkpoints/README.md](checkpoints/README.md).
 
-## Changes relative to the paper
-
-Minor fixes (documented, results unaffected):
-
-- Dot placement rule: medoid in the data and the library default, truncated mean in the text (`dot_method="mean"`).
-- SSIM requires torchmetrics 1.4.0; 1.8.x differs by up to 0.04 per image.
-- Natural-image configs: `model_channels` corrected to 96.
-- Table II DetFill scribble SSIM printed 0.724, value 0.7235.
-- Archived per-ratio files named line-art source 0 "XDoG" and 1 "pysimp" (the loader's order is the reverse); all
-  published values are means over the three sources.
-
-Added features:
+## Added features since the paper
 
 - `hintauc` library + CLI; `path_method="geodesic"`; `dot_method` and `tie_break` options; `hint_order` protocol switch;
   `include_full_hint` training option; CPU inference; flat user-configurable data layout; deterministic region-id colours;
-  segmenter options in the generator; the replicability script; the reproduction package; releases v1.1–v1.3 and legacy-2024.
+  segmenter options in the generator; metrics beyond the paper's seven (MAE, MS-SSIM, CIEDE2000, LPIPS-VGG, DISTS,
+  set-level FID / KID); the replicability script; the reproduction package; releases v1.1–v1.3 and legacy-2024.
+- A few minor issues of the original implementation were fixed along the way to make the library more usable; what is
+  bit-exact with respect to the published numbers and what is not is listed in
+  [reproduce/README.md](reproduce/README.md#known-deviations-and-gaps-honest-list).
 
 Third-party components and their licenses: [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
