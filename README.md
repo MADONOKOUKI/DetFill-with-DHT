@@ -5,6 +5,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Python 3.9+](https://img.shields.io/badge/python-3.9%2B-blue)](#installation)
 [![PyTorch 2.5](https://img.shields.io/badge/PyTorch-2.5-ee4c2c)](#installation)
+[![PyPI](https://img.shields.io/pypi/v/hintauc)](https://pypi.org/project/hintauc/)
 [![Releases](https://img.shields.io/github/v/release/MADONOKOUKI/DetFill-with-DHT)](https://github.com/MADONOKOUKI/DetFill-with-DHT/releases)
 
 Official implementation of **"Hint-AUC: Deterministic Region-based Hint Generation for Line Art Colorization Evaluation"**
@@ -23,16 +24,16 @@ Official implementation of **"Hint-AUC: Deterministic Region-based Hint Generati
 
 ## News
 
-- **2026-09** — Code, checkpoints, data and the full reproduction package are public. The paper is accepted at IEEE TVCG.
+- **2026-09** — Code, checkpoints, data and the full reproduction package are public; `hintauc` 0.1.0 is on PyPI. The paper is accepted at IEEE TVCG.
 
 ## Installation
 
 ```bash
-pip install git+https://github.com/MADONOKOUKI/DetFill-with-DHT.git
-# with the perceptual metrics (LPIPS / OpenCLIP / DINOv2 / DreamSim):
-pip install "hintauc[perceptual] @ git+https://github.com/MADONOKOUKI/DetFill-with-DHT.git"
+pip install hintauc                 # the library: deterministic hints, metrics, Hint-AUC  (PyPI: https://pypi.org/project/hintauc/)
+pip install "hintauc[perceptual]"   # + the perceptual metrics (LPIPS / OpenCLIP / DINOv2 / DreamSim)
 ```
 
+Latest development version: `pip install git+https://github.com/MADONOKOUKI/DetFill-with-DHT.git`.
 For training or inference with DetFill, or for reproducing the paper, use the conda environment
 `replicability/environment.yml` (Python 3.9, PyTorch 2.5.1, CUDA 12.4; it also runs on CPU).
 

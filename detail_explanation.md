@@ -32,7 +32,7 @@ What the library produces for one illustration:
 
 ## Library
 
-`hintauc` (installed by `pip install git+…`) exposes:
+`hintauc` (`pip install hintauc`; `pip install "hintauc[perceptual]"` adds the perceptual metrics) exposes:
 
 - `hintauc.generate_hints(image, size=64, path_method="filfinder", dot_method="medoid", segmenter="felzenszwalb")`
   → `HintResult` with `.at_ratio(alpha, hint_type="scribble"|"dot", tie_break="default"|"stable")` (returns colour and
