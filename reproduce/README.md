@@ -140,9 +140,10 @@ Expected agreement (checked on 160 image pairs of the archived paper outputs): w
 evaluator reproduces the archived per-image values to numerical precision for MSE, PSNR, LPIPS, DINO and DreamSim
 (max |Δ| ≤ 3e-6), SSIM to 5e-5 with the pinned `torchmetrics==1.4.0` (torchmetrics 1.8 changed the SSIM
 implementation: per-image |Δ| up to 0.04, so the pin matters), and OpenCLIP within 8e-4 (the archived run scored
-OpenCLIP in half precision). Inference is seeded and the stored hint maps remove the hint-generation variance;
-re-running the diffusion sampler on another GPU class can change individual outputs slightly (CUDA
-non-determinism), and in our re-runs the source-averaged Hint-AUC values agreed with Table II to the printed precision.
+OpenCLIP in half precision). Inference is seeded and the stored hint maps remove the hint-generation variance, but
+the diffusion sampler is not bit-exact across GPU generations or on CPU: re-generated outputs of the same image agree with
+the paper's archived outputs only approximately (about 25–30 dB PSNR in our checks, see `reproduce/examples/`). We have
+not re-run a complete table row on different hardware; expect small differences in the last printed digit.
 
 ### D.3 Other studies at full scale
 

@@ -1,48 +1,23 @@
 # DetFill-with-DHT
 
-Official code, models and reproduction package for
-
-> **Hint-AUC: Deterministic Region-based Hint Generation for Line Art Colorization Evaluation**
-> Koki Madono, Yuan Mingcheng, Edgar Simo-Serra
-> IEEE Transactions on Visualization and Computer Graphics, 2026. DOI: [10.1109/TVCG.2026.3738401](https://doi.org/10.1109/TVCG.2026.3738401)
-
-Hint-based line-art colorization has been evaluated with *randomly* sampled colour hints, which makes scores
-unstable and comparisons unfair. This repository provides three things:
-
-- **DHT (Deterministic HinT generation)** — a reproducible, region-based hint generation pipeline: the same
-  illustration always yields the same scribble and dot hints.
-- **Hint-AUC** — an evaluation protocol that scores a colorization model across the *whole range* of hint
-  ratios (from no hints to fully hinted) and integrates the metric curve into one number.
-- **DetFill** — a pixel-space Brownian Bridge diffusion colorization model trained with DHT hints, with all
-  checkpoints of the paper.
+Code, models and reproduction package for
+**Hint-AUC: Deterministic Region-based Hint Generation for Line Art Colorization Evaluation**
+(K. Madono, Y. Mingcheng, E. Simo-Serra — IEEE TVCG 2026, DOI [10.1109/TVCG.2026.3738401](https://doi.org/10.1109/TVCG.2026.3738401)).
 
 ![Deterministic hint generation pipeline](assets/readme/dht_pipeline.png)
-*DHT pipeline: region segmentation → skeleton → longest path per region → colour scribble map.*
+
+**What is in here**
+- **DHT** — deterministic, region-based colour-hint generation: the same illustration always gives the same scribble / dot hints.
+- **Hint-AUC** — an evaluation protocol that scores a colorization model over the whole range of hint ratios and integrates the metric curve into one number.
+- **DetFill** — the pixel-space diffusion colorization model of the paper, with every checkpoint.
+- A **reproduction package** that rebuilds the paper's tables, re-runs each experiment on example images and re-runs whole table rows.
+
+This repository also contains minor fixes relative to the paper and a few added features; both are listed below.
+Details of everything on this page: [detail_explanation.md](detail_explanation.md).
 
 ---
 
-## Reproducing the paper: start here
-
-Everything below runs from this repository plus files attached to its [GitHub releases](https://github.com/MADONOKOUKI/DetFill-with-DHT/releases)
-(checkpoints and data; every file has a SHA-256 in `checkpoints/README.md`). No account, no private data, no
-cluster is needed. Requirements: Linux, Miniconda/Anaconda, ~10 GB of disk, an NVIDIA GPU (CUDA 12 driver) for the
-inference scripts — the CPU fallback works but is slow (times below).
-
-| What you want to check | Command (no arguments) | Time | What you get and how to compare |
-|---|---|---|---|
-| **Fig. 9 of the paper** (deterministic vs. random hint selection, DetFill outputs) — the Replicability-Stamp script | `bash replicability/run.sh` | GPU ≈ 3 min, CPU ≈ 30 min, plus a one-time environment setup | `replicability/output/fig9.png`; compare with `replicability/expected/fig9_paper.png` (the printed figure) |
-| **Every table of the paper rebuilt from the released metric files** (Tables II–V and the supplementary α-grid, segmentation-dependency, seed-sensitivity, Diffusart-retrain tables, GLMM statistics) | `python reproduce/scripts/A1_tables_from_released_metrics.py` and `python reproduce/scripts/A2_userstudy_glmm.py` | < 2 min, CPU only | Markdown tables in `reproduce/output/`; each printed number is checked automatically (322 of 324 cells match; the two exceptions are explained in `reproduce/README.md`). Reference copies: `reproduce/expected/recomputed_tables/` |
-| **Every experiment re-run on a few example illustrations with the released checkpoints** (Table II and Table III protocols, segmentation dependency, seed sensitivity, dense ratio curve, channel ablation, hint regeneration, 2024 models) | `bash reproduce/examples/run_examples.sh` (`EXAMPLES_MODE=smoke` ≈ 5 min, default `quick` ≈ 45 min, `full` = several GPU-hours) | see left | Labelled image grids and per-image metrics in `reproduce/examples/output/`; the authors' run of the same script and the paper's archived outputs of the same images are in `reproduce/examples/expected/`, and the script prints a side-by-side comparison |
-| **A full table row on the 3,000 test images** | `DATA_ROOT=… bash reproduce/scripts/run_hauc_pipeline.sh` | ≈ 14 GPU-hours per row | Needs the Danbooru2021 originals (not redistributable) plus the released line art and hint maps; details in `reproduce/README.md` part B |
-| **Training from scratch** | `bash reproduce/scripts/B9_train_detfill.sh` | days on 10 GPUs | The commands behind the released checkpoints |
-
-The verbatim launcher scripts that produced the paper and its revision (cluster paths included, kept as example
-code) are in `reproduce/paper_experiments/`. What is bit-exact and what is not is listed in
-`reproduce/README.md` → "Known deviations".
-
----
-
-## Quick start with the library (pip)
+## Install
 
 ```bash
 pip install git+https://github.com/MADONOKOUKI/DetFill-with-DHT.git
@@ -50,146 +25,82 @@ pip install git+https://github.com/MADONOKOUKI/DetFill-with-DHT.git
 pip install "hintauc[perceptual] @ git+https://github.com/MADONOKOUKI/DetFill-with-DHT.git"
 ```
 
+## Use the library
+
 ```python
 import hintauc
-
-# 1) image -> deterministic hints
-hints = hintauc.generate_hints("illustration.png", size=64)
-color, mask = hints.at_ratio(0.10, hint_type="scribble")   # the largest 10 % of the regions
-hints.save("out/illustration")                             # canonical *_region64 / *_scribble_col64 / ... files
-
-# 2) evaluate a colorization against its ground truth (same formulas as the paper)
-ev = hintauc.Evaluator(metrics=("mse", "psnr", "ssim", "lpips", "dreamsim"))
-scores = ev("colorized.png", "ground_truth.png")
-
-# 3) Hint-AUC over the paper's hint-ratio grid
-result = hintauc.evaluate_hint_curve(
-    {a: f"preds/ratio_{a}" for a in hintauc.DEFAULT_ALPHAS}, "gt_dir",
-    metrics=("mse", "lpips", "dreamsim"))
-print(result["hint_auc"])
+hints = hintauc.generate_hints("illustration.png", size=64)      # image -> deterministic hints
+color, mask = hints.at_ratio(0.10, hint_type="scribble")         # hints of the largest 10 % of the regions
+scores = hintauc.Evaluator(metrics=("psnr", "lpips"))("out.png", "gt.png")   # paper metrics
 ```
 
-Command line: `hintauc generate image.png --ratio 0.1` and `hintauc eval pred_dir gt_dir --metrics mse psnr ssim`
-(see `examples/basic_usage.py`).
+Command line: `hintauc generate image.png --ratio 0.1`, `hintauc eval pred_dir gt_dir --metrics mse psnr ssim`.
+More: [examples/basic_usage.py](examples/basic_usage.py), [detail_explanation.md](detail_explanation.md#library).
 
-## What the library produces
+## Reproduce the paper
 
-`hintauc.generate_hints()` output for one illustration (all generated with the code in this repository):
+Everything runs from this repository plus the files on the [GitHub releases](https://github.com/MADONOKOUKI/DetFill-with-DHT/releases)
+(downloaded automatically, SHA-256 verified). Requirements: Linux, Miniconda, ~10 GB disk, an NVIDIA GPU (CPU works but is slow).
 
-| Input image | Region map | Flatten (region mean) | Scribble hints | Dot hints |
-|:---:|:---:|:---:|:---:|:---:|
-| ![input](assets/readme/demo_input.png) | ![region](assets/readme/demo_region.png) | ![flatten](assets/readme/demo_flatten.png) | ![scribble](assets/readme/demo_scribble100.png) | ![dot](assets/readme/demo_dot100.png) |
+| Goal | Command (no arguments) | Time |
+|---|---|---|
+| **Fig. 9** end to end — the Replicability-Stamp script | `bash replicability/run.sh` | GPU ≈ 3 min, CPU ≈ 30 min |
+| **Every table** rebuilt from the released metric files (Tables II–V, supplementary tables, GLMM) | `python reproduce/scripts/A1_tables_from_released_metrics.py` → 322/324 cells match<br>`python reproduce/scripts/A2_userstudy_glmm.py` → all values match | < 2 min, CPU |
+| **Every experiment** re-run on 12 example illustrations with the released checkpoints (Table II/III protocols, segmentation dependency, seed sensitivity, dense ratio curve, channel ablation, hint regeneration, 2024 models) | `bash reproduce/examples/run_examples.sh` | smoke ≈ 5 min, default ≈ 45 min, full = hours |
+| **A whole table row** on the 3,000 test images | `DATA_ROOT=… bash reproduce/scripts/run_hauc_pipeline.sh` | ≈ 14 GPU-h per row |
+| **Training** from scratch | `bash reproduce/scripts/B9_train_detfill.sh` | days, 10 GPUs |
 
-`HintResult.at_ratio(α)` keeps the hints of the largest-area regions only — deterministically, so every run and
-every paper reproduces the identical hint sets:
+- Outputs are compared automatically with the paper's numbers, the paper's archived images of the same examples and the authors' reference run.
+- What is bit-exact and what is not: [reproduce/README.md → Known deviations](reproduce/README.md#known-deviations-and-gaps-honest-list).
+- The scripts that were actually run for the paper (cluster paths included) are kept as example code in `reproduce/paper_experiments/`.
 
-| α = 1% | α = 10% | α = 50% | α = 100% |
-|:---:|:---:|:---:|:---:|
-| ![r1](assets/readme/demo_scribble_r1.png) | ![r10](assets/readme/demo_scribble_r10.png) | ![r50](assets/readme/demo_scribble_r50.png) | ![r100](assets/readme/demo_scribble_r100.png) |
+## Released checkpoints and data
 
-## DetFill colorization with DHT hints
+All on the releases page; every file with size, SHA-256 and purpose in [checkpoints/README.md](checkpoints/README.md).
 
-DetFill colorizations for one test sketch as the (deterministic scribble) hint ratio grows — the colorization
-converges to the ground truth as more regions are hinted:
+- **v1.0** — the paper's models: `detfill_scribble_illust_200ep.pth` (96 channels), `detfill_dot_illust_200ep.pth` (64 channels); the stored hint maps of the 3,000 test images.
+- **v1.1** — scribble models trained with DanbooRegion / SLIC hints (segmentation-dependency study).
+- **v1.2** — Diffusart retrained with our hints; natural-image (ImageNet) DetFill models and their test hint maps.
+- **v1.3** — test-split line art (3 extractors), alternative-segmenter hint maps, the 12-image example bundle, the user-study stimuli.
+- **legacy-2024** — models of the 2024 submission and the 32 / 64-channel models of the channel ablation.
 
-| Input sketch | Ground truth |
-|:---:|:---:|
-| ![sketch](assets/readme/ex_sketch.png) | ![gt](assets/readme/ex_gt.png) |
+## Minor fixes relative to the paper
 
-| | α = 1% | α = 10% | α = 50% | α = 100% |
-|:--|:---:|:---:|:---:|:---:|
-| **Scribble hints** | ![h1](assets/readme/ex_hint_r1.png) | ![h10](assets/readme/ex_hint_r10.png) | ![h50](assets/readme/ex_hint_r50.png) | ![h100](assets/readme/ex_hint_r100.png) |
-| **DetFill colorization** | ![d1](assets/readme/ex_detfill_r1.png) | ![d10](assets/readme/ex_detfill_r10.png) | ![d50](assets/readme/ex_detfill_r50.png) | ![d100](assets/readme/ex_detfill_r100.png) |
+- **Dot placement.** The text describes a truncated mean of the longest-path pixels; the data (training and test maps) use the *medoid* pixel. The library defaults to the data's rule; the text's rule is available as `dot_method="mean"`. Results are unaffected.
+- **SSIM.** The published SSIM values need `torchmetrics==1.4.0` (pinned); newer versions changed the implementation.
+- **Natural-image configs** corrected to 96 base channels (all archived ImageNet checkpoints are 96-channel).
+- **Table II, DetFill scribble SSIM** is printed as 0.724; the value is 0.7235 (as in the supplementary α-grid table).
+- **Line-art labels.** The loader's `sketch_type` 0/1/2 = sketch simplification / XDoG / SketchKeras; archived per-ratio files had 0 and 1 swapped in name only (all published values are means over the three).
 
-## Hint-AUC evaluation
+## Added features (not in the paper)
 
-![Hint-AUC overview](assets/readme/hintauc_overview.png)
-
-For each hint ratio α ∈ {0, 0.01, 0.03, 0.05, 0.10, 0.25, 0.50, 1.00} the model colorizes the test set with the
-deterministic hints at that ratio; each per-ratio score curve (MSE / PSNR / SSIM / LPIPS / OpenCLIP / DINOv2 /
-DreamSim) is integrated over α with the trapezoidal rule into a single **Hint-AUC** value. Because the hints are
-deterministic, the whole protocol is exactly reproducible.
-
----
+- `hintauc`: pip-installable library and command line for hint generation, the seven metrics and Hint-AUC.
+- Second longest-path implementation `path_method="geodesic"` — dependency-free and bit-exact (the paper used FilFinder).
+- Dot placement options `medoid` / `mean` / `nearest_mean`; region tie-breaking option `tie_break="stable"`.
+- Evaluation-protocol switch `hint_order: area | label` (Table II vs. Table III) in the DetFill data loader.
+- Training option `include_full_hint` (also sample the fully hinted case during training).
+- CPU inference (`--gpu_ids -1`) and a flat, user-configurable data layout (no cluster paths).
+- Deterministic colour encoding of region ids in generated region maps.
+- Other segmenters in the hint generator (`--segmenter slic | quickshift | watershed | danbooregion`).
+- The replicability script, the reproduction package (table recomputation, generic inference + Hint-AUC pipeline, example suite) and the additional released checkpoints and data.
 
 ## Repository layout
 
 | Directory | Contents |
 |---|---|
-| `replicability/` | **The one-command reproduction of Fig. 9** (`run.sh`), its conda environment, the two input illustrations, and the figure as printed for comparison. |
-| `reproduce/` | **Reproduction package**: `scripts/` (table recomputation, generic inference + Hint-AUC pipeline, training commands, sketch-extractor wrappers), `examples/` (example-based re-run of every experiment), `expected/` (released per-ratio metric files and reference results), `data/` (user-study trial table, data split lists), `paper_experiments/` (verbatim launchers of the paper and the revision). Read `reproduce/README.md` first. |
-| `hintauc/` | **pip-installable library**: hint generation (`hints.py`), evaluation metrics (`metrics.py`), Hint-AUC (`auc.py`), command line (`cli.py`). |
-| `detfill/` | The DetFill model — a pixel-space Brownian Bridge diffusion fork of [BBDM](https://github.com/xuekt98/BBDM) (MIT) adapted to sketch + deterministic-hint conditioning. Training, inference (`run_inference.sh`), configs, data-layout documentation. |
-| `hint_generation/` | The original research scripts behind the library: the canonical 2024 generation scripts (`canonical/`) and the cleaned segmenter-robustness port. |
-| `evaluation/` | The paper's evaluation pipelines: per-ratio metrics and Hint-AUC aggregation. |
-| `checkpoints/` | **List of every released checkpoint and data file with sizes, SHA-256 and what it reproduces.** |
-| `examples/` | Library usage examples. |
-| `assets/` | README images and the 250×250 representative image for the Replicability Stamp (`assets/grsi/`). |
+| `replicability/` | one-command reproduction of Fig. 9 |
+| `reproduce/` | reproduction package: `scripts/`, `examples/`, `expected/` (released metric files), `data/`, `paper_experiments/` |
+| `hintauc/` | the library (hints, metrics, Hint-AUC, CLI) |
+| `detfill/` | the DetFill model (BBDM fork): training, inference, configs |
+| `hint_generation/`, `evaluation/` | the original research scripts behind the library |
+| `checkpoints/` | inventory of all released files with hashes |
+| `assets/` | README images, representative image for the Replicability Stamp |
 
-## Checkpoints and data (summary)
+## License and citation
 
-All files are attached to the GitHub releases; `checkpoints/README.md` lists them with hashes. In short:
-
-- **v1.0** — the paper's models: `detfill_scribble_illust_200ep.pth` (96 base channels) and `detfill_dot_illust_200ep.pth`
-  (64 base channels), plus the stored hint maps of the 3,000 test images. Behind Tables II/III and Fig. 9.
-- **v1.1** — scribble models trained with DanbooRegion and SLIC hints (supplementary segmentation-dependency study).
-- **v1.2** — Diffusart retrained with our hints (supplementary "additional training" table) and the natural-image
-  (ImageNet) DetFill models with their test hint maps.
-- **v1.3** — the test-split line art (three extractors), the alternative-segmenter hint maps, the 12-image example
-  bundle, and the user-study stimuli.
-- **legacy-2024** — the models of the 2024 submission and the 32/64-channel models of the channel ablation.
-
-## Longest-path extraction: two implementations
-
-The scribble of a region is the longest path of its skeleton. Two implementations are available and selected with
-`path_method` (library) / `--path_method` (command line and batch generator):
-
-| `path_method` | How the path is found | Dependencies | Deterministic? |
-|---|---|---|---|
-| `filfinder` (default, **used for all paper results**) | 3×3 dilation of the Zhang–Suen skeleton, then FilFinder2D 1.7.2 (medial axis, branch/skeleton threshold 3 px, prune by length, longest path) | `fil_finder`, `astropy` | Up to the unseeded medial-axis tie-breaking inside FilFinder (a few pixels may move between environments) |
-| `geodesic` | Longest shortest path (geodesic diameter) of the 8-connected Zhang–Suen skeleton itself, orthogonal step 1 / diagonal step √2, no corner cutting; every tie is broken in raster order | none beyond NumPy | Yes, bit-exact everywhere |
-
-```python
-hints = hintauc.generate_hints("illustration.png", path_method="geodesic")
-```
-
-The two methods produce slightly different scribbles (the geodesic path skips no corner pixels and applies no
-branch pruning). **Do not mix hint maps produced with different methods within one evaluation**; the paper's numbers
-correspond to `filfinder`, and the stored test-split hint maps of the v1.0 release were produced with it.
-
-**Dot placement** is selected with `dot_method` / `--dot_method`. `medoid` (default) is the rule behind the paper's
-stored hint maps: the dot is the in-region longest-path pixel with the smallest total Manhattan distance to the
-other in-region path pixels (first index on ties), so every dot lies on its own scribble inside its region — verified
-against the released maps. The paper's text (Sec. IV-A) describes a truncated mean of the path coordinates; that rule
-is available as `dot_method="mean"` for reference but it is not what produced the data. See
-`hint_generation/README.md`.
-
-**Tie-breaking of equal-area regions** in `HintResult.at_ratio(..., tie_break=...)`: `default` (paper) uses NumPy's
-default `argsort`, whose order among equal-area regions depends on the NumPy build; `stable` breaks ties by ascending
-label value. The reported results use `default` with the pinned NumPy.
-
-## Notes
-
-- Data locations are user-specified: set `data.dataset_config.dataset_path` / `scratch_root` in `detfill/configs/*.yaml`
-  to your dataset root (layout documented in `detfill/README.md`). Hints default to the paper's 64×64 resolution.
-- The `hintauc` library re-implements the canonical scripts faithfully (3×3 dilation, region-mean colours,
-  base-255 region-id encoding compatible with the data loader).
-- The evaluator reproduces the paper's per-image metrics to numerical precision when `torchmetrics==1.4.0` is used
-  (pinned in `replicability/environment.yml` and `reproduce/requirements-metrics.txt`); newer torchmetrics versions
-  changed the SSIM implementation.
-
-## License and acknowledgements
-
-MIT License, with the third-party components listed in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)
-(notably the ColorizeDiffusion-derived inference wrappers under `reproduce/paper_experiments/coldiff_finetune/`,
-which stay under the upstream CC BY-NC-SA 4.0 license). The `detfill/` directory is derived from
-[BBDM: Image-to-image Translation with Brownian Bridge Diffusion Models](https://github.com/xuekt98/BBDM)
-(© 2023 xuekt98, MIT) — see `detfill/LICENSE`. Released data files are derived from Danbooru2021 illustrations and
-are provided for non-commercial research use; the original artworks remain the property of their creators.
-
-Contact: Koki Madono (see the paper for the address).
-
-## Citation
+MIT License; third-party components in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md). `detfill/` is derived from
+[BBDM](https://github.com/xuekt98/BBDM) (MIT). Released data files are derived from Danbooru2021 illustrations and are
+provided for non-commercial research use only.
 
 ```bibtex
 @article{madono2026hintauc,
