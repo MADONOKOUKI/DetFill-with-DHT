@@ -7,27 +7,37 @@ name = "hintauc"
 version = "0.1.0"
 description = "Deterministic region-based hint generation (DHT) and Hint-AUC evaluation for line-art colorization"
 readme = "README.md"
-license = { text = "MIT" }
-authors = [
-  { name = "Koki Madono" },
-]
-requires-python = ">=3.8"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "Koki Madono" }]
+keywords = ["line art", "colorization", "evaluation", "hint generation", "Hint-AUC", "diffusion"]
+requires-python = ">=3.9,<3.13"
 dependencies = [
   "numpy",
   "opencv-python",
   "scikit-image>=0.19",
-  "fil_finder>=1.7",
-  "astropy",
+  "fil_finder>=1.7,<1.8",   # longest-path extraction used for the paper results
+  "astropy>=5.0,<6",        # fil_finder 1.7 is not compatible with astropy 6
   "pillow",
 ]
 classifiers = [
-  "Programming Language :: Python :: 3",
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Science/Research",
   "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
   "Topic :: Scientific/Engineering :: Image Processing",
+  "Topic :: Scientific/Engineering :: Artificial Intelligence",
 ]
 
 [project.urls]
+Homepage = "https://github.com/MADONOKOUKI/DetFill-with-DHT"
 Repository = "https://github.com/MADONOKOUKI/DetFill-with-DHT"
+Issues = "https://github.com/MADONOKOUKI/DetFill-with-DHT/issues"
+Paper = "https://doi.org/10.1109/TVCG.2026.3738401"
 
 [project.optional-dependencies]
 perceptual = [

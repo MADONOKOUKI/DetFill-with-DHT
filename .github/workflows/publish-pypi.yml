@@ -1,0 +1,41 @@
+# Publish the `hintauc` package to PyPI with Trusted Publishing (no API token stored in the repository).
+#
+# One-time setup on PyPI (repository owner): https://pypi.org/manage/account/publishing/ -> "Add a new pending publisher"
+#   PyPI project name: hintauc   Owner: MADONOKOUKI   Repository: DetFill-with-DHT
+#   Workflow name: publish-pypi.yml   Environment name: pypi
+# Then push a tag such as `hintauc-v0.1.0` (version = the one in pyproject.toml) or run the workflow manually.
+name: publish-pypi
+
+on:
+  push:
+    tags: ["hintauc-v*"]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: python -m pip install --upgrade build twine
+      - run: python -m build
+      - run: python -m twine check dist/*
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    environment: pypi
+    permissions:
+      id-token: write   # OIDC token for Trusted Publishing
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+      - uses: pypa/gh-action-pypi-publish@release/v1
