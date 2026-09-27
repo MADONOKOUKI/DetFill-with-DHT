@@ -240,7 +240,8 @@ def test_run_manifest_and_step_budget(tmp_path):
 
 def test_training_exception_is_reraised_after_the_emergency_save(tmp_path):
     pytest.importorskip("torch")
-    pytest.importorskip("tensorboard")                              # imported by the runner module
+    for dep in ("tensorboard", "tqdm", "yaml"):                     # imported by the runner module
+        pytest.importorskip(dep)
     sys.path.insert(0, os.path.dirname(repo_file("detfill", "runners", "BaseRunner.py")).rsplit(os.sep, 1)[0])
     from runners.BaseRunner import BaseRunner
 
