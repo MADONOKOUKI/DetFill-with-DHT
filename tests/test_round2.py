@@ -14,6 +14,15 @@ from hintauc.metrics import Evaluator
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
+def repo_file(*parts):
+    """Path of a repository file, or skip: the wheel job runs these tests outside the checkout, where only the
+    installed library exists and the repository scripts are not available."""
+    path = os.path.join(ROOT, *parts)
+    if not os.path.exists(path):
+        pytest.skip(f"repository file {os.path.join(*parts)} not available (tests run outside the checkout)")
+    return path
+
+
 def _rgb(seed=0, size=24):
     rng = np.random.default_rng(seed)
     return rng.integers(0, 256, size=(size, size, 3), dtype=np.uint8)
@@ -46,7 +55,7 @@ def test_files_of_every_mode_decode_to_the_colours_they_show(tmp_path):
 def test_sixteen_bit_files_are_rejected(tmp_path):
     from PIL import Image
     arr16 = (np.arange(24 * 24, dtype=np.uint16).reshape(24, 24) * 100)
-    Image.fromarray(arr16, mode="I;16").save(tmp_path / "deep.png")
+    Image.fromarray(arr16).save(tmp_path / "deep.png")             # a 16-bit PNG
     with pytest.raises(ValueError):
         Evaluator(metrics=("mse",), resize=0)(str(tmp_path / "deep.png"), _rgb(1))
 
@@ -121,13 +130,13 @@ def test_curve_follows_the_manifest_and_rejects_stale_directories(tmp_path, caps
 def _run_checker(tmp_path, hint_auc, backend_args=()):
     result = {"hint_auc": hint_auc, "protocol": {"backend": {"resize": "pillow", "ssim": "scikit-image"}}}
     p = tmp_path / "r.json"; p.write_text(json.dumps(result))
-    proc = subprocess.run([sys.executable, os.path.join(ROOT, "examples", "check_expected.py"), str(p), "demo", *backend_args],
+    proc = subprocess.run([sys.executable, repo_file("examples", "check_expected.py"), str(p), "demo", *backend_args],
                           capture_output=True, text=True)
     return proc.returncode, proc.stdout + proc.stderr
 
 
 def test_number_checker_rejects_nan_and_wrong_backend(tmp_path):
-    expected = json.load(open(os.path.join(ROOT, "examples", "expected_numbers.json")))["demo"]["hint_auc"]["pillow"]
+    expected = json.load(open(repo_file("examples", "expected_numbers.json")))["demo"]["hint_auc"]["pillow"]
     assert _run_checker(tmp_path, expected)[0] == 0
     rc, out = _run_checker(tmp_path, dict(expected, mse=float("nan")))
     assert rc == 1 and "FAIL" in out
@@ -157,7 +166,7 @@ def _pipeline_tree(tmp_path, drop_b_at=None):
 
 
 def _eval(root, gt, out, *extra, gt_from_results=False):
-    cmd = [sys.executable, os.path.join(ROOT, "reproduce", "scripts", "eval_per_ratio.py"), "--results_root", str(root),
+    cmd = [sys.executable, repo_file("reproduce", "scripts", "eval_per_ratio.py"), "--results_root", str(root),
            "--out_dir", str(out), "--sketches", "2", "--metrics", "mse", "--gpu", "-1", *extra]
     cmd += ["--gt_from_results"] if gt_from_results else ["--gt_dir", str(gt)]
     return subprocess.run(cmd, capture_output=True, text=True)
@@ -207,14 +216,14 @@ def test_example_comparison_uses_common_images(tmp_path):
                                          "per_image": {"0.0": {i: per_image["0.0"][i] for i in ids4}}}}}
     (tmp_path / "out" / "metrics").mkdir(parents=True); (tmp_path / "exp").mkdir()
     json.dump(run, open(tmp_path / "out" / "metrics" / "E1.json", "w")); json.dump(ref, open(tmp_path / "exp" / "E1.json", "w"))
-    proc = subprocess.run([sys.executable, os.path.join(ROOT, "reproduce", "examples", "compare_with_expected.py"),
+    proc = subprocess.run([sys.executable, repo_file("reproduce", "examples", "compare_with_expected.py"),
                            "--out", str(tmp_path / "out"), "--expected", str(tmp_path / "exp")], capture_output=True, text=True)
     assert proc.returncode == 0 and "0 outside tolerance" in proc.stdout and "over 4 common image(s)" in proc.stdout
 
 
 # --------------------------------------------------------------------------- DetFill provenance / budget
 def test_run_manifest_and_step_budget(tmp_path):
-    sys.path.insert(0, os.path.join(ROOT, "detfill"))
+    sys.path.insert(0, os.path.dirname(repo_file("detfill", "runners", "provenance.py")).rsplit(os.sep, 1)[0])
     from runners.provenance import check_run_manifest, step_budget_reached, write_run_manifest
     m = {"checkpoint_sha256": "aaa", "seed": 1234, "hint_type": "scribble", "hint_order": "area", "sample_ratio": 0.1,
          "sketch_type": 2, "sample_step": 200, "domain": "illust", "model_name": "BB", "config_sha256": "c", "data_root": "/d"}
@@ -231,7 +240,8 @@ def test_run_manifest_and_step_budget(tmp_path):
 
 def test_training_exception_is_reraised_after_the_emergency_save(tmp_path):
     pytest.importorskip("torch")
-    sys.path.insert(0, os.path.join(ROOT, "detfill"))
+    pytest.importorskip("tensorboard")                              # imported by the runner module
+    sys.path.insert(0, os.path.dirname(repo_file("detfill", "runners", "BaseRunner.py")).rsplit(os.sep, 1)[0])
     from runners.BaseRunner import BaseRunner
 
     class Stub:
@@ -252,7 +262,7 @@ def test_training_exception_is_reraised_after_the_emergency_save(tmp_path):
 # ---------------------------------------------------------------------------- batch hint generation
 def test_batch_generator_colours_are_deterministic_and_writes_are_checked(tmp_path):
     pytest.importorskip("skimage")
-    sys.path.insert(0, os.path.join(ROOT, "hint_generation"))
+    sys.path.insert(0, os.path.dirname(repo_file("hint_generation", "generate_hints.py")))
     import generate_hints as gh
     seg = np.zeros((32, 32), np.int64); seg[:, 16:] = 1; seg[16:, :] = 2
     a, b = gh.colorize_regions(seg), gh.colorize_regions(seg)
