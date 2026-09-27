@@ -18,15 +18,24 @@ Evaluation"**, IEEE Transactions on Visualization and Computer Graphics (TVCG), 
 
 ![Deterministic hint generation pipeline](assets/readme/dht_pipeline.png)
 
+**DHT** turns an illustration into fixed scribble and dot hints, **Hint-AUC** scores a colorization model over the whole
+range of hint ratios, and **DetFill** is the diffusion colorization model trained with these hints; the paper's
+checkpoints, evaluation inputs, metric files and experiment scripts are released.
+
+<details markdown="1">
+<summary>Why deterministic hints, what is released, and what is exact</summary>
+
 Hint-based line art colorization is usually evaluated with random colour hints, so scores change from run to run.
-This repository provides **DHT**, which derives fixed scribble and dot hints from the regions of an illustration;
-**Hint-AUC**, one score over the whole range of hint ratios, from no hints to fully hinted; and **DetFill**, a
-pixel-space diffusion colorization model trained with these hints. The paper's checkpoints, evaluation inputs,
-per-ratio metric files and experiment scripts are released; the
-[coverage table](reproduce/README.md#coverage-what-each-paper-item-needs) says what is rebuilt exactly, what is re-run
-and what is not provided. The stored hint maps are the reference for every printed number: regeneration with the
-paper's FilFinder path can move a few pixels between runs, the `geodesic` path is bit-reproducible
+DHT derives the hints from the regions of the illustration (one scribble and one dot per region, largest regions
+first as the hint ratio grows); Hint-AUC integrates a metric over hint ratios from no hints to fully hinted; DetFill is
+a pixel-space diffusion model conditioned on line art and these hints. The
+[coverage table](reproduce/README.md#coverage-what-each-paper-item-needs) says which paper items are rebuilt
+exactly from the released per-ratio metrics, which are re-run from the checkpoints, and which are not provided. The
+stored hint maps are the reference for every printed number: regeneration with the paper's FilFinder path can move a
+few pixels between runs, the `geodesic` path is bit-reproducible
 ([details](docs/detail_explanation.md#what-is-exact-and-what-is-not)).
+
+</details>
 
 ## Getting started
 
