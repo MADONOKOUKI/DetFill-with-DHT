@@ -74,6 +74,8 @@ hintauc.plot_curves(result["per_alpha"], "curve.png")
 the expected shape of a curve. Repeat with `hint_type="dot"` for the dot protocol, and with the three line-art
 sources to report the paper's mean ± SD.
 
+Signatures and examples of every function used above: [API reference](api.md).
+
 ## Reporting checklist
 
 - hint type (scribble / dot), the ratio grid (paper: 0, 1, 3, 5, 10, 25, 50, 100 %), and that the selection is

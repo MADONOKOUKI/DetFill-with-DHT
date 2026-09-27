@@ -24,4 +24,4 @@ Everything below was added after the paper's experiments and does not change any
 
 We also fixed a few minor issues in the original implementation to make the library more usable.
 
-Details of each item: [Detailed explanation — Added features since the paper](detail_explanation.md#added-features-since-the-paper).
+Function-level documentation with examples: [API reference](api.md). Details of each item: [Detailed explanation — Added features since the paper](detail_explanation.md#added-features-since-the-paper).

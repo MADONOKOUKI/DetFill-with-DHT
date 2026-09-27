@@ -42,6 +42,8 @@ evaluation inputs and the scripts that reproduce the paper are released.
 - **Reproducing the paper** — see [Reproducing the paper](reproduce/README.md): Fig. 9 with one command (the
   Replicability-Stamp script), every table rebuilt from the released metrics, every experiment re-run on example
   images, full table rows, and training.
+- **API reference** — see [API reference](docs/api.md): every function and command of the library with its role,
+  arguments and an input/output example.
 - **Added features (since the paper) for improving our library** — see [Added features](docs/added_features.md).
 - **How it works** — see [Detailed explanation](docs/detail_explanation.md): each component, what is bit-exact and
   what is not.
