@@ -1,0 +1,58 @@
+{
+ "_note": "Hint-AUC values of the two shipped examples, recorded by the authors and checked in CI (examples/check_expected.py). The 'torch' backend is torchvision (resize) + torchmetrics 1.4.0 (SSIM), the paper's evaluator; 'pillow' is the fallback without PyTorch (Pillow float32 bilinear resize + scikit-image SSIM). MSE and PSNR agree between the backends to about 1e-7; only SSIM differs (a few 1e-5).",
+ "_environment": {
+  "python": "3.9.16",
+  "numpy": "1.26.4",
+  "opencv": "4.11.0",
+  "scikit-image": "0.24.0",
+  "pillow": "10.4.0",
+  "torch": "2.5.1",
+  "torchvision": "0.20.1",
+  "torchmetrics": "1.4.0",
+  "hintauc": "0.3.1"
+ },
+ "demo": {
+  "command": "hintauc demo --out <dir>   (synthetic illustration, path_method=geodesic, metrics mse psnr ssim)",
+  "hint_auc": {
+   "torch": {
+    "mse": 0.03588413433171809,
+    "psnr": 15.902836266839547,
+    "ssim": 0.7789746403694153
+   },
+   "pillow": {
+    "mse": 0.03588413740508258,
+    "psnr": 15.90283610360171,
+    "ssim": 0.77901601344347
+   }
+  },
+  "tolerance": {
+   "mse": 2e-05,
+   "psnr": 0.002,
+   "ssim": 0.002
+  }
+ },
+ "quickstart_fast": {
+  "command": "python examples/quickstart_cpu.py --fast --out <dir>   (replicability/data ids 4731016 and 4942016, path_method=geodesic)",
+  "hint_auc": {
+   "torch": {
+    "mse": 0.042842941042035815,
+    "psnr": 14.29009488324039,
+    "ssim": 0.5471824046224356
+   },
+   "pillow": {
+    "mse": 0.04284294145647437,
+    "psnr": 14.290094816139344,
+    "ssim": 0.54719528503716
+   }
+  },
+  "per_alpha_psnr": {
+   "0.0": 8.2886,
+   "1.0": 16.778
+  },
+  "tolerance": {
+   "mse": 2e-05,
+   "psnr": 0.002,
+   "ssim": 0.002
+  }
+ }
+}

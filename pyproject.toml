@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "hintauc"
-version = "0.3.0"
+version = "0.3.1"
 description = "Deterministic region-based hint generation (DHT) and Hint-AUC evaluation for line-art colorization"
 readme = "docs/pypi_readme.md"
 license = "MIT"
@@ -33,12 +33,19 @@ classifiers = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/MADONOKOUKI/DetFill-with-DHT"
+Homepage = "https://madonokouki.github.io/projects/hintauc/"
+Documentation = "https://madonokouki.github.io/projects/hintauc/docs/"
 Repository = "https://github.com/MADONOKOUKI/DetFill-with-DHT"
 Issues = "https://github.com/MADONOKOUKI/DetFill-with-DHT/issues"
 Paper = "https://doi.org/10.1109/TVCG.2026.3738401"
 
 [project.optional-dependencies]
+# the evaluation backend of the paper's numbers: torchvision resize + torchmetrics 1.4.0 SSIM (CPU wheels suffice)
+paper = [
+  "torch",
+  "torchvision",
+  "torchmetrics==1.4.0",
+]
 perceptual = [
   "torch",
   "torchvision",

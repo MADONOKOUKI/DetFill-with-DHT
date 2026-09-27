@@ -442,14 +442,43 @@ def _n_regions(h):
     return int(h.n_regions())
 
 
+def _fullres_source(args, i):
+    """The original-resolution file of illustration ``i`` (the input of the paper's stored hint maps), if available.
+
+    The stored maps were generated from the Danbooru2021 files at their original resolution; the example bundle
+    holds the 512 x 512 copies used as ground truth. Felzenszwalb's region count depends on the input resolution,
+    so the comparison of E9 is only like-for-like when the original file is used. Looked up as
+    ``<fullres_dir>/<id>.{png,jpg,jpeg}`` (``--fullres_dir``, default ``<data>/originals_fullres``), then in the
+    repository's ``replicability/data`` (which ships two of the twelve).
+    """
+    dirs = [args.fullres_dir or os.path.join(args.data, "originals_fullres"),
+            os.path.join(ROOT, "replicability", "data")]
+    for d in dirs:
+        for name in (f"{i}.png", f"{i}.jpg", f"{i}.jpeg", f"{i}.image.png"):
+            f = os.path.join(d, name)
+            if os.path.isfile(f):
+                return f
+    return None
+
+
 def exp_E9(args, ids):
-    """Deterministic hint generation re-run with the library vs the stored maps (CPU)."""
+    """Deterministic hint generation re-run with the library vs the stored maps (CPU).
+
+    Uses the original-resolution illustration when available (see ``_fullres_source``) and otherwise the 512 x 512
+    copy of the bundle, recording which one was used (``input_source``, ``input_size``); with the 512 px copy the
+    region counts differ from the stored maps by construction (the stored maps were generated at the original
+    resolution), so only the full-resolution rows are a test of the regeneration itself.
+    """
     tag = "E9_hint_regeneration"
     import hintauc
-    report = {"ids": ids, "per_image": {}}
+    report = {"ids": ids, "per_image": {}, "note": "stored maps were generated from the original-resolution files; rows with input_source='512px copy' are not like-for-like"}
     rows, rtitles = [], []
     for i in ids:
-        img = os.path.join(args.data, "segmentations", "originals", f"{i}.image.png")
+        img512 = os.path.join(args.data, "segmentations", "originals", f"{i}.image.png")
+        src = _fullres_source(args, i)
+        img = src or img512
+        with Image.open(img) as _im:
+            input_size = list(_im.size)
         t0 = time.time()
         h = hintauc.generate_hints(img, size=64)
         dt = time.time() - t0
@@ -459,7 +488,8 @@ def exp_E9(args, ids):
         _, new_d = h.at_ratio(1.0, hint_type="dot")
         new_m = np.asarray(new_m) > 0; new_d = np.asarray(new_d) > 0
         iou = float((new_m & stored_m).sum() / max(1, (new_m | stored_m).sum()))
-        report["per_image"][i] = {"seconds": dt, "regions_stored": int(len(np.unique(np.array(Image.open(os.path.join(args.data, "hint_from_regions_256", f"{i}.image_region64.png")).convert("RGB")).reshape(-1, 3), axis=0))),
+        report["per_image"][i] = {"seconds": dt, "input_source": "original resolution" if src else "512px copy", "input_size": input_size,
+                                  "regions_stored": int(len(np.unique(np.array(Image.open(os.path.join(args.data, "hint_from_regions_256", f"{i}.image_region64.png")).convert("RGB")).reshape(-1, 3), axis=0))),
                                   "regions_regenerated": _n_regions(h),
                                   "scribble_pixels_stored": int(stored_m.sum()), "scribble_pixels_regenerated": int(new_m.sum()),
                                   "scribble_mask_iou_vs_stored": iou,
@@ -473,8 +503,8 @@ def exp_E9(args, ids):
         new_col = np.asarray(new_col)
         if new_col.ndim == 3 and new_col.shape[2] == 3:
             new_col = new_col[:, :, ::-1]          # the library works in OpenCV BGR order
-        rows.append([load_rgb(img), vis(stored_m, stored_col), vis(new_m, Image.fromarray(np.ascontiguousarray(new_col)))])
-        rtitles.append(f"{i}\nIoU {iou:.2f}")
+        rows.append([load_rgb(img512), vis(stored_m, stored_col), vis(new_m, Image.fromarray(np.ascontiguousarray(new_col)))])
+        rtitles.append(f"{i}\nIoU {iou:.2f}" + ("" if src else "\n(512px input)"))
     grid(rows, ["illustration", "stored scribble map (paper)", "regenerated with hintauc"], rtitles, os.path.join(args.out, "grids", f"{tag}.png"), title=tag)
     json.dump(report, open(os.path.join(args.out, "metrics", f"{tag}.json"), "w"), indent=2)
     return report
@@ -494,6 +524,7 @@ def main():
     ap.add_argument("--gpu", default="0", help="CUDA device index, -1 = CPU")
     ap.add_argument("--mode", default="quick", choices=list(MODES))
     ap.add_argument("--only", nargs="*", default=None, help="subset of experiments, e.g. E1 E9")
+    ap.add_argument("--fullres_dir", default=None, help="E9: directory with the original-resolution illustrations <id>.{png,jpg} (default <data>/originals_fullres)")
     ap.add_argument("--ids", nargs="*", default=None)
     args = ap.parse_args()
     args.data = os.path.abspath(args.data); args.ckpt_dir = os.path.abspath(args.ckpt_dir); args.out = os.path.abspath(args.out)

@@ -5,6 +5,8 @@ Input layout (what ``detfill/main.py --sample_to_eval`` writes):
     <results_root>/<sketch_type>/<ratio>/200/<id>.image.png      e.g. .../scribble/2/0.1/200/4731016.image.png
 Ground truth:
     <gt_dir>/<id>.image.png                                       (Danbooru2021 originals, any size; resized to 256 like the paper)
+    or --gt_from_results: <results_root>/<sketch_type>/<ratio>/ground_truth/<id>.image.png, the 256 x 256 copies the
+    sampler writes from its own loader (used for the natural-image models, whose originals live in a nested layout)
 
 Metrics (``hintauc.metrics.Evaluator`` = port of the paper's eval_single_run.py):
     mse psnr ssim (256x256, [0,1]) | lpips (AlexNet) | openclip (ViT-B-32 laion2b) | dino (dinov2-base) | dreamsim
@@ -51,7 +53,9 @@ def list_ratios(root, sketch):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--results_root", required=True)
-    ap.add_argument("--gt_dir", required=True)
+    ap.add_argument("--gt_dir", default=None, help="directory with the ground-truth images (named like the outputs)")
+    ap.add_argument("--gt_from_results", action="store_true",
+                    help="use the ground_truth/ copies next to each ratio's outputs instead of --gt_dir")
     ap.add_argument("--out_dir", required=True)
     ap.add_argument("--sketches", nargs="+", type=int, default=[0, 1, 2])
     ap.add_argument("--ratios", nargs="*", default=None, help="subset (as written in the dir names, e.g. 0.0 0.01 ...); default: all found")
@@ -62,6 +66,8 @@ def main():
     ap.add_argument("--ckpt", default=None, help="checkpoint file whose SHA-256 is recorded in hauc.json")
     ap.add_argument("--plot", action="store_true", help="also write curves.png (mean over the evaluated sketch types)")
     a = ap.parse_args()
+    if bool(a.gt_dir) == bool(a.gt_from_results):
+        ap.error("give exactly one of --gt_dir and --gt_from_results")
     if a.gpu != "-1":
         os.environ.setdefault("CUDA_VISIBLE_DEVICES", a.gpu)
     device = "cpu" if a.gpu == "-1" else None
@@ -91,8 +97,9 @@ def main():
             if a.limit:
                 names = names[: a.limit]
             todo = [n for n in names if (sk, r, n) not in done]
+            gt_dir = os.path.join(a.results_root, str(sk), r, "ground_truth") if a.gt_from_results else a.gt_dir
             for i, n in enumerate(todo):
-                gt = os.path.join(a.gt_dir, n)
+                gt = os.path.join(gt_dir, n)
                 if not os.path.exists(gt):
                     raise FileNotFoundError(f"ground truth missing for {n}: {gt}")
                 s = ev(os.path.join(d, n), gt)

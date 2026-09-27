@@ -25,8 +25,10 @@ from .hints import (
     FELZENSZWALB_PARAMS,
     HintResult,
     generate_hints,
+    reencode_region_map,
     region_ids,
     segment_regions,
+    write_image,
 )
 from .metrics import (
     ALL_METRICS,
@@ -37,7 +39,9 @@ from .metrics import (
     Evaluator,
     evaluate_dirs,
     evaluate_pair,
+    evaluate_pairs,
     evaluate_set,
+    list_pairs,
 )
 from .evaluate import (
     PROTOCOL_VERSION,
@@ -50,13 +54,16 @@ from .evaluate import (
 )
 from .auc import (
     DEFAULT_ALPHAS,
+    alpha_dir_name,
+    check_alphas,
     evaluate_hint_curve,
     hint_auc,
     hint_auc_table,
     trapz,
 )
+from .demo import run_demo, synthetic_illustration
 
-__version__ = "0.3.0"
+__version__ = "0.3.1"
 
 __all__ = [
     "ALL_METRICS",
@@ -87,5 +94,13 @@ __all__ = [
     "region_ids",
     "segment_regions",
     "trapz",
+    "alpha_dir_name",
+    "check_alphas",
+    "evaluate_pairs",
+    "list_pairs",
+    "reencode_region_map",
+    "run_demo",
+    "synthetic_illustration",
+    "write_image",
     "__version__",
 ]

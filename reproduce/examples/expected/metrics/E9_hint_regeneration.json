@@ -15,124 +15,185 @@
   ],
   "per_image": {
     "514016": {
-      "seconds": 39.6426260471344,
+      "seconds": 52.86467742919922,
+      "input_source": "original resolution",
+      "input_size": [
+        1000,
+        1000
+      ],
       "regions_stored": 1223,
-      "regions_regenerated": 747,
+      "regions_regenerated": 1223,
       "scribble_pixels_stored": 2570,
-      "scribble_pixels_regenerated": 2055,
-      "scribble_mask_iou_vs_stored": 0.6211005958640028,
+      "scribble_pixels_regenerated": 2570,
+      "scribble_mask_iou_vs_stored": 0.9914761720263464,
       "dot_pixels_stored": 1218,
-      "dot_pixels_regenerated": 744
+      "dot_pixels_regenerated": 1218
     },
     "4262016": {
-      "seconds": 16.111684799194336,
+      "seconds": 78.60405087471008,
+      "input_source": "original resolution",
+      "input_size": [
+        1378,
+        1500
+      ],
       "regions_stored": 1834,
-      "regions_regenerated": 364,
+      "regions_regenerated": 1834,
       "scribble_pixels_stored": 3072,
-      "scribble_pixels_regenerated": 1274,
-      "scribble_mask_iou_vs_stored": 0.3217761557177616,
+      "scribble_pixels_regenerated": 3071,
+      "scribble_mask_iou_vs_stored": 0.99189364461738,
       "dot_pixels_stored": 1823,
-      "dot_pixels_regenerated": 357
+      "dot_pixels_regenerated": 1822
     },
     "1625016": {
-      "seconds": 16.38471245765686,
+      "seconds": 30.400638580322266,
+      "input_source": "original resolution",
+      "input_size": [
+        1275,
+        800
+      ],
       "regions_stored": 664,
-      "regions_regenerated": 362,
+      "regions_regenerated": 664,
       "scribble_pixels_stored": 1850,
-      "scribble_pixels_regenerated": 1534,
-      "scribble_mask_iou_vs_stored": 0.5992438563327032,
+      "scribble_pixels_regenerated": 1852,
+      "scribble_mask_iou_vs_stored": 0.9860515021459227,
       "dot_pixels_stored": 654,
-      "dot_pixels_regenerated": 354
+      "dot_pixels_regenerated": 654
     },
     "3421016": {
-      "seconds": 17.2624568939209,
+      "seconds": 64.82126545906067,
+      "input_source": "original resolution",
+      "input_size": [
+        1700,
+        2500
+      ],
       "regions_stored": 1049,
-      "regions_regenerated": 392,
+      "regions_regenerated": 1049,
       "scribble_pixels_stored": 1947,
-      "scribble_pixels_regenerated": 1322,
-      "scribble_mask_iou_vs_stored": 0.46723518850987433,
+      "scribble_pixels_regenerated": 1944,
+      "scribble_mask_iou_vs_stored": 0.9872318692543411,
       "dot_pixels_stored": 1049,
-      "dot_pixels_regenerated": 392
+      "dot_pixels_regenerated": 1049
     },
     "4417016": {
-      "seconds": 3.093992233276367,
+      "seconds": 6.1656670570373535,
+      "input_source": "original resolution",
+      "input_size": [
+        1200,
+        675
+      ],
       "regions_stored": 112,
-      "regions_regenerated": 63,
+      "regions_regenerated": 112,
       "scribble_pixels_stored": 236,
-      "scribble_pixels_regenerated": 208,
-      "scribble_mask_iou_vs_stored": 0.5470383275261324,
+      "scribble_pixels_regenerated": 236,
+      "scribble_mask_iou_vs_stored": 1.0,
       "dot_pixels_stored": 112,
-      "dot_pixels_regenerated": 63
+      "dot_pixels_regenerated": 112
     },
     "1019016": {
-      "seconds": 22.51588797569275,
+      "seconds": 21.919944524765015,
+      "input_source": "original resolution",
+      "input_size": [
+        595,
+        575
+      ],
       "regions_stored": 543,
-      "regions_regenerated": 522,
+      "regions_regenerated": 543,
       "scribble_pixels_stored": 1473,
-      "scribble_pixels_regenerated": 1496,
-      "scribble_mask_iou_vs_stored": 0.6331133113311331,
+      "scribble_pixels_regenerated": 1475,
+      "scribble_mask_iou_vs_stored": 0.9918918918918919,
       "dot_pixels_stored": 543,
-      "dot_pixels_regenerated": 522
+      "dot_pixels_regenerated": 543
     },
     "1023016": {
-      "seconds": 27.642114877700806,
+      "seconds": 44.168612480163574,
+      "input_source": "original resolution",
+      "input_size": [
+        750,
+        750
+      ],
       "regions_stored": 1130,
-      "regions_regenerated": 647,
+      "regions_regenerated": 1130,
       "scribble_pixels_stored": 2184,
-      "scribble_pixels_regenerated": 1752,
-      "scribble_mask_iou_vs_stored": 0.5411119812059515,
+      "scribble_pixels_regenerated": 2190,
+      "scribble_mask_iou_vs_stored": 0.9863760217983651,
       "dot_pixels_stored": 1125,
-      "dot_pixels_regenerated": 645
+      "dot_pixels_regenerated": 1126
     },
     "4731016": {
-      "seconds": 44.176507234573364,
+      "seconds": 67.45938539505005,
+      "input_source": "original resolution",
+      "input_size": [
+        800,
+        1200
+      ],
       "regions_stored": 1701,
-      "regions_regenerated": 1061,
+      "regions_regenerated": 1701,
       "scribble_pixels_stored": 2927,
-      "scribble_pixels_regenerated": 2395,
-      "scribble_mask_iou_vs_stored": 0.6375384615384615,
+      "scribble_pixels_regenerated": 2925,
+      "scribble_mask_iou_vs_stored": 0.9925093632958801,
       "dot_pixels_stored": 1698,
-      "dot_pixels_regenerated": 1058
+      "dot_pixels_regenerated": 1698
     },
     "4942016": {
-      "seconds": 25.580037832260132,
+      "seconds": 37.121180057525635,
+      "input_source": "original resolution",
+      "input_size": [
+        800,
+        800
+      ],
       "regions_stored": 938,
-      "regions_regenerated": 598,
+      "regions_regenerated": 938,
       "scribble_pixels_stored": 1961,
-      "scribble_pixels_regenerated": 1586,
-      "scribble_mask_iou_vs_stored": 0.6174190606475148,
+      "scribble_pixels_regenerated": 1963,
+      "scribble_mask_iou_vs_stored": 0.9928897917724734,
       "dot_pixels_stored": 934,
-      "dot_pixels_regenerated": 595
+      "dot_pixels_regenerated": 934
     },
     "100016": {
-      "seconds": 32.363861322402954,
+      "seconds": 44.382386445999146,
+      "input_source": "original resolution",
+      "input_size": [
+        800,
+        600
+      ],
       "regions_stored": 1136,
-      "regions_regenerated": 779,
+      "regions_regenerated": 1136,
       "scribble_pixels_stored": 2239,
-      "scribble_pixels_regenerated": 1829,
-      "scribble_mask_iou_vs_stored": 0.5455927051671733,
+      "scribble_pixels_regenerated": 2242,
+      "scribble_mask_iou_vs_stored": 0.9889036839769196,
       "dot_pixels_stored": 1127,
-      "dot_pixels_regenerated": 775
+      "dot_pixels_regenerated": 1127
     },
     "1001016": {
-      "seconds": 25.687092304229736,
+      "seconds": 36.178234577178955,
+      "input_source": "original resolution",
+      "input_size": [
+        600,
+        835
+      ],
       "regions_stored": 826,
-      "regions_regenerated": 587,
+      "regions_regenerated": 826,
       "scribble_pixels_stored": 2154,
-      "scribble_pixels_regenerated": 1908,
-      "scribble_mask_iou_vs_stored": 0.4868228404099561,
+      "scribble_pixels_regenerated": 2153,
+      "scribble_mask_iou_vs_stored": 0.9967547519703291,
       "dot_pixels_stored": 826,
-      "dot_pixels_regenerated": 586
+      "dot_pixels_regenerated": 826
     },
     "10016": {
-      "seconds": 22.27340030670166,
+      "seconds": 20.54557752609253,
+      "input_source": "original resolution",
+      "input_size": [
+        480,
+        567
+      ],
       "regions_stored": 484,
-      "regions_regenerated": 510,
+      "regions_regenerated": 484,
       "scribble_pixels_stored": 1694,
-      "scribble_pixels_regenerated": 1703,
-      "scribble_mask_iou_vs_stored": 0.6371084337349397,
+      "scribble_pixels_regenerated": 1694,
+      "scribble_mask_iou_vs_stored": 0.9859320046893317,
       "dot_pixels_stored": 483,
-      "dot_pixels_regenerated": 508
+      "dot_pixels_regenerated": 483
     }
-  }
+  },
+  "note": "stored maps were generated from the original-resolution files; rows with input_source='512px copy' are not like-for-like"
 }

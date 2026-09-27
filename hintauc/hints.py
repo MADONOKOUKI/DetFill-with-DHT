@@ -12,7 +12,8 @@ Faithful port of the pipeline used to build the paper dataset
       -> FilFinder2D longest path (branch/skel threshold 3 px, prune by length)
       -> scribble = longest path within the region
       -> region color = per-region mean color
-      -> dot = single pixel at the mean coordinate of the longest path
+      -> dot = one pixel per region on its scribble (the in-region path pixel with the smallest total
+         distance to the others; ``dot_method``)
 
 Differences from the original scripts (documented, not behavioural for the
 algorithm itself):
@@ -43,6 +44,7 @@ except ImportError as e:  # pragma: no cover
 
 from skimage.morphology import skeletonize
 
+from ._images import as_uint8_image
 from .longest_path import geodesic_longest_path
 from skimage.segmentation import felzenszwalb
 
@@ -61,14 +63,14 @@ FELZENSZWALB_PARAMS = dict(scale=100, sigma=0.5, min_size=100)
 def _load_bgr(image: ImageLike) -> np.ndarray:
     """Load an image as HxWx3 uint8 BGR (OpenCV convention, as the original)."""
     if isinstance(image, np.ndarray):
-        img = image
+        img = as_uint8_image(image, "image")      # uint8, or float in [0, 1]; anything else is rejected
         if img.ndim == 2:
             img = np.stack([img] * 3, axis=-1)
-        if img.shape[2] == 4:
+        elif img.shape[2] == 1:
+            img = np.repeat(img, 3, axis=2)
+        elif img.shape[2] == 4:
             img = img[:, :, :3]
-        if img.dtype != np.uint8:
-            img = np.clip(img, 0, 255).astype(np.uint8)
-        return img
+        return np.ascontiguousarray(img)
     path = os.fspath(image)
     img = cv2.imread(path, cv2.IMREAD_COLOR)
     if img is None:
@@ -98,13 +100,46 @@ def _id_to_color(region_id: int) -> np.ndarray:
     return np.array([c0, c1, c2], dtype=np.uint8)
 
 
-def region_ids(region: np.ndarray) -> np.ndarray:
+def region_ids(region: np.ndarray, check: bool = True) -> np.ndarray:
     """Decode a HxWx3 region-color map into a HxW int64 id map.
 
-    Uses the same base-255 decoding as the training/evaluation dataloader.
+    Uses the same base-255 decoding as the training/evaluation dataloader
+    (``c0*255**2 + c1*255 + c2``). That decoding is only injective for colours whose
+    channels are all below 255 (the maps written by this library and the stored paper
+    maps); for other colours two regions can share one id, e.g. ``[0, 255, 0]`` and
+    ``[1, 0, 0]``. With ``check=True`` such a collision raises ``ValueError``;
+    :func:`generate_hints` re-encodes external region maps before decoding them
+    (:func:`reencode_region_map`), so it never sees one.
     """
     r = region.astype(np.uint64)
-    return (r[:, :, 0] * 255 * 255 + r[:, :, 1] * 255 + r[:, :, 2]).astype(np.int64)
+    ids = (r[:, :, 0] * 255 * 255 + r[:, :, 1] * 255 + r[:, :, 2]).astype(np.int64)
+    if check and _has_id_collision(region, ids):
+        raise ValueError("region map: two different colours decode to the same region id under the base-255 "
+                         "encoding (a channel value of 255 is used); re-encode the map with "
+                         "hintauc.reencode_region_map() or pass it to generate_hints(region_map=...)")
+    return ids
+
+
+def _has_id_collision(region: np.ndarray, ids: Optional[np.ndarray] = None) -> bool:
+    if ids is None:
+        ids = region_ids(region, check=False)
+    n_colours = len(np.unique(region.reshape(-1, region.shape[-1]), axis=0))
+    return n_colours != len(np.unique(ids))
+
+
+def reencode_region_map(region: np.ndarray) -> np.ndarray:
+    """Re-encode an arbitrary HxWx3 region-colour map with the library's collision-free colours.
+
+    Every distinct colour becomes one region; regions are numbered in the sorted order of their
+    original (B, G, R) values, so the result is deterministic and independent of the image content.
+    Use this for region maps produced outside the library (arbitrary colours); the maps written by the
+    library and the stored paper maps do not need it.
+    """
+    region = np.asarray(region)
+    flat = region.reshape(-1, region.shape[-1])
+    colours, inverse = np.unique(flat, axis=0, return_inverse=True)
+    palette = np.stack([_id_to_color(i) for i in range(len(colours))])
+    return palette[inverse.reshape(-1)].reshape(region.shape).astype(np.uint8)
 
 
 def segment_regions(
@@ -238,8 +273,15 @@ class HintResult:
         return len(self._ids_sorted_by_area())
 
     def save(self, save_stem: Union[str, "os.PathLike[str]"]) -> Dict[str, str]:
-        """Write the six canonical files ``<save_stem>_<kind><S>.png``."""
+        """Write the six canonical files ``<save_stem>_<kind><S>.png``.
+
+        The parent directory of ``save_stem`` is created when it does not exist; a file that cannot be
+        written raises ``OSError`` (nothing is reported as saved unless it is on disk).
+        """
         stem = os.fspath(save_stem)
+        parent = os.path.dirname(stem)
+        if parent:
+            os.makedirs(parent, exist_ok=True)
         s = str(self.size)
         paths = {
             "region": stem + "_region" + s + ".png",
@@ -249,18 +291,28 @@ class HintResult:
             "dot_mask": stem + "_dot_mask" + s + ".png",
             "dot_col": stem + "_dot_col" + s + ".png",
         }
-        cv2.imwrite(paths["region"], self.region)
-        cv2.imwrite(paths["scribble_mask"], self.scribble_mask)
-        cv2.imwrite(paths["scribble_col"], self.scribble_color)
-        cv2.imwrite(paths["flatten_img"], self.flatten)
-        cv2.imwrite(paths["dot_mask"], self.dot_mask)
-        cv2.imwrite(paths["dot_col"], self.dot_color)
+        arrays = {"region": self.region, "scribble_mask": self.scribble_mask, "scribble_col": self.scribble_color,
+                  "flatten_img": self.flatten, "dot_mask": self.dot_mask, "dot_col": self.dot_color}
+        for key, arr in arrays.items():
+            write_image(paths[key], arr)
         return paths
 
 
 # --------------------------------------------------------------------------
 # core generation (port of make_scribbling)
 # --------------------------------------------------------------------------
+def write_image(path: Union[str, "os.PathLike[str]"], array: np.ndarray) -> str:
+    """``cv2.imwrite`` that creates the parent directory and raises ``OSError`` instead of returning False."""
+    path = os.fspath(path)
+    parent = os.path.dirname(path)
+    if parent:
+        os.makedirs(parent, exist_ok=True)
+    ok = cv2.imwrite(path, array)
+    if not ok or not os.path.isfile(path):
+        raise OSError(f"could not write image {path} (check the directory, the permissions and the file extension)")
+    return path
+
+
 def _split_disconnected_regions(region: np.ndarray) -> np.ndarray:
     """Assign fresh unique colors to disconnected components of a same color.
 
@@ -338,15 +390,22 @@ def generate_hints(
     Parameters
     ----------
     image:
-        Path or HxWx3 uint8 array (BGR).  Segmentation runs at the input
-        resolution; hints are produced at ``size`` x ``size`` (paper: 64).
+        Path or HxWx3 uint8 array (BGR; float arrays in [0, 1] are accepted).
+        Segmentation runs at the input resolution and the region map is then
+        downsampled to ``size`` x ``size`` (paper: 64) with nearest-neighbour
+        interpolation. The paper's stored maps were generated from the
+        Danbooru2021 files at their original resolution, not from the 512 x 512
+        copies used as ground truth; the number of regions depends on the input
+        resolution, so feed the same resolution when you compare with stored maps.
     size:
         Hint resolution (the paper trains/evaluates with 64).
     segmenter:
         'felzenszwalb' (paper default), 'slic', or 'quickshift'.
     region_map:
         Optional precomputed region-color map (path or array) at any
-        resolution; when given, ``segmenter`` is ignored.
+        resolution; when given, ``segmenter`` is ignored. Any colours may be
+        used: a map whose colours would collide under the base-255 id decoding
+        (a channel value of 255) is re-encoded first (:func:`reencode_region_map`).
     path_method:
         How the longest path of each region skeleton is extracted.
         ``'filfinder'`` (default) reproduces the paper: 3x3 dilation followed
@@ -384,6 +443,8 @@ def generate_hints(
         region_full = segment_regions(img_full, segmenter=segmenter, **seg_kwargs)
     else:
         region_full = _load_bgr(region_map)
+        if _has_id_collision(region_full):
+            region_full = reencode_region_map(region_full)
 
     # --- resize to hint resolution (original: img linear, region nearest) ---
     img = cv2.resize(img_full, (size, size))

@@ -27,8 +27,16 @@ jobs:
       - run: python -m pip install --upgrade pip && python -m pip install -e . pytest
       - run: python -c "import hintauc; print(hintauc.__version__)" && hintauc --help > /dev/null
       - run: pytest tests -q -k "not detfill"
-      - name: shell scripts parse
-        run: bash -n replicability/run.sh replicability/fetch_checkpoints.sh reproduce/examples/run_examples.sh reproduce/scripts/*.sh detfill/*.sh
+      - name: shell scripts parse (one bash -n per file; a single call only checks the first argument)
+        run: |
+          for f in replicability/run.sh replicability/conda_env.sh replicability/fetch_checkpoints.sh reproduce/examples/run_examples.sh reproduce/scripts/*.sh detfill/*.sh; do
+            bash -n "$f" || exit 1
+          done
+      - name: demo and CPU quick start without PyTorch (Pillow backend; numbers must match the recorded ones)
+        run: |
+          hintauc demo --out /tmp/demo
+          python examples/quickstart_cpu.py --fast --out /tmp/quickstart
+          python examples/check_expected.py /tmp/demo/result.json demo && python examples/check_expected.py /tmp/quickstart/result.json quickstart_fast
 
   full:
     runs-on: ubuntu-latest
@@ -42,5 +50,8 @@ jobs:
       - run: python -m pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
       - run: python -m pip install -e . pytest "torchmetrics==1.4.0" matplotlib
       - run: pytest tests -q
-      - name: CPU quick start (the README example)
-        run: python examples/quickstart_cpu.py --fast --out /tmp/quickstart && test -s /tmp/quickstart/result.json && test -s /tmp/quickstart/curve.png
+      - name: demo and CPU quick start with PyTorch (torchvision + torchmetrics backend; numbers must match the recorded ones)
+        run: |
+          hintauc demo --out /tmp/demo
+          python examples/quickstart_cpu.py --fast --out /tmp/quickstart && test -s /tmp/quickstart/curve.png
+          python examples/check_expected.py /tmp/demo/result.json demo && python examples/check_expected.py /tmp/quickstart/result.json quickstart_fast

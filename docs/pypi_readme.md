@@ -6,7 +6,9 @@ Deterministic region-based hint generation (DHT) and Hint-AUC evaluation for lin
 
 ```bash
 pip install hintauc                 # deterministic hints, pixel metrics, Hint-AUC
+pip install "hintauc[paper]"        # + torchvision / torchmetrics 1.4.0: the exact evaluation backend of the paper
 pip install "hintauc[perceptual]"   # + LPIPS / OpenCLIP / DINOv2 / DreamSim
+hintauc demo                        # self-contained example (synthetic image, ~10 s): hints -> curve -> Hint-AUC
 ```
 
 ```python
@@ -18,8 +20,11 @@ print(evaluator("colorized.png", "ground_truth.png"))
 ```
 
 Command line: `hintauc generate image.png --ratio 0.1`, `hintauc eval pred_dir gt_dir --metrics mse psnr ssim`,
-`hintauc curve pred_root gt_dir` (Hint-AUC from one directory of outputs per hint ratio). Your own model as a Python
-function: `hintauc.evaluate_colorizer(fn, samples)`.
+`hintauc curve pred_root gt_dir` (Hint-AUC from one directory of outputs per hint ratio; every ratio must hold the
+same images). Your own model as a Python function: `hintauc.evaluate_colorizer(fn, samples)`. Every result carries a
+protocol record (grid, metric settings, the resize / SSIM backend in use, library versions).
 
-Documentation, the DetFill colorization model, all checkpoints and the reproduction package:
-https://github.com/MADONOKOUKI/DetFill-with-DHT
+Documentation (setup, "evaluate your own model", API reference with input/output examples, model zoo,
+reproduction guide): https://madonokouki.github.io/projects/hintauc/docs/ — project page:
+https://madonokouki.github.io/projects/hintauc/ — repository (DetFill colorization model, checkpoints, reproduction
+package): https://github.com/MADONOKOUKI/DetFill-with-DHT

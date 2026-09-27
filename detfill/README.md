@@ -39,7 +39,8 @@ Set the data root in `configs/*.yaml` (`data.dataset_config.scratch_root`). Hint
   hint_from_regions_256/<id>.image_region64.png
 ```
 
-- Images: [Danbooru2021](https://gwern.net/danbooru2021) (split lists in `configs/illust/`); not redistributed.
+- Images: [Danbooru2021](https://gwern.net/danbooru2021) (split lists in `configs/illust/`); not redistributed. The
+  512 × 512 copies are the ground truth; the stored hint maps were generated from the original-resolution files.
 - Line art and hint maps of the test split: releases [v1.3](https://github.com/MADONOKOUKI/DetFill-with-DHT/releases/tag/v1.3)
   and [v1.0](https://github.com/MADONOKOUKI/DetFill-with-DHT/releases/tag/v1.0); for new images use the `hintauc`
   library (`hints.save(...)` writes exactly these files).

@@ -19,29 +19,42 @@ Evaluation"**, IEEE Transactions on Visualization and Computer Graphics (TVCG), 
 ![Deterministic hint generation pipeline](assets/readme/dht_pipeline.png)
 
 Hint-based line art colorization is usually evaluated with randomly sampled colour hints, so the scores change from
-run to run. This repository provides **DHT**, a deterministic hint generator that turns an illustration into the same
-scribble and dot hints every time; **Hint-AUC**, one score over the whole range of hint ratios, from no hints to fully
-hinted; and **DetFill**, a pixel-space diffusion colorization model trained with these hints. All checkpoints, the
-evaluation inputs and the scripts that reproduce the paper are released.
+run to run. This repository provides **DHT**, a deterministic hint generator that derives fixed scribble and dot hints
+from the regions of an illustration (the stored maps of the paper are the reference; regeneration with the paper's
+FilFinder path can move a few pixels between runs, the `geodesic` path is bit-reproducible, see
+[Detailed explanation](docs/detail_explanation.md#what-is-exact-and-what-is-not)); **Hint-AUC**, one score over the
+whole range of hint ratios, from no hints to fully hinted; and **DetFill**, a pixel-space diffusion colorization model
+trained with these hints. The paper's checkpoints, its evaluation inputs (test-split line art and hint maps), the
+per-ratio metric files behind the tables and the scripts of every experiment are released; the
+[coverage table](reproduce/README.md#coverage-what-each-paper-item-needs) says which items are rebuilt exactly, which are
+re-run and which are not provided.
+
+The same documentation is mirrored at https://madonokouki.github.io/projects/hintauc/docs/ (readable while this
+repository is private).
 
 ## Getting started
 
 - **Replicability Stamp** — `bash replicability/run.sh` reproduces Fig. 9 of the paper from a fresh checkout with no
   arguments; see [replicability/README.md](replicability/README.md) and the submission sheet
   [replicability/GRSI_SUBMISSION.txt](replicability/GRSI_SUBMISSION.txt).
+- **Ten-second demo (no data)** — `pip install hintauc && hintauc demo`: a synthetic illustration, its deterministic
+  hints, an oracle reference colorization at every hint ratio and the Hint-AUC; the numbers are recorded in
+  `examples/expected_numbers.json` and checked in CI, so a matching table means the installation works.
 - **Quick start on CPU (a few minutes; `--fast` under a minute)** — `python examples/quickstart_cpu.py` writes hint
   images, a reference colorization at every hint ratio, the metric curves and the Hint-AUC to
   `examples/output/quickstart/`; the expected numbers are in the script's header.
 - **Evaluate your own model** — see [Evaluate your own model](docs/evaluate_your_model.md): hand in images per hint
-  ratio (`hintauc curve`) or plug in a Python function (`hintauc.evaluate_colorizer`); every result carries a protocol
-  record (grid, metric settings, versions).
+  ratio (`hintauc curve`) or plug in a Python function (`hintauc.evaluate_colorizer`); the inputs are checked before
+  anything is scored (every ratio must hold the same images, the grid must be valid) and every result carries a
+  protocol record (grid, metric settings, the resize / SSIM backend in use, versions).
 - **Installation** — see [Setup](docs/setup.md). The library is one command (`pip install hintauc`); DetFill and
   the reproduction scripts use a conda environment that the scripts create for you.
 - **Model zoo** — see [Model zoo](checkpoints/README.md): every released checkpoint and data file with its size,
   SHA-256, download link and the paper item it belongs to.
 - **Reproducing the paper** — see [Reproducing the paper](reproduce/README.md): Fig. 9 with one command (the
-  Replicability-Stamp script), every table rebuilt from the released metrics, every experiment re-run on example
-  images, full table rows, and training.
+  Replicability-Stamp script), the Hint-AUC tables rebuilt from the released per-ratio metrics (322 of 324 compared
+  cells), every experiment re-run on example images, full table rows, and training; the coverage table lists, per
+  paper item, what is rebuilt exactly, what is re-run and what is not provided.
 - **API reference** — see [API reference](docs/api.md): every function and command of the library with its role,
   arguments and an input/output example.
 - **Added features (since the paper) for improving our library** — see [Added features](docs/added_features.md).
@@ -49,6 +62,11 @@ evaluation inputs and the scripts that reproduce the paper are released.
   what is not.
 
 ## Quick start
+
+```bash
+pip install hintauc            # pip install "hintauc[paper]" adds torchvision + torchmetrics 1.4.0, the paper's metric backend
+hintauc demo                   # synthetic illustration -> hints -> oracle colorizer at 8 ratios -> Hint-AUC (about 10 s)
+```
 
 ```python
 import hintauc
@@ -61,7 +79,8 @@ evaluator = hintauc.Evaluator(metrics=("psnr", "lpips", "dreamsim"))  # lpips / 
 print(evaluator("colorized.png", "ground_truth.png"))              # the paper's metrics
 ```
 
-- Command line: `hintauc generate image.png --ratio 0.1` and `hintauc eval pred_dir gt_dir --metrics mse psnr ssim`.
+- Command line: `hintauc generate image.png --ratio 0.1`, `hintauc eval pred_dir gt_dir --metrics mse psnr ssim`,
+  `hintauc curve pred_root gt_dir` (Hint-AUC from one directory of outputs per hint ratio) and `hintauc demo`.
 - DetFill inference over the hint-ratio grid: `cd detfill && GPU=0 bash run_inference.sh scribble`
   (data layout and options in [detfill/README.md](detfill/README.md)).
 - Fig. 9 of the paper from a fresh checkout: `bash replicability/run.sh` (about 3 minutes of compute on a GPU after a
@@ -70,10 +89,10 @@ print(evaluator("colorized.png", "ground_truth.png"))              # the paper's
 ## Repository structure
 
 ```
-docs/              setup, added features, detailed explanation
+docs/              setup, evaluate your own model, API reference, added features, detailed explanation
 replicability/     one-command reproduction of Fig. 9 (Replicability-Stamp entry point)
 reproduce/         reproduction package: scripts/, examples/, expected/ (released metrics), data/, paper_experiments/
-hintauc/           the library: hints.py, metrics.py, auc.py, cli.py
+hintauc/           the library: hints.py, longest_path.py, metrics.py, auc.py, evaluate.py, demo.py, cli.py
 detfill/           the DetFill model (BBDM fork): training, inference, configs
 hint_generation/   original research scripts behind the library
 evaluation/        original evaluation scripts

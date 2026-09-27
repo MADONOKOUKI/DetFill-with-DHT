@@ -16,6 +16,7 @@ seven metrics need ``pip install "hintauc[perceptual]"``.
 from __future__ import annotations
 
 import hashlib
+import json
 import os
 import platform
 from typing import Callable, Dict, Iterable, List, Mapping, Optional, Sequence, Tuple, Union
@@ -23,8 +24,8 @@ from typing import Callable, Dict, Iterable, List, Mapping, Optional, Sequence, 
 import cv2
 import numpy as np
 
-from .auc import DEFAULT_ALPHAS, hint_auc_table
-from .hints import HintResult, _load_bgr, generate_hints, region_ids
+from .auc import DEFAULT_ALPHAS, alpha_dir_name, check_alphas, hint_auc_table
+from .hints import HintResult, _load_bgr, generate_hints, region_ids, write_image
 from .metrics import DEFAULT_METRICS, Evaluator
 
 Sample = Dict[str, object]
@@ -32,6 +33,11 @@ Colorizer = Callable[[Sample], np.ndarray]
 PathOrArray = Union[str, "os.PathLike[str]", np.ndarray]
 
 PROTOCOL_VERSION = "hint-auc/v1"   # the paper's protocol: size-ordered hints, the 8-point grid, trapezoid, 256 x 256 metrics
+
+#: keys of the sample dictionary a colorizer receives (the model's observations)
+OBSERVED_KEYS = ("index", "name", "alpha", "hint_type", "line_art", "hint_color", "hint_mask")
+#: keys added with ``oracle=True`` (ground-truth information; for reference baselines only)
+ORACLE_KEYS = ("hints", "ground_truth", "n_regions")
 
 
 def file_sha256(path: Union[str, "os.PathLike[str]"]) -> str:
@@ -54,8 +60,10 @@ def protocol_record(evaluator: Optional[Evaluator] = None, alphas: Sequence[floa
                     hint_type: Optional[str] = None, hint_size: Optional[int] = None,
                     path_method: Optional[str] = None, dot_method: Optional[str] = None,
                     **extra) -> Dict[str, object]:
-    """Everything a reader needs to interpret a score: protocol, grid, metric settings, library versions."""
+    """Everything a reader needs to interpret a score: protocol, grid, metric settings, the evaluation backend
+    (resize and SSIM implementation) and library versions."""
     from . import __version__
+    ev = evaluator or Evaluator(metrics=("mse",))
     alphas = [float(a) for a in alphas]
     rec: Dict[str, object] = {
         "protocol": PROTOCOL_VERSION,
@@ -63,14 +71,16 @@ def protocol_record(evaluator: Optional[Evaluator] = None, alphas: Sequence[floa
         "alphas": alphas,
         "hint_selection": "size-ordered: the largest int(n_regions * alpha) regions keep their hints",
         "aggregation": "trapezoidal integral of the per-alpha mean over alpha in [0, 1]",
-        "metric_resize": getattr(evaluator, "resize", 256),
+        "metric_resize": ev.resize,
         "metric_input": "images resized to metric_resize x metric_resize, values in [0, 1], RGB",
-        "metrics": list(getattr(evaluator, "metrics", ())),
+        "metrics": list(ev.metrics),
+        "backend": ev.backend(),
         "hint_type": hint_type, "hint_map_size": hint_size,
         "path_method": path_method, "dot_method": dot_method,
         "versions": {"hintauc": __version__, "python": platform.python_version(), "numpy": np.__version__,
-                     "opencv": cv2.__version__, "scikit-image": _version("skimage"),
-                     "torch": _version("torch"), "torchmetrics": _version("torchmetrics")},
+                     "opencv": cv2.__version__, "scikit-image": _version("skimage"), "pillow": _version("PIL"),
+                     "torch": _version("torch"), "torchvision": _version("torchvision"),
+                     "torchmetrics": _version("torchmetrics")},
     }
     rec.update(extra)
     return rec
@@ -78,7 +88,8 @@ def protocol_record(evaluator: Optional[Evaluator] = None, alphas: Sequence[floa
 
 def _load_gray(image: PathOrArray, shape_hw: Tuple[int, int]) -> np.ndarray:
     if isinstance(image, np.ndarray):
-        g = image if image.ndim == 2 else cv2.cvtColor(image[:, :, :3], cv2.COLOR_BGR2GRAY)
+        g = _load_bgr(image)
+        g = cv2.cvtColor(g, cv2.COLOR_BGR2GRAY)
     else:
         g = cv2.imread(os.fspath(image), cv2.IMREAD_GRAYSCALE)
         if g is None:
@@ -108,61 +119,83 @@ def evaluate_colorizer(colorize: Colorizer, samples: Iterable[Tuple[PathOrArray,
                        metrics: Sequence[str] = DEFAULT_METRICS, evaluator: Optional[Evaluator] = None,
                        size: int = 64, path_method: str = "filfinder", dot_method: str = "medoid",
                        save_dir: Optional[Union[str, "os.PathLike[str]"]] = None,
-                       verbose: bool = False) -> Dict[str, object]:
+                       oracle: bool = False, verbose: bool = False) -> Dict[str, object]:
     """Hint-AUC of a colorization model given as a Python callable.
 
     ``samples`` yields ``(line_art, ground_truth)`` pairs (paths or arrays). For each pair the deterministic
-    hints are generated from the ground truth, and for every ``alpha`` in ``alphas`` the callable receives::
+    hints are generated from the ground truth, and for every ``alpha`` in ``alphas`` the callable receives the
+    model's observations::
 
-        {"index": i, "alpha": alpha, "hint_type": hint_type,
-         "line_art": HxW uint8, "hint_color": HxWx3 uint8 BGR, "hint_mask": HxW {0,255},
-         "hints": HintResult, "ground_truth": HxWx3 uint8 BGR}
+        {"index": i, "name": "<file>.png", "alpha": alpha, "hint_type": hint_type,
+         "line_art": HxW uint8, "hint_color": HxWx3 uint8 BGR, "hint_mask": HxW {0,255}}
 
-    and must return the colorization as ``HxWx3 uint8`` BGR. With ``save_dir`` the outputs are written to
-    ``save_dir/<alpha:.2f>/<name>.png`` (the layout of ``hintauc curve``). Returns per-alpha mean metrics,
-    the Hint-AUC of every metric and a :func:`protocol_record`.
+    and must return the colorization as ``HxWx3 uint8`` BGR. The ground truth and the full hint structure are
+    *not* passed by default, so an adapter cannot use them by accident; ``oracle=True`` adds ``"ground_truth"``,
+    ``"hints"`` (the :class:`~hintauc.hints.HintResult`) and ``"n_regions"`` for reference baselines such as
+    :func:`hint_fill_colorizer`, whose scores must not be compared with those of real models.
+
+    ``alphas`` must be strictly increasing, start at 0 and end at 1 (:func:`hintauc.check_alphas`). With
+    ``save_dir`` the outputs are written to ``save_dir/<ratio>/<name>.png`` (``<ratio>`` from
+    :func:`hintauc.alpha_dir_name`, the layout of ``hintauc curve``) together with ``save_dir/manifest.json``
+    (exact ratios, directory names, image names, protocol); a write failure raises ``OSError``. Sample names
+    must be unique (files with the same basename would overwrite each other). Returns the per-alpha mean
+    metrics, the Hint-AUC of every metric, the evaluated names and a :func:`protocol_record`.
     """
     ev = evaluator or Evaluator(metrics=metrics)
-    alphas = [float(a) for a in alphas]
-    if any(a < 0 or a > 1 for a in alphas) or alphas[0] != 0.0 or alphas[-1] != 1.0:
-        raise ValueError("alphas must be sorted, start at 0.0 and end at 1.0 (paper grid: hintauc.DEFAULT_ALPHAS)")
+    alphas = check_alphas(alphas, full_range=True)
+    dir_names = {a: alpha_dir_name(a) for a in alphas}
     sums: Dict[float, Dict[str, float]] = {a: {} for a in alphas}
-    n = 0
+    names: List[str] = []
     for idx, (sketch_src, gt_src) in enumerate(samples):
         gt = _load_bgr(gt_src)
         h, w = gt.shape[:2]
         sketch = _load_gray(sketch_src, (h, w))
         hints = generate_hints(gt, size=size, path_method=path_method, dot_method=dot_method)
         name = _name_of(gt_src, idx)
+        if name in names:
+            raise ValueError(f"duplicate sample name {name!r} (sample {idx}): ground-truth files must have unique "
+                             "basenames, or pass arrays (named by index)")
+        names.append(name)
         for a in alphas:
             color, mask = hint_inputs(hints, a, hint_type, h, w)
-            pred = colorize({"index": idx, "alpha": a, "hint_type": hint_type, "line_art": sketch,
-                             "hint_color": color, "hint_mask": mask, "hints": hints, "ground_truth": gt})
-            pred = np.asarray(pred)
+            sample: Sample = {"index": idx, "name": name, "alpha": a, "hint_type": hint_type, "line_art": sketch,
+                              "hint_color": color, "hint_mask": mask}
+            if oracle:
+                sample.update({"hints": hints, "ground_truth": gt, "n_regions": hints.n_regions()})
+            pred = np.asarray(colorize(sample))
             if pred.dtype != np.uint8 or pred.shape != (h, w, 3):
                 raise ValueError(f"the colorizer must return an HxWx3 uint8 BGR image of shape {(h, w, 3)}, "
                                  f"got {pred.dtype} {pred.shape}")
             if save_dir is not None:
-                d = os.path.join(os.fspath(save_dir), f"{a:.2f}")
-                os.makedirs(d, exist_ok=True)
-                cv2.imwrite(os.path.join(d, name), pred)
+                write_image(os.path.join(os.fspath(save_dir), dir_names[a], name), pred)
             scores = ev(pred[:, :, ::-1], gt[:, :, ::-1])       # the evaluator takes RGB arrays
             for k, v in scores.items():
                 sums[a][k] = sums[a].get(k, 0.0) + float(v)
-        n += 1
         if verbose:
             print(f"[{idx}] {name}: {hints.n_regions()} regions", flush=True)
+    n = len(names)
     if n == 0:
         raise ValueError("no samples")
     per_alpha = {a: {k: v / n for k, v in sums[a].items()} for a in alphas}
-    return {"hint_type": hint_type, "alphas": alphas, "n_images": n, "per_alpha": per_alpha,
-            "hint_auc": hint_auc_table(per_alpha),
-            "protocol": protocol_record(ev, alphas, hint_type, size, path_method, dot_method)}
+    result = {"hint_type": hint_type, "alphas": alphas, "n_images": n, "names": names, "per_alpha": per_alpha,
+              "hint_auc": hint_auc_table(per_alpha),
+              "protocol": protocol_record(ev, alphas, hint_type, size, path_method, dot_method, oracle=oracle)}
+    if save_dir is not None:
+        manifest = {"protocol": PROTOCOL_VERSION, "hint_type": hint_type, "alphas": alphas,
+                    "dirs": {dir_names[a]: a for a in alphas}, "names": names, "n_images": n,
+                    "note": "one directory per hint ratio; `hintauc curve <this dir> <gt dir>` re-scores the images"}
+        with open(os.path.join(os.fspath(save_dir), "manifest.json"), "w") as f:
+            json.dump(manifest, f, indent=1)
+    return result
 
 
 def hint_fill_colorizer(sample: Sample) -> np.ndarray:
-    """Reference baseline for demos and tests: every hinted region is filled with its hint colour (the region
-    mean), unhinted regions stay light gray, and the line art is multiplied on top."""
+    """Oracle reference baseline for demos and tests (not a model): every hinted region is filled with its hint
+    colour (the region mean), unhinted regions stay light gray, and the line art is multiplied on top. It reads
+    the ground-truth regions, so it needs ``evaluate_colorizer(..., oracle=True)``."""
+    if "hints" not in sample:
+        raise KeyError("hint_fill_colorizer is an oracle baseline that uses the ground-truth regions; call "
+                       "evaluate_colorizer(hint_fill_colorizer, samples, oracle=True)")
     hints: HintResult = sample["hints"]  # type: ignore[assignment]
     gt = sample["ground_truth"]
     h, w = gt.shape[:2]

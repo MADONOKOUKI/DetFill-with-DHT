@@ -14,11 +14,13 @@ generator.  This module provides a dependency-free alternative,
 * every tie is broken by raster order (row-major pixel index), so the result
   depends only on the input skeleton.
 
-For tree-shaped skeletons (the common case after Zhang--Suen thinning) the
-diameter is exact.  Endpoints (degree-1 pixels) are used as candidate path
-ends; if the skeleton has no endpoint (a closed loop), all pixels are
-candidates.  Complexity is O(E * V log V) for E candidate ends and V skeleton
-pixels, which is negligible at the 64x64 hint resolution.
+The diameter is exact for every skeleton: for a tree-shaped component (the
+common case after Zhang--Suen thinning) the ends of the diameter are
+endpoints (degree-1 pixels), so only those are used as start points; for a
+component that contains a cycle every pixel is a start point (a diameter can
+end on the cycle, away from any endpoint).  Complexity is O(S * V log V) for S
+start points and V skeleton pixels of a component, which is negligible at the
+64x64 hint resolution.
 
 Differences from the FilFinder path (kept deliberately simple; documented in
 the README): no 3x3 dilation / medial-axis re-skeletonisation, and no pruning
@@ -141,7 +143,9 @@ def geodesic_longest_path(skeleton: np.ndarray) -> PathResult:
     for comp in _components(adj):
         comp_set = set(comp)
         ends = [i for i in comp if len(adj[i]) <= 1]
-        candidates = ends if ends else comp          # loop: every pixel is a candidate
+        n_edges = sum(len(adj[i]) for i in comp) // 2
+        cyclic = n_edges >= len(comp)                # a connected graph is a tree iff edges == nodes - 1
+        candidates = comp if (cyclic or not ends) else ends   # exact: tree -> endpoints suffice; cycle -> all pixels
         for s in candidates:
             dist, prev = _dijkstra(adj, s)
             # farthest reachable node in this component; ties -> smallest index

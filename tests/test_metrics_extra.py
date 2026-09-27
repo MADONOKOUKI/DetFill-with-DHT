@@ -36,6 +36,36 @@ def test_shifted_image_is_worse():
     assert s["mae"] > 0.05 and s["deltae"] > 1.0
 
 
+def test_float_predictions_are_not_silently_truncated():
+    ev = Evaluator(metrics=("mse", "psnr"))
+    gt = np.zeros((16, 16, 3), np.uint8)
+    half = np.full((16, 16, 3), 0.5, np.float32)             # a mid-gray prediction against black
+    s = ev(half, gt)
+    assert s["mse"] == pytest.approx((128 / 255) ** 2, abs=1e-6) and s["psnr"] < 10
+    with pytest.raises(ValueError):
+        ev(np.full((16, 16, 3), 128.0, np.float32), gt)        # floats outside [0, 1]
+    with pytest.raises(ValueError):
+        ev(np.zeros((16, 16, 3), np.int32) - 1, gt)
+
+
+def test_pillow_and_torchvision_resize_backends_agree():
+    """The Pillow fallback resizes float32 channels with the antialiased bilinear filter, like torchvision."""
+    pytest.importorskip("torch"); pytest.importorskip("torchvision")
+    ev_tv = Evaluator(metrics=("mse",))
+    ev_pil = Evaluator(metrics=("mse",)); ev_pil._tv = False
+    assert ev_tv.resize_backend() == "torchvision" and ev_pil.resize_backend() == "pillow"
+    rng = np.random.default_rng(0)
+    img = rng.integers(0, 256, size=(480, 640, 3), dtype=np.uint8)
+    img = np.ascontiguousarray(np.repeat(np.repeat(img[::4, ::4], 4, axis=0), 4, axis=1))   # smooth-ish content
+    a, b = ev_tv._read_01(img), ev_pil._read_01(img)
+    assert a.shape == b.shape == (256, 256, 3) and float(np.abs(a - b).max()) < 1e-4
+    ev_pil.metrics = ("mse", "psnr")
+    ev_tv.metrics = ("mse", "psnr")
+    shifted = np.roll(img, 5, axis=1)
+    sa, sb = ev_tv(img, shifted), ev_pil(img, shifted)
+    assert sa["psnr"] == pytest.approx(sb["psnr"], abs=1e-3)
+
+
 def test_ms_ssim_bounds():
     torch = pytest.importorskip("torch")
     pytest.importorskip("torchmetrics")

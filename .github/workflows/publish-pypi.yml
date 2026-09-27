@@ -59,8 +59,49 @@ jobs:
           name: dist
           path: dist/
 
-  publish:
+  # The wheel that will be uploaded is installed into a fresh environment (outside the checkout, so nothing is
+  # imported from the source tree) and must pass the library tests, the demo and the CPU quick start, with and
+  # without PyTorch, before it is published.
+  test-wheel:
     needs: [check, build]
+    if: needs.check.outputs.publish == 'true'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true
+      matrix:
+        include:
+          - python-version: "3.9"
+            torch: "no"
+          - python-version: "3.12"
+            torch: "no"
+          - python-version: "3.11"
+            torch: "yes"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+      - run: python -m pip install --upgrade pip
+      - if: matrix.torch == 'yes'
+        run: python -m pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu && python -m pip install "torchmetrics==1.4.0" matplotlib
+      - name: install the wheel and check the import comes from site-packages
+        run: |
+          python -m pip install dist/*.whl pytest
+          cd /tmp && python -c "import hintauc, os; assert 'site-packages' in hintauc.__file__, hintauc.__file__; print(hintauc.__version__, hintauc.__file__)"
+      - name: library tests against the installed wheel
+        run: |
+          mkdir -p /tmp/wheeltests && cp -r tests /tmp/wheeltests/ && cd /tmp/wheeltests && pytest tests -q -k "not detfill"
+      - name: demo and quick start against the installed wheel
+        run: |
+          cd /tmp && hintauc demo --out /tmp/demo && python "$GITHUB_WORKSPACE/examples/check_expected.py" /tmp/demo/result.json demo
+          python "$GITHUB_WORKSPACE/examples/quickstart_cpu.py" --fast --out /tmp/quickstart && python "$GITHUB_WORKSPACE/examples/check_expected.py" /tmp/quickstart/result.json quickstart_fast
+
+  publish:
+    needs: [check, build, test-wheel]
     if: needs.check.outputs.publish == 'true'
     runs-on: ubuntu-latest
     environment: pypi

@@ -16,6 +16,13 @@
 #               The stored test-split hint maps of the paper are release asset test_split_hint_maps_64.tar.gz.
 # Optional (defaults reproduce the Table II protocol):
 #   HINT=scribble|dot            hint type / checkpoint / config                       (default scribble)
+#   DOMAIN=illust|real           illustration configs (default) or the natural-image configs `<HINT>_real.yaml`
+#                                (release v1.4 checkpoints, 64 channels; the ImageNet tables). With DOMAIN=real the
+#                                data root is the split layout of detfill/README.md (dataset_path + configs/real/*.txt,
+#                                <bucket>/<id>.image.png), and the ground truth for the metrics is taken from the
+#                                `ground_truth/` copies the sampler writes next to its outputs unless GT_DIR is set.
+#   GT_DIR=<dir>                 ground-truth directory for the metrics (default: <DATA_ROOT>/segmentations/originals
+#                                for illust; the sampler's ground_truth/ copies for real)
 #   CKPT=<path>                  checkpoint (default: detfill/results/.../latest_model_200.pth = checkpoints/README.md)
 #   GPU=<id>                     CUDA device index, -1 = CPU                          (default 0)
 #   RATIOS="0.00 0.01 ..."       hint ratios (default: the paper grid)
@@ -48,44 +55,58 @@ HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT="$(cd "$HERE/../.." && pwd)"
 DATA_ROOT="${DATA_ROOT:?set DATA_ROOT to the flat evaluation layout (see header)}"
 HINT="${HINT:-scribble}"
+DOMAIN="${DOMAIN:-illust}"
 GPU="${GPU:-0}"
 RATIOS="${RATIOS:-0.00 0.01 0.03 0.05 0.10 0.25 0.50 1.00}"
 TYPES="${TYPES:-0 1 2}"
 HINT_ORDER="${HINT_ORDER:-area}"
 METRICS="${METRICS:-mse psnr ssim lpips openclip dino dreamsim}"
-TAG="${TAG:-${HINT}_${HINT_ORDER}}"
+case "$HINT" in scribble|dot) ;; *) echo "HINT must be scribble or dot" >&2; exit 1;; esac
+case "$DOMAIN" in illust|real) ;; *) echo "DOMAIN must be illust or real" >&2; exit 1;; esac
+case "$HINT_ORDER" in area|label) ;; *) echo "HINT_ORDER must be area or label" >&2; exit 1;; esac
+CFG_SRC="$ROOT/detfill/configs/${HINT}_${DOMAIN}.yaml"
+# the result tree is named after the config's model_name (BrownianBridge_<hint>_illust, BrownianBridge_<hint>_real_rev_200k, ...)
+MODEL_NAME="$(sed -nE 's/^\s*model_name:\s*"?([^"# ]+)"?.*/\1/p' "$CFG_SRC" | head -n1)"
+[ -n "$MODEL_NAME" ] || { echo "[error] no model_name in $CFG_SRC" >&2; exit 1; }
+TAG="${TAG:-${HINT}_${DOMAIN}_${HINT_ORDER}}"
 RESULT_PATH="${RESULT_PATH:-$ROOT/reproduce/output/$TAG/results}"
 OUT_DIR="${OUT_DIR:-$ROOT/reproduce/output/$TAG/metrics}"
-CKPT="${CKPT:-$ROOT/detfill/results/dataset_name/BrownianBridge_${HINT}_illust/checkpoint/latest_model_200.pth}"
+CKPT="${CKPT:-$ROOT/detfill/results/dataset_name/$MODEL_NAME/checkpoint/latest_model_200.pth}"
 PY="${PY:-python}"
 
-case "$HINT" in scribble|dot) ;; *) echo "HINT must be scribble or dot" >&2; exit 1;; esac
-case "$HINT_ORDER" in area|label) ;; *) echo "HINT_ORDER must be area or label" >&2; exit 1;; esac
-for d in segmentations/originals sketch hint_from_regions_64_rev hint_from_regions_256; do
-  [ -d "$DATA_ROOT/$d" ] || { echo "[error] missing $DATA_ROOT/$d (layout: detfill/README.md)" >&2; exit 1; }
-done
+if [ "$DOMAIN" = illust ]; then
+  for d in segmentations/originals sketch hint_from_regions_64_rev hint_from_regions_256; do
+    [ -d "$DATA_ROOT/$d" ] || { echo "[error] missing $DATA_ROOT/$d (layout: detfill/README.md)" >&2; exit 1; }
+  done
+  GT_DIR="${GT_DIR:-$DATA_ROOT/segmentations/originals}"
+else
+  for d in sketch hint_from_regions_64_rev; do
+    [ -d "$DATA_ROOT/$d" ] || { echo "[error] missing $DATA_ROOT/$d (split layout: detfill/README.md)" >&2; exit 1; }
+  done
+  [ -f "$ROOT/detfill/configs/real/test.txt" ] || { echo "[error] missing detfill/configs/real/test.txt" >&2; exit 1; }
+  GT_DIR="${GT_DIR:-}"
+fi
 if [ "${SKIP_INFER:-0}" != 1 ]; then
-  [ -f "$CKPT" ] || { echo "[error] checkpoint not found: $CKPT  (see checkpoints/README.md)" >&2; exit 1; }
+  [ -f "$CKPT" ] || { echo "[error] checkpoint not found: $CKPT  (see checkpoints/README.md; DOMAIN=real uses the release v1.4 files)" >&2; exit 1; }
 fi
 mkdir -p "$RESULT_PATH" "$OUT_DIR"
 
 # ---- config: released config with the data root and the region order filled in ---------------------
-CFG_SRC="$ROOT/detfill/configs/${HINT}_illust.yaml"
-CFG="$OUT_DIR/${HINT}_illust_${HINT_ORDER}.yaml"
+CFG="$OUT_DIR/${HINT}_${DOMAIN}_${HINT_ORDER}.yaml"
 sed -E "s#^(\s*dataset_path:).*#\1 '$DATA_ROOT'#; s#^(\s*scratch_root:).*#\1 '$DATA_ROOT'#" "$CFG_SRC" > "$CFG"
 if grep -qE "^\s*#?\s*hint_order:" "$CFG"; then
   sed -i -E "s|^(\s*)#?\s*hint_order:.*|\1hint_order: '$HINT_ORDER'|" "$CFG"
 else
   sed -i -E "s#^(\s*)hint_type:(.*)#\1hint_type:\2\n\1hint_order: '$HINT_ORDER'#" "$CFG"
 fi
-echo "[config] $CFG  (dataset root $DATA_ROOT, hint_order $HINT_ORDER)"
+echo "[config] $CFG  (domain $DOMAIN, model $MODEL_NAME, dataset root $DATA_ROOT, hint_order $HINT_ORDER)"
 
 # ---- inference: one process per (ratio, sketch type), sequential -----------------------------------
 if [ "${SKIP_INFER:-0}" != 1 ]; then
   cd "$ROOT/detfill"
   [ -n "${TEST_BATCH:-}" ] && export BATCH_SIZE_OVERRIDE="$TEST_BATCH"
   for R in $RATIOS; do for T in $TYPES; do
-    n_have=$(ls "$RESULT_PATH/dataset_name/BrownianBridge_${HINT}_illust/sample_to_eval/illust/$HINT/$T/$(python -c "print(float('$R'))")/200" 2>/dev/null | wc -l || true)
+    n_have=$(ls "$RESULT_PATH/dataset_name/$MODEL_NAME/sample_to_eval/$DOMAIN/$HINT/$T/$(python -c "print(float('$R'))")/200" 2>/dev/null | wc -l || true)
     echo "[infer] $(date '+%F %T') hint=$HINT ratio=$R sketch_type=$T (have $n_have)"
     $PY main.py --config "$CFG" --resume_model "$CKPT" --sample_to_eval --save_top \
         --gpu_ids "$GPU" --sample_ratio "$R" --sketch_type "$T" --result_path "$RESULT_PATH"
@@ -94,11 +115,12 @@ if [ "${SKIP_INFER:-0}" != 1 ]; then
 fi
 
 # ---- evaluation ---------------------------------------------------------------------------------------
-SAMPLES="$RESULT_PATH/dataset_name/BrownianBridge_${HINT}_illust/sample_to_eval/illust/$HINT"
+SAMPLES="$RESULT_PATH/dataset_name/$MODEL_NAME/sample_to_eval/$DOMAIN/$HINT"
 [ -d "$SAMPLES" ] || { echo "[error] no samples under $SAMPLES" >&2; exit 1; }
 EXTRA=()
 [ -n "${LIMIT:-}" ] && EXTRA+=(--limit "$LIMIT")
-$PY "$HERE/eval_per_ratio.py" --results_root "$SAMPLES" --gt_dir "$DATA_ROOT/segmentations/originals" \
+if [ -n "$GT_DIR" ]; then EXTRA+=(--gt_dir "$GT_DIR"); else EXTRA+=(--gt_from_results); fi
+$PY "$HERE/eval_per_ratio.py" --results_root "$SAMPLES" \
     --out_dir "$OUT_DIR" --sketches $TYPES --metrics $METRICS --gpu "$GPU" "${EXTRA[@]}"
 echo "[done] per-ratio metrics: $OUT_DIR/per_ratio_summary.csv ; Hint-AUC: $OUT_DIR/hauc.json"
 echo "       compare with the paper: python reproduce/scripts/A1_tables_from_released_metrics.py (released numbers)"

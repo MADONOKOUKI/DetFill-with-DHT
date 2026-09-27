@@ -25,6 +25,9 @@ models/
 replicability/checkpoints/
 replicability/output/
 
+# CPU quick start and demo outputs
+examples/output/
+
 # example-suite downloads and outputs
 reproduce/examples/data/
 reproduce/examples/checkpoints/

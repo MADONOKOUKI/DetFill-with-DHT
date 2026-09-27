@@ -30,9 +30,11 @@ Notes
   VQGAN or latent-diffusion weights are needed.
 - Configuration: `detfill/configs/scribble_illust.yaml` (96 channels) for the scribble model, `detfill/configs/dot_illust.yaml`
   (64 channels) for the dot model. Inference is seeded (`--seed 1234`, the default of `detfill/main.py`).
-- The hint maps in `test_split_hint_maps_64.tar.gz` are the reference inputs. Regenerating them from the images with the
-  `hintauc` library gives the same maps up to the unseeded tie-breaking inside the skeleton extraction (see
-  `hint_generation/README.md`), so use the stored maps whenever you want to compare with the printed numbers.
+- The hint maps in `test_split_hint_maps_64.tar.gz` are the reference inputs. They were generated from the
+  Danbooru2021 files at their original resolution (not from the 512 × 512 ground-truth copies); regenerating them from
+  those files with the `hintauc` library reproduces the region count and almost all scribble pixels (mean mask IoU
+  0.991 over the 12 example images), but FilFinder's unseeded tie-breaking moves a few pixels per run
+  (`reproduce/examples/README.md`, E9), so use the stored maps whenever you want to compare with the printed numbers.
 - Metric backbones (LPIPS, OpenCLIP, DINOv2, DreamSim) are downloaded by their pip packages on first use and are not
   part of the releases.
 

@@ -64,6 +64,39 @@ def test_path_is_subset_of_skeleton_random():
             assert r.mask.any()
 
 
+def _true_diameter(skel):
+    from hintauc.longest_path import _build_graph, _dijkstra
+    nodes, _, adj = _build_graph(skel)
+    best = 0.0
+    for s in range(len(nodes)):
+        dist, _ = _dijkstra(adj, s)
+        best = max(best, max(d for d in dist if d < float("inf")))
+    return best
+
+
+def test_cycle_with_branches_is_exact():
+    """A diameter may end on a cycle, away from every endpoint: all pixels are start points in cyclic components."""
+    rng = np.random.default_rng(0)
+    checked = 0
+    for _ in range(120):
+        g = np.zeros((12, 12), bool)
+        for _ in range(rng.integers(1, 4)):
+            y, x = rng.integers(0, 12, 2)
+            for _ in range(rng.integers(5, 25)):
+                g[y, x] = True
+                y = int(np.clip(y + rng.integers(-1, 2), 0, 11)); x = int(np.clip(x + rng.integers(-1, 2), 0, 11))
+        cy, cx, rr = rng.integers(2, 10), rng.integers(2, 10), rng.integers(1, 4)
+        for a in np.linspace(0, 2 * np.pi, 40):
+            yy, xx = int(round(cy + rr * np.sin(a))), int(round(cx + rr * np.cos(a)))
+            if 0 <= yy < 12 and 0 <= xx < 12:
+                g[yy, xx] = True
+        r = geodesic_longest_path(g)
+        assert abs(r.length - _true_diameter(g)) < 1e-9
+        assert not (r.mask & ~g).any()
+        checked += 1
+    assert checked == 120
+
+
 def test_medoid_dot_inside_region():
     """generate_hints(dot_method='medoid') puts every dot on its own scribble (inside the region)."""
     import numpy as np, cv2

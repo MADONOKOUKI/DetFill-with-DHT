@@ -32,6 +32,8 @@ from typing import Dict, Iterable, List, Mapping, Optional, Sequence, Tuple, Uni
 
 import numpy as np
 
+from ._images import as_uint8_image
+
 ImageLike = Union[str, "os.PathLike[str]", np.ndarray]
 
 DEFAULT_METRICS: Tuple[str, ...] = (
@@ -103,34 +105,84 @@ class Evaluator:
         return torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     # ------------------------------------------------------------------
+    @staticmethod
+    def _rgb_uint8(image: np.ndarray) -> np.ndarray:
+        """Validate an array input: uint8 (or float in [0, 1]), HxW or HxWx{1,3,4} -> HxWx3 uint8."""
+        arr = as_uint8_image(image, "image")
+        if arr.ndim == 2:
+            arr = np.stack([arr] * 3, axis=-1)
+        elif arr.shape[2] == 1:
+            arr = np.repeat(arr, 3, axis=2)
+        return np.ascontiguousarray(arr[:, :, :3])
+
     def _to_pil(self, image: ImageLike):
-        """Paths are decoded as RGB; ndarray inputs are taken as RGB (HxWx3 or HxW). The arrays returned by
-        ``hintauc.generate_hints`` / ``HintResult.at_ratio`` are BGR (OpenCV): pass ``arr[:, :, ::-1]``."""
+        """Paths are decoded as RGB; ndarray inputs are taken as RGB (HxWx3 or HxW), uint8 or float in [0, 1].
+        The arrays returned by ``hintauc.generate_hints`` / ``HintResult.at_ratio`` are BGR (OpenCV): pass
+        ``arr[:, :, ::-1]``."""
         from PIL import Image
         if isinstance(image, np.ndarray):
-            arr = image
-            if arr.ndim == 2:
-                arr = np.stack([arr] * 3, axis=-1)
-            return Image.fromarray(arr[:, :, :3].astype(np.uint8))
+            return Image.fromarray(self._rgb_uint8(image))
         return Image.open(os.fspath(image)).convert("RGB")
+
+    # -- backends -------------------------------------------------------------------------------------
+    @property
+    def torchvision(self):
+        """torchvision module when torch *and* torchvision import, else False (the paper's resize backend)."""
+        if not hasattr(self, "_tv"):
+            self._tv = False
+            if self.torch:
+                try:
+                    import torchvision  # noqa: F401
+                    import torchvision.transforms.functional  # noqa: F401
+                    self._tv = torchvision
+                except ImportError:
+                    self._tv = False
+        return self._tv
+
+    def resize_backend(self) -> str:
+        """``'torchvision'`` (the paper's evaluation: antialiased bilinear resize of float tensors) or ``'pillow'``
+        (the same operation with Pillow's antialiased bilinear filter on float32 channels; agrees with torchvision
+        to about 1e-3 per pixel, see docs/evaluate_your_model.md)."""
+        return "torchvision" if self.torchvision else "pillow"
+
+    def ssim_backend(self) -> str:
+        """``'torchmetrics'`` (the paper's SSIM; pin 1.4.0) or ``'scikit-image'`` (fallback, Gaussian window)."""
+        if self.torch:
+            try:
+                import torchmetrics  # noqa: F401
+                return "torchmetrics"
+            except ImportError:
+                pass
+        return "scikit-image"
+
+    def backend(self) -> Dict[str, object]:
+        """The evaluation backend actually in use, for protocol records: resize and SSIM implementation + versions."""
+        def ver(name):
+            try:
+                return __import__(name).__version__
+            except Exception:
+                return None
+        return {"resize": self.resize_backend(), "resize_filter": "bilinear, antialiased, float32 in [0, 1]",
+                "ssim": self.ssim_backend(), "pillow": ver("PIL"), "torchvision": ver("torchvision"),
+                "torchmetrics": ver("torchmetrics"), "scikit-image": ver("skimage")}
 
     def _read_01(self, image: ImageLike) -> np.ndarray:
         """HxWx3 float32 in [0,1], resized to (resize, resize).
 
-        With torch installed this matches eval_single_run.py exactly (torchvision antialiased resize) for
-        files and arrays alike; without torch both fall back to PIL's default resize.
+        The paper's evaluator (eval_single_run.py) reads the file, converts to float in [0, 1] and applies
+        torchvision's antialiased bilinear resize; that is the ``'torchvision'`` backend, used whenever torch and
+        torchvision are installed, for files and arrays alike. Without them the ``'pillow'`` backend applies
+        Pillow's antialiased bilinear filter to the same float32 channels (not a uint8 resize, which would round
+        and use a different filter). :meth:`backend` reports which one is in use.
         """
-        torch = self.torch
-        if torch:
-            import torchvision
+        tv = self.torchvision
+        if tv:
+            torch = self.torch
             import torchvision.transforms.functional as TVF
             if isinstance(image, np.ndarray):          # arrays take the same route as files (same resize)
-                arr = image
-                if arr.ndim == 2:
-                    arr = np.stack([arr] * 3, axis=-1)
-                img = torch.from_numpy(np.ascontiguousarray(arr[:, :, :3].astype(np.uint8))).permute(2, 0, 1)
+                img = torch.from_numpy(self._rgb_uint8(image)).permute(2, 0, 1)
             else:
-                img = torchvision.io.read_image(os.fspath(image))
+                img = tv.io.read_image(os.fspath(image))
             if img.shape[0] == 4:
                 img = img[:3]
             if img.shape[0] == 1:
@@ -142,10 +194,14 @@ class Evaluator:
                 except TypeError:
                     img = TVF.resize(img, [self.resize, self.resize])
             return img.permute(1, 2, 0).numpy()
+        from PIL import Image
         pil = self._to_pil(image)
+        arr = np.asarray(pil, dtype=np.float32) / 255.0
         if self.resize:
-            pil = pil.resize((self.resize, self.resize))
-        return np.asarray(pil).astype(np.float32) / 255.0
+            size = (self.resize, self.resize)
+            arr = np.stack([np.asarray(Image.fromarray(np.ascontiguousarray(arr[:, :, c])).resize(size, Image.BILINEAR),
+                                       dtype=np.float32) for c in range(3)], axis=-1)
+        return arr
 
     # ------------------------------------------------------------------
     def _lazy(self, key: str, builder):
@@ -329,37 +385,50 @@ def _list_images(d: str) -> List[str]:
     return [os.path.join(d, n) for n in names]
 
 
-def evaluate_dirs(
-    pred_dir: str,
-    gt_dir: str,
-    evaluator: Optional[Evaluator] = None,
-    metrics: Sequence[str] = DEFAULT_METRICS,
-    pairing: str = "sorted",
-    limit: int = 0,
-) -> Dict[str, float]:
-    """Mean metrics over a directory of predictions and a directory of GTs.
+def _examples(names, n=3):
+    names = sorted(names)
+    return ", ".join(names[:n]) + (" ..." if len(names) > n else "")
 
-    pairing='sorted': pair by lexically sorted basename order (the pairing
-    used by the paper pipeline, matching the dataloader iteration order).
-    pairing='name':   pair files with identical basenames.
+
+def list_pairs(pred_dir: str, gt_dir: str, pairing: str = "sorted", allow_missing: bool = False,
+               limit: int = 0) -> List[Tuple[str, str, str]]:
+    """The (prediction, ground truth, name) triples that an evaluation of two directories would score.
+
+    ``pairing='name'`` pairs files with identical basenames; ``'sorted'`` pairs the two sorted listings position by
+    position (the pairing of the paper pipeline, whose loader iterates in sorted order). Both are strict: a ground
+    truth without a prediction, a prediction without a ground truth, or (sorted) two listings of different length
+    raise ``ValueError`` naming the files, because a missing prediction silently changes the evaluated set. With
+    ``allow_missing=True`` the common files are used and a warning lists what was dropped.
     """
-    ev = evaluator or Evaluator(metrics=metrics)
     preds = _list_images(pred_dir)
     gts = _list_images(gt_dir)
+    if not preds:
+        raise ValueError(f"no images in {pred_dir}")
+    if not gts:
+        raise ValueError(f"no images in {gt_dir}")
     if pairing == "name":
-        gt_by_name = {os.path.basename(p): p for p in gts}
-        pairs = [(p, gt_by_name[os.path.basename(p)]) for p in preds
-                 if os.path.basename(p) in gt_by_name]
-        if preds and len(pairs) < len(preds):
+        pred_by_name = {os.path.basename(p): p for p in preds}
+        gt_by_name = {os.path.basename(g): g for g in gts}
+        missing = sorted(set(gt_by_name) - set(pred_by_name))
+        extra = sorted(set(pred_by_name) - set(gt_by_name))
+        if missing or extra:
+            msg = (f"{pred_dir}: {len(missing)} ground-truth image(s) have no prediction ({_examples(missing)}) and "
+                   f"{len(extra)} prediction(s) have no ground truth ({_examples(extra)})")
+            if not allow_missing:
+                raise ValueError(msg + "; pass allow_missing=True (CLI: --allow-missing) to evaluate the common files only")
             import warnings
-            warnings.warn(f"{len(preds) - len(pairs)} of {len(preds)} predictions have no ground truth of the same name and are skipped", stacklevel=2)
+            warnings.warn(msg + "; evaluating the common files only", stacklevel=2)
+        names = sorted(set(pred_by_name) & set(gt_by_name))
+        pairs = [(pred_by_name[n], gt_by_name[n], n) for n in names]
     elif pairing == "sorted":
         if len(preds) != len(gts):
-            raise ValueError(
-                f"pred/gt counts differ ({len(preds)} vs {len(gts)}); "
-                "use pairing='name' or align the directories")
-        pairs = list(zip(preds, gts))
-        if [os.path.basename(p) for p in preds] != [os.path.basename(g) for g in gts]:
+            msg = f"pred/gt counts differ ({len(preds)} in {pred_dir} vs {len(gts)} in {gt_dir})"
+            if not allow_missing:
+                raise ValueError(msg + "; use pairing='name' for files that share names, or align the directories")
+            import warnings
+            warnings.warn(msg + "; pairing the first min(n) files by sorted order", stacklevel=2)
+        pairs = [(p, g, os.path.basename(p)) for p, g in zip(preds, gts)]
+        if [os.path.basename(p) for p, _, _ in pairs] != [os.path.basename(g) for _, g, _ in pairs]:
             import warnings
             warnings.warn("prediction and ground-truth file names differ; pairing by sorted order (pass pairing='name' when the files share names)", stacklevel=2)
     else:
@@ -368,12 +437,38 @@ def evaluate_dirs(
         pairs = pairs[:limit]
     if not pairs:
         raise ValueError("no image pairs found")
+    return pairs
 
+
+def evaluate_pairs(pairs: Sequence[Tuple[str, str, str]], evaluator: Evaluator) -> Dict[str, float]:
+    """Mean metrics over explicit (prediction, ground truth, name) triples."""
+    if not pairs:
+        raise ValueError("no image pairs")
     sums: Dict[str, float] = {}
-    for pred, gt in pairs:
-        for k, v in ev(pred, gt).items():
+    for pred, gt, _ in pairs:
+        for k, v in evaluator(pred, gt).items():
             sums[k] = sums.get(k, 0.0) + v
     return {k: v / len(pairs) for k, v in sums.items()}
+
+
+def evaluate_dirs(
+    pred_dir: str,
+    gt_dir: str,
+    evaluator: Optional[Evaluator] = None,
+    metrics: Sequence[str] = DEFAULT_METRICS,
+    pairing: str = "sorted",
+    limit: int = 0,
+    allow_missing: bool = False,
+) -> Dict[str, float]:
+    """Mean metrics over a directory of predictions and a directory of GTs.
+
+    pairing='sorted': pair by lexically sorted basename order (the pairing
+    used by the paper pipeline, matching the dataloader iteration order).
+    pairing='name':   pair files with identical basenames.
+    Missing or unmatched files are an error unless ``allow_missing=True`` (see :func:`list_pairs`).
+    """
+    ev = evaluator or Evaluator(metrics=metrics)
+    return evaluate_pairs(list_pairs(pred_dir, gt_dir, pairing=pairing, allow_missing=allow_missing, limit=limit), ev)
 
 
 # --------------------------------------------------------------------------

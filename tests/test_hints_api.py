@@ -72,6 +72,39 @@ def test_save_writes_the_detfill_layout(illustration, tmp_path):
     assert np.array_equal(cv2.imread(paths["dot_mask"], cv2.IMREAD_GRAYSCALE), h.dot_mask)
 
 
+def test_save_creates_missing_directories(illustration, tmp_path):
+    import cv2
+    h = hintauc.generate_hints(illustration, size=16, path_method="geodesic")
+    paths = h.save(tmp_path / "not" / "yet" / "there" / "img")
+    assert len(paths) == 6 and all(cv2.imread(p) is not None for p in paths.values())
+
+
+def test_float_inputs_follow_the_documented_policy(illustration):
+    import cv2
+    img = cv2.imread(str(illustration))
+    ref = hintauc.generate_hints(img, size=32, path_method="geodesic")
+    same = hintauc.generate_hints(img.astype(np.float32) / 255.0, size=32, path_method="geodesic")   # [0, 1] floats
+    assert np.array_equal(ref.region, same.region) and np.array_equal(ref.scribble_mask, same.scribble_mask)
+    with pytest.raises(ValueError):
+        hintauc.generate_hints(img.astype(np.float32), size=32, path_method="geodesic")               # floats 0..255
+    with pytest.raises(ValueError):
+        hintauc.generate_hints(np.zeros((8, 8, 5), np.uint8), size=8, path_method="geodesic")
+
+
+def test_external_region_map_colours_that_collide_are_reencoded():
+    region = np.zeros((16, 16, 3), np.uint8)
+    region[:, :8] = (0, 255, 0)                     # both decode to 65025 under the base-255 rule
+    region[:, 8:] = (1, 0, 0)
+    with pytest.raises(ValueError):
+        hintauc.region_ids(region)
+    assert len(np.unique(hintauc.region_ids(hintauc.reencode_region_map(region)))) == 2
+    img = np.zeros((16, 16, 3), np.uint8); img[:, :8] = (200, 30, 30); img[:, 8:] = (30, 30, 200)
+    h = hintauc.generate_hints(img, size=16, region_map=region, path_method="geodesic")
+    assert h.n_regions() == 2 and int((h.dot_mask > 0).sum()) == 2
+    _, m = h.at_ratio(0.5)
+    assert (m > 0).sum() >= 1                       # half of two regions = one region's hints
+
+
 def test_array_input_matches_file_input(illustration):
     import cv2
     from_file = hintauc.generate_hints(illustration, size=64, path_method="geodesic")

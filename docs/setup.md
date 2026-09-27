@@ -7,6 +7,7 @@ for DetFill; the `hintauc` library and all evaluation code also run on CPU.
 
 ```bash
 pip install hintauc                 # hint generation, the pixel metrics, Hint-AUC      (PyPI: https://pypi.org/project/hintauc/)
+pip install "hintauc[paper]"        # + torchvision and torchmetrics 1.4.0: the exact metric backend of the paper's numbers
 pip install "hintauc[perceptual]"   # + the perceptual metrics (LPIPS / OpenCLIP / DINOv2 / DreamSim)
 ```
 
@@ -16,7 +17,11 @@ pip install "hintauc[perceptual]"   # + the perceptual metrics (LPIPS / OpenCLIP
 - The perceptual metrics download their weights on first use (DreamSim into `~/.cache/hintauc`, override with
   `HINTAUC_CACHE_DIR`; OpenCLIP and DINOv2 into their own Hugging Face caches; LPIPS ships with its package).
 - On a minimal Ubuntu server image OpenCV needs two system libraries: `sudo apt-get install -y libgl1 libglib2.0-0`.
-- Check the install: `python -c "import hintauc; print(hintauc.__version__)"` and `hintauc --help`.
+- Check the install: `hintauc demo` prints a metric table whose values are recorded in `examples/expected_numbers.json`
+  (identical with and without PyTorch up to the SSIM fallback, see [Evaluate your own model](evaluate_your_model.md#which-numbers-to-expect)).
+- Without PyTorch the evaluator resizes with Pillow's antialiased bilinear filter on float32 channels, which agrees with
+  the paper's torchvision resize to about 1e-6 per pixel, and computes SSIM with scikit-image (a few 1e-4 from
+  torchmetrics 1.4.0). `result["protocol"]["backend"]` records which backend produced a number.
 
 ## 2. DetFill and the reproduction scripts (conda environment)
 
@@ -34,7 +39,7 @@ pip install -e .                                     # the library from this che
 
 ## 3. Checkpoints and data
 
-- All checkpoints and data files are attached to the GitHub releases; the [Model zoo](../checkpoints/README.md) lists
+- The released checkpoints and data files are attached to the GitHub releases; the [Model zoo](../checkpoints/README.md) lists
   every file with its size, SHA-256 and the paper item it belongs to.
 - `replicability/fetch_checkpoints.sh` downloads the two paper models and verifies their hashes;
   `reproduce/examples/run_examples.sh` downloads what each experiment needs.

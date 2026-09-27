@@ -6,7 +6,7 @@ the scripts here are the batch tools with sharding and resume.
 
 ## The pipeline (one colour image → hint maps)
 
-1. **Region segmentation** — Felzenszwalb (`scale=100, sigma=0.5, min_size=100`); SLIC and Quickshift variants
+1. **Region segmentation** — Felzenszwalb (`scale=100, sigma=0.5, min_size=100`) on the image at its original resolution (the paper's maps were computed from the Danbooru2021 files, not from the 512 × 512 ground-truth copies); SLIC and Quickshift variants
    (`generate_hints.py`) and DanbooRegion (`danbooregion_hints.py`) for the robustness study.
 2. **Region-id map** — a unique colour per region; disconnected parts of one region are split and recoloured.
 3. **Scribble per region** — Zhang–Suen skeleton → 3 × 3 dilation → longest path (FilFinder, branch/skeleton threshold
@@ -24,6 +24,8 @@ Output files per image (64 px by default):
 ```
 
 At evaluation time the hints of the largest ⌊α·n⌋ regions are kept (`hintauc.HintResult.at_ratio`, the DetFill loader).
+FilFinder breaks medial-axis ties with an unseeded generator, so regenerated scribbles differ from the stored maps
+(and between two runs) in a few pixels; the stored maps are the reference for every reported number.
 
 ## Run
 
