@@ -208,10 +208,12 @@ class HintResult:
     def _ids_sorted_by_area(self, tie_break: str = "default") -> np.ndarray:
         """Region labels by decreasing area.
 
-        ``tie_break='default'`` reproduces the paper (NumPy's default
+        ``tie_break='default'`` reproduces the DetFill loader (NumPy's default
         ``argsort``, whose order among equal-area regions depends on the NumPy
-        build); ``'stable'`` breaks ties by ascending label value (stable
-        sort), which is independent of the NumPy version and hardware.
+        build and on the CPU: NumPy dispatches to a SIMD sort on AVX-512
+        machines, which orders equal keys differently); ``'stable'`` breaks ties
+        by ascending label value (stable sort), which is independent of the
+        NumPy version and hardware. ``evaluate_colorizer`` uses ``'stable'``.
         """
         if tie_break not in ("default", "stable"):
             raise ValueError(f"tie_break must be 'default' or 'stable', got {tie_break!r}")
@@ -238,9 +240,10 @@ class HintResult:
         the paper (``detfill/datasets/custom.py`` with ``sample_ratio``).
 
         ``tie_break`` selects how equal-area regions are ordered: ``'default'``
-        (paper: NumPy's default ``argsort``) or ``'stable'`` (ascending label
-        value; version- and hardware-independent).  Not used for the reported
-        results.
+        (the DetFill loader: NumPy's default ``argsort``; build- and
+        CPU-dependent among equal areas) or ``'stable'`` (ascending label value;
+        version- and hardware-independent).  The reported results come from the
+        loader on the stored maps.
 
         Returns ``(hint_color, hint_mask)``; optionally upsampled with
         nearest-neighbour interpolation to ``resize_to``.

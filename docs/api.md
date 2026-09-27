@@ -1,7 +1,7 @@
 # API reference: the `hintauc` library
 
 Every public function and command, with its role, arguments, and an input/output example. All examples were run on
-the illustration shipped in `replicability/data/4731016.image.png` (800 × 1200 px, 1,701 regions) with `hintauc` 0.3.1,
+the illustration shipped in `replicability/data/4731016.image.png` (800 × 1200 px, 1,701 regions) with `hintauc` 0.3.2,
 Python 3.9, NumPy 1.26, OpenCV 4.11, scikit-image 0.24, PyTorch 2.5.1, torchvision 0.20, torchmetrics 1.4.0; the
 numbers are the actual outputs of that run (FilFinder examples can differ by a few pixels between runs, see
 `generate_hints`).
@@ -250,15 +250,15 @@ the same image names, with `"sorted"` the same number of files; otherwise `Value
 ```python
 >>> hintauc.evaluate_hint_curve({0.0: "pred/0.00", 0.1: "pred/0.10", 1.0: "pred/1.00"}, "gt/", metrics=("mse", "psnr"), pairing="name")
 {'alphas': [0.0, 0.1, 1.0], 'n_images': 1, 'names': ['4731016.image.png'],
- 'per_alpha': {0.0: {'mse': 0.2127, 'psnr': 6.7228}, 0.1: {'mse': 0.0890, 'psnr': 10.5069}, 1.0: {'mse': 0.0263, 'psnr': 15.7989}},
- 'hint_auc': {'mse': 0.0670, 'psnr': 12.6991}}
+ 'per_alpha': {0.0: {'mse': 0.2127, 'psnr': 6.7228}, 0.1: {'mse': 0.0890, 'psnr': 10.5046}, 1.0: {'mse': 0.0263, 'psnr': 15.7989}},
+ 'hint_auc': {'mse': 0.0670, 'psnr': 12.6979}}
 >>> hintauc.evaluate_hint_curve({0.0: "p/0.00", 0.5: "p/0.50", 1.0: "p/1.00"}, "gt2/", metrics=("mse",), pairing="name")  # b.png missing at 0.50
 ValueError: p/0.50: 1 ground-truth image(s) have no prediction (b.png) and 0 prediction(s) have no ground truth (); pass allow_missing=True (CLI: --allow-missing) to evaluate the common files only
 ```
 
 ## Evaluating your own model
 
-### `evaluate_colorizer(colorize, samples, alphas=DEFAULT_ALPHAS, hint_type="scribble", metrics=DEFAULT_METRICS, evaluator=None, size=64, path_method="filfinder", dot_method="medoid", save_dir=None, oracle=False, verbose=False) -> dict`
+### `evaluate_colorizer(colorize, samples, alphas=DEFAULT_ALPHAS, hint_type="scribble", metrics=DEFAULT_METRICS, evaluator=None, size=64, path_method="filfinder", dot_method="medoid", save_dir=None, oracle=False, tie_break="stable", verbose=False) -> dict`
 
 Runs a Python callable at every hint ratio and integrates the Hint-AUC. `samples` yields `(line_art, ground_truth)`
 paths or arrays. For each ratio the callable receives one dict and returns `HxWx3 uint8` BGR of the ground-truth size:
@@ -271,7 +271,9 @@ paths or arrays. For each ratio the callable receives one dict and returns `HxWx
 | `hints`, `ground_truth`, `n_regions` | **only with `oracle=True`**: the `HintResult`, the `HxWx3` BGR ground truth, the region count |
 
 A model adapter therefore cannot read the ground truth by accident; `oracle=True` is for reference baselines such as
-`hint_fill_colorizer`. `alphas` goes through `check_alphas` (strictly increasing from 0 to 1). `save_dir` writes the
+`hint_fill_colorizer`. `alphas` goes through `check_alphas` (strictly increasing from 0 to 1). Regions of equal area
+are ordered by `tie_break`: `"stable"` (ascending label, identical on every machine) or `"default"` (the DetFill
+loader's NumPy argsort order, which differs between NumPy builds and between CPUs with and without AVX-512). `save_dir` writes the
 outputs as `save_dir/<alpha_dir_name(alpha)>/<name>.png` (the layout of `hintauc curve`; `0.00 … 1.00` for the paper
 grid, `0.001` for finer ratios) plus `save_dir/manifest.json` (exact ratios, directory names, image names); a write
 that fails raises `OSError`, and two samples with the same file name raise `ValueError`. The result holds `alphas`,
@@ -280,8 +282,8 @@ that fails raises `OSError`, and two samples with the same file name raise `Valu
 >>> res = hintauc.evaluate_colorizer(hintauc.hint_fill_colorizer, [("sketch/4731016.png", "4731016.image.png")],
 ...                                  alphas=(0.0, 0.1, 1.0), metrics=("mse", "psnr"), save_dir="pred", oracle=True)
 >>> res["per_alpha"], res["hint_auc"]
-({0.0: {'mse': 0.2127, 'psnr': 6.7228}, 0.1: {'mse': 0.0890, 'psnr': 10.5069}, 1.0: {'mse': 0.0263, 'psnr': 15.7989}},
- {'mse': 0.0670, 'psnr': 12.6991})
+({0.0: {'mse': 0.2127, 'psnr': 6.7228}, 0.1: {'mse': 0.0890, 'psnr': 10.5046}, 1.0: {'mse': 0.0263, 'psnr': 15.7989}},
+ {'mse': 0.0670, 'psnr': 12.6979})
 >>> res["names"], sorted(os.listdir("pred"))
 (['4731016.image.png'], ['0.00', '0.10', '1.00', 'manifest.json'])
 >>> res["protocol"]["backend"]
@@ -299,12 +301,13 @@ hint colour (it reads the ground-truth region map, hence `oracle=True`; without 
 regions stay light gray, the line art is multiplied on top. Its PSNR rises from 6.7 dB (no hints) to 15.8 dB (all
 hints) on the example above. Its scores are not comparable with a real model's.
 
-### `hint_inputs(hints, alpha, hint_type, height, width) -> (color, mask)`
+### `hint_inputs(hints, alpha, hint_type, height, width, tie_break="stable") -> (color, mask)`
 
-The hint colour and mask at `alpha`, upsampled with nearest neighbour to an arbitrary `height × width`.
+The hint colour and mask at `alpha` (equal-area regions in stable order by default), upsampled with nearest neighbour
+to an arbitrary `height × width`.
 ```python
 >>> c, m = hintauc.hint_inputs(h, 0.1, "scribble", 512, 512); c.shape, int((m > 0).sum())
-((512, 512, 3), 56192)
+((512, 512, 3), 56128)
 ```
 
 ### `protocol_record(evaluator=None, alphas=DEFAULT_ALPHAS, hint_type=None, hint_size=None, path_method=None, dot_method=None, **extra) -> dict`
@@ -312,7 +315,7 @@ The hint colour and mask at `alpha`, upsampled with nearest neighbour to an arbi
 The settings and library versions that make a score interpretable: `protocol`, `paper_grid` (True when `alphas` is the
 paper grid), `alphas`, `hint_selection`, `aggregation`, `metric_resize`, `metric_input`, `metrics`, `backend` (the
 resize and SSIM implementation in use, with versions), `hint_type`, `hint_map_size`, `path_method`, `dot_method`,
-`versions`, plus any `extra` keys. Written by `evaluate_colorizer`, `hintauc curve` and
+`versions`, plus any `extra` keys (`evaluate_colorizer` adds `oracle` and `tie_break`). Written by `evaluate_colorizer`, `hintauc curve` and
 `reproduce/scripts/eval_per_ratio.py`.
 
 ### `run_demo(out=None, path_method="geodesic", metrics=("mse", "psnr", "ssim"), ...) -> dict`, `synthetic_illustration(seed=0, size=128) -> ndarray`
@@ -371,8 +374,8 @@ $ hintauc curve pred/ gt/ --metrics mse psnr --json result.json --plot curve.png
 {
  "alphas": [0.0, 0.1, 1.0],
  "n_images": 1,
- "per_alpha": {"0.0": {"mse": 0.2127, "psnr": 6.7228}, "0.1": {"mse": 0.0890, "psnr": 10.5069}, "1.0": {"mse": 0.0263, "psnr": 15.7989}},
- "hint_auc": {"mse": 0.0670, "psnr": 12.6991},
+ "per_alpha": {"0.0": {"mse": 0.2127, "psnr": 6.7228}, "0.1": {"mse": 0.0890, "psnr": 10.5046}, "1.0": {"mse": 0.0263, "psnr": 15.7989}},
+ "hint_auc": {"mse": 0.0670, "psnr": 12.6979},
  "protocol": {"protocol": "hint-auc/v1", "paper_grid": false, "alphas": [0.0, 0.1, 1.0], "backend": {"resize": "torchvision", ...}, ...}
 }
 $ hintauc curve pred_missing_b_at_050/ gt/ --metrics mse
@@ -403,6 +406,6 @@ a precomputed region map and array input; `HintResult.at_ratio` (both hint types
 (both pairings, `limit`, the mismatch errors), `evaluate_set` (FID / KID); `trapz`, `hint_auc`, `hint_auc_table`,
 `check_alphas`, `alpha_dir_name`, `evaluate_hint_curve`; `evaluate_colorizer` with `hint_fill_colorizer`,
 `hint_inputs`, `plot_curves`, `protocol_record`, `file_sha256`, `run_demo`; and the four commands. The continuous
-tests (`tests/`, 55 tests) cover the same surface on synthetic images without downloads, including the input checks
+tests (`tests/`, 56 tests) cover the same surface on synthetic images without downloads, including the input checks
 (missing predictions, duplicate ratios, percent directories, unwritable outputs, float inputs, region-id collisions,
 cyclic skeletons) and the agreement of the two resize backends.

@@ -31,6 +31,7 @@ def test_reference_colorizer_gives_a_rising_curve(tmp_path):
     assert (tmp_path / "pred" / "1.00" / "img.png").exists() and (tmp_path / "pred" / "0.00" / "img.png").exists()
     assert res["protocol"]["versions"]["hintauc"] == hintauc.__version__
     assert res["protocol"]["backend"]["resize"] in ("torchvision", "pillow") and res["names"] == ["img.png"]
+    assert res["protocol"]["tie_break"] == "stable"                 # machine-independent region order by default
     manifest = json.load(open(tmp_path / "pred" / "manifest.json"))
     assert manifest["dirs"]["0.01"] == 0.01 and manifest["names"] == ["img.png"] and manifest["n_images"] == 1
 
@@ -69,6 +70,16 @@ def test_alpha_grid_is_validated(tmp_path):
     assert hintauc.check_alphas((0.2, 0.7), full_range=False) == [0.2, 0.7]
     with pytest.raises(ValueError):
         hintauc.trapz([0.0, 0.5, 0.5, 1.0], [1, 1, 1, 1])
+
+
+def test_tie_break_is_recorded_and_selectable(tmp_path):
+    white = lambda s: np.full(s["line_art"].shape + (3,), 255, np.uint8)
+    res = hintauc.evaluate_colorizer(white, _samples(tmp_path), alphas=(0.0, 1.0), metrics=("mse",),
+                                     path_method="geodesic", tie_break="default")
+    assert res["protocol"]["tie_break"] == "default"
+    with pytest.raises(ValueError):
+        hintauc.evaluate_colorizer(white, _samples(tmp_path), alphas=(0.0, 1.0), metrics=("mse",),
+                                   path_method="geodesic", tie_break="random")
 
 
 def test_fine_alphas_get_distinct_directories(tmp_path):

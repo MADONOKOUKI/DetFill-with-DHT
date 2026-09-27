@@ -99,9 +99,14 @@ def _load_gray(image: PathOrArray, shape_hw: Tuple[int, int]) -> np.ndarray:
     return g.astype(np.uint8)
 
 
-def hint_inputs(hints: HintResult, alpha: float, hint_type: str, height: int, width: int) -> Tuple[np.ndarray, np.ndarray]:
-    """Hint colour and mask at ``alpha`` upsampled (nearest neighbour) to ``height x width``."""
-    color, mask = hints.at_ratio(alpha, hint_type=hint_type)
+def hint_inputs(hints: HintResult, alpha: float, hint_type: str, height: int, width: int,
+                tie_break: str = "stable") -> Tuple[np.ndarray, np.ndarray]:
+    """Hint colour and mask at ``alpha`` upsampled (nearest neighbour) to ``height x width``.
+
+    ``tie_break`` orders regions of equal area: ``"stable"`` (default here; ascending label, identical on every
+    machine) or ``"default"`` (NumPy's default argsort as in the DetFill loader, whose order among equal areas
+    depends on the NumPy build and on the CPU's SIMD sort path)."""
+    color, mask = hints.at_ratio(alpha, hint_type=hint_type, tie_break=tie_break)
     color = cv2.resize(color, (width, height), interpolation=cv2.INTER_NEAREST)
     mask = cv2.resize(mask, (width, height), interpolation=cv2.INTER_NEAREST)
     return color, mask
@@ -119,7 +124,7 @@ def evaluate_colorizer(colorize: Colorizer, samples: Iterable[Tuple[PathOrArray,
                        metrics: Sequence[str] = DEFAULT_METRICS, evaluator: Optional[Evaluator] = None,
                        size: int = 64, path_method: str = "filfinder", dot_method: str = "medoid",
                        save_dir: Optional[Union[str, "os.PathLike[str]"]] = None,
-                       oracle: bool = False, verbose: bool = False) -> Dict[str, object]:
+                       oracle: bool = False, tie_break: str = "stable", verbose: bool = False) -> Dict[str, object]:
     """Hint-AUC of a colorization model given as a Python callable.
 
     ``samples`` yields ``(line_art, ground_truth)`` pairs (paths or arrays). For each pair the deterministic
@@ -134,7 +139,10 @@ def evaluate_colorizer(colorize: Colorizer, samples: Iterable[Tuple[PathOrArray,
     ``"hints"`` (the :class:`~hintauc.hints.HintResult`) and ``"n_regions"`` for reference baselines such as
     :func:`hint_fill_colorizer`, whose scores must not be compared with those of real models.
 
-    ``alphas`` must be strictly increasing, start at 0 and end at 1 (:func:`hintauc.check_alphas`). With
+    ``alphas`` must be strictly increasing, start at 0 and end at 1 (:func:`hintauc.check_alphas`). Regions of equal
+    area are ordered by ``tie_break``: ``"stable"`` (default; ascending label, the same on every machine) or
+    ``"default"`` (NumPy's default argsort, the DetFill loader's rule, whose order among equal areas depends on the
+    NumPy build and on the CPU's SIMD sort path, so results can differ between machines). With
     ``save_dir`` the outputs are written to ``save_dir/<ratio>/<name>.png`` (``<ratio>`` from
     :func:`hintauc.alpha_dir_name`, the layout of ``hintauc curve``) together with ``save_dir/manifest.json``
     (exact ratios, directory names, image names, protocol); a write failure raises ``OSError``. Sample names
@@ -157,7 +165,7 @@ def evaluate_colorizer(colorize: Colorizer, samples: Iterable[Tuple[PathOrArray,
                              "basenames, or pass arrays (named by index)")
         names.append(name)
         for a in alphas:
-            color, mask = hint_inputs(hints, a, hint_type, h, w)
+            color, mask = hint_inputs(hints, a, hint_type, h, w, tie_break=tie_break)
             sample: Sample = {"index": idx, "name": name, "alpha": a, "hint_type": hint_type, "line_art": sketch,
                               "hint_color": color, "hint_mask": mask}
             if oracle:
@@ -179,7 +187,8 @@ def evaluate_colorizer(colorize: Colorizer, samples: Iterable[Tuple[PathOrArray,
     per_alpha = {a: {k: v / n for k, v in sums[a].items()} for a in alphas}
     result = {"hint_type": hint_type, "alphas": alphas, "n_images": n, "names": names, "per_alpha": per_alpha,
               "hint_auc": hint_auc_table(per_alpha),
-              "protocol": protocol_record(ev, alphas, hint_type, size, path_method, dot_method, oracle=oracle)}
+              "protocol": protocol_record(ev, alphas, hint_type, size, path_method, dot_method, oracle=oracle,
+                                          tie_break=tie_break)}
     if save_dir is not None:
         manifest = {"protocol": PROTOCOL_VERSION, "hint_type": hint_type, "alphas": alphas,
                     "dirs": {dir_names[a]: a for a in alphas}, "names": names, "n_images": n,

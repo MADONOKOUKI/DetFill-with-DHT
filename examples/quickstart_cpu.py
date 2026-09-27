@@ -15,11 +15,11 @@ examples/output/quickstart/ by default:
 
 Expected result (metrics on 256 x 256, mean over the two images; the same with and without PyTorch, see
 docs/evaluate_your_model.md): with --fast (bit-reproducible geodesic paths) the PSNR rises from 8.29 dB without
-hints to 16.78 dB with all hints and the PSNR Hint-AUC is 14.29 (MSE 0.0428, SSIM 0.547); the recorded values
+hints to 16.78 dB with all hints and the PSNR Hint-AUC is 14.28 (MSE 0.0429, SSIM 0.547); the recorded values
 are in examples/expected_numbers.json and are checked in CI (`python examples/check_expected.py <out>/result.json
-quickstart_fast`). With the default FilFinder paths the numbers move by a few hundredths between runs (FilFinder
-breaks ties with an unseeded generator): PSNR Hint-AUC about 14.2 (two runs: 14.19 and 14.21). `hintauc curve` on pred/ returns exactly the
-same numbers as the in-process evaluation. Your own model: docs/evaluate_your_model.md.
+quickstart_fast`). With the default FilFinder paths the PSNR Hint-AUC is about 14.18; FilFinder breaks ties with an
+unseeded generator, so a few scribble pixels, and with them the last digits, can differ between runs. `hintauc curve`
+on pred/ returns exactly the same numbers as the in-process evaluation. Your own model: docs/evaluate_your_model.md.
 """
 import argparse
 import json
@@ -60,7 +60,7 @@ def main():
     for i in IDS:                                                 # hint visualisations
         h = hintauc.generate_hints(os.path.join(data, f"{i}.image.png"), size=64, path_method=path_method)
         for alpha in (0.01, 0.10, 1.00):
-            color, mask = h.at_ratio(alpha, hint_type="scribble", resize_to=256)
+            color, mask = h.at_ratio(alpha, hint_type="scribble", resize_to=256, tie_break="stable")
             vis = np.full_like(color, 255)
             vis[mask > 0] = color[mask > 0]
             cv2.imwrite(os.path.join(a.out, f"hints_{i}_{int(alpha * 100)}.png"), vis)

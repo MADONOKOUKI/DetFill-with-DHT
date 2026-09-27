@@ -119,7 +119,13 @@ Four layers, documented in [reproduce/README.md](../reproduce/README.md):
 ## What is exact and what is not
 
 - **Exact:** the table recomputation (A), the user-study numbers, the metric evaluator (to ~1e-6 with the pinned
-  packages; SSIM to 5e-5), the region selection at every ratio (given the stored maps and the pinned NumPy). Without
+  packages; SSIM to 5e-5), the region selection at every ratio with `tie_break="stable"` (the default of
+  `evaluate_colorizer`, the demo and the quick start). The DetFill loader and `tie_break="default"` order equal-area
+  regions with NumPy's default `argsort`, which is not only build- but CPU-dependent: NumPy dispatches to a SIMD sort
+  on AVX-512 machines that orders equal keys differently (on the 4731016 example, 23 area values are shared by
+  several regions; the 10 % selection has 883 hinted pixels with the AVX-512 path and 889 without it, 882 with the
+  stable order). Re-runs of the loader-based protocol on other hardware can therefore differ at intermediate ratios
+  even with the stored maps. Without
   PyTorch the evaluator's Pillow backend reproduces the torchvision resize to about 1e-6 per pixel; only the SSIM
   fallback (scikit-image) differs, by a few 1e-4. `result["protocol"]["backend"]` names the backend of every number.
 - **Deterministic per machine, not bit-exact across machines:** DetFill inference is seeded, but CUDA kernels differ

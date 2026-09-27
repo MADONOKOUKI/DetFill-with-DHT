@@ -21,7 +21,9 @@ shipped with the repository (about a minute with `--fast`). Both print numbers t
 
 - **Hints.** `hintauc.generate_hints(ground_truth, size=64)` — Felzenszwalb regions, one scribble (longest skeleton
   path) and one dot per region, coloured with the region mean. At ratio α the largest `int(n_regions * α)` regions keep
-  their hints (`HintResult.at_ratio`). The 64 × 64 maps are upsampled to the image size with nearest-neighbour
+  their hints (`HintResult.at_ratio`); regions of equal area are ordered by ascending label (`tie_break="stable"`,
+  identical on every machine; `"default"` is the DetFill loader's NumPy argsort order, which depends on the NumPy
+  build and on the CPU's SIMD sort path). The 64 × 64 maps are upsampled to the image size with nearest-neighbour
   interpolation (4 × 4 blocks at 256 px, as DetFill was trained).
 - **Inputs to the model.** The line art (the paper reports the mean over three extractors: sketch simplification,
   XDoG, SketchKeras), the hint colour image and the hint mask. Arrays from `hintauc` are BGR (OpenCV order).
@@ -107,17 +109,20 @@ this on every push, with and without PyTorch, and before every PyPI release agai
 |---|---|---:|---:|---:|
 | `hintauc demo` | torchvision + torchmetrics | 15.9028 | 0.0359 | 0.7790 |
 | `hintauc demo` | Pillow + scikit-image | 15.9028 | 0.0359 | 0.7790 |
-| `quickstart_cpu.py --fast` | torchvision + torchmetrics | 14.2901 | 0.0428 | 0.5472 |
-| `quickstart_cpu.py --fast` | Pillow + scikit-image | 14.2901 | 0.0428 | 0.5472 |
+| `quickstart_cpu.py --fast` | torchvision + torchmetrics | 14.2770 | 0.0429 | 0.5472 |
+| `quickstart_cpu.py --fast` | Pillow + scikit-image | 14.2770 | 0.0429 | 0.5472 |
 
-The default quick start (FilFinder paths, the paper's generator) is not bit-reproducible: FilFinder breaks ties with
-an unseeded generator, so a few scribble pixels differ between runs and the Hint-AUC moves by a few hundredths
-(two runs: PSNR 14.19 and 14.21). Comparisons with the paper's numbers use the stored maps, never regenerated ones.
+Both examples order equal-area regions with `tie_break="stable"`, so the values are the same on every CPU (NumPy's
+default argsort, used by the DetFill loader, orders equal areas differently on machines with and without AVX-512).
+The default quick start (FilFinder paths, the paper's generator) gave a PSNR Hint-AUC of 14.18 in two runs, but
+FilFinder breaks ties with an unseeded generator, so a few scribble pixels, and with them the last digits, can differ
+between runs. Comparisons with the paper's numbers use the stored maps, never regenerated ones.
 
 ## Reporting checklist
 
-- hint type (scribble / dot), the ratio grid (paper: 0, 1, 3, 5, 10, 25, 50, 100 %), and that the selection is
-  size-ordered (the Table III variant uses the fixed label order, `hint_order: label` in the DetFill loader);
+- hint type (scribble / dot), the ratio grid (paper: 0, 1, 3, 5, 10, 25, 50, 100 %), that the selection is
+  size-ordered (the Table III variant uses the fixed label order, `hint_order: label` in the DetFill loader) and the
+  tie-break (`result["protocol"]["tie_break"]`);
 - the line-art source(s) and the test split (ids in `reproduce/data/splits/test.txt`);
 - metric settings (256 × 256, torchmetrics 1.4.0 for SSIM) and the backend — `result["protocol"]["backend"]` and
   `hauc.json` carry them;

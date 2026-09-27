@@ -23,7 +23,8 @@ Everything below was added after the paper's experiments and does not change any
   `--allow-missing` opts into the common subset); ratio grids are validated (no duplicates, strictly increasing, 0 to 1);
   saved predictions get collision-free directory names and a manifest; image writes that fail raise instead of
   returning success; float images are accepted only in [0, 1]; external region maps whose colours would collide under
-  the loader's base-255 ids are re-encoded.
+  the loader's base-255 ids are re-encoded; `evaluate_colorizer` orders equal-area regions with the machine-independent
+  stable tie-break by default (NumPy's default argsort orders them differently on AVX-512 CPUs).
 - **One evaluation backend** — without PyTorch the evaluator now resizes float32 channels with Pillow's antialiased
   bilinear filter, which agrees with the paper's torchvision resize to about 1e-6 per pixel (before, a uint8 bicubic
   resize changed PSNR by up to 0.4 dB); `pip install "hintauc[paper]"` installs the exact backend.

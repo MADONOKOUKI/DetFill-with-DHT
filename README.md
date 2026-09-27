@@ -14,58 +14,46 @@ Evaluation"**, IEEE Transactions on Visualization and Computer Graphics (TVCG), 
 
 [Koki Madono](https://madonokouki.github.io/) · [Yuan Mingcheng](https://esslab.jp/en/members/) · [Edgar Simo-Serra](https://esslab.jp/~ess/) — Waseda University
 
-[Paper](https://doi.org/10.1109/TVCG.2026.3738401) · [Library on PyPI](https://pypi.org/project/hintauc/) · [Checkpoints and data](https://github.com/MADONOKOUKI/DetFill-with-DHT/releases)
+[Paper](https://doi.org/10.1109/TVCG.2026.3738401) · [Library on PyPI](https://pypi.org/project/hintauc/) · [Checkpoints and data](https://github.com/MADONOKOUKI/DetFill-with-DHT/releases) · [Documentation](https://madonokouki.github.io/projects/hintauc/docs/)
 
 ![Deterministic hint generation pipeline](assets/readme/dht_pipeline.png)
 
-Hint-based line art colorization is usually evaluated with randomly sampled colour hints, so the scores change from
-run to run. This repository provides **DHT**, a deterministic hint generator that derives fixed scribble and dot hints
-from the regions of an illustration (the stored maps of the paper are the reference; regeneration with the paper's
-FilFinder path can move a few pixels between runs, the `geodesic` path is bit-reproducible, see
-[Detailed explanation](docs/detail_explanation.md#what-is-exact-and-what-is-not)); **Hint-AUC**, one score over the
-whole range of hint ratios, from no hints to fully hinted; and **DetFill**, a pixel-space diffusion colorization model
-trained with these hints. The paper's checkpoints, its evaluation inputs (test-split line art and hint maps), the
-per-ratio metric files behind the tables and the scripts of every experiment are released; the
-[coverage table](reproduce/README.md#coverage-what-each-paper-item-needs) says which items are rebuilt exactly, which are
-re-run and which are not provided.
-
-The same documentation is mirrored at https://madonokouki.github.io/projects/hintauc/docs/ (readable while this
-repository is private).
+Hint-based line art colorization is usually evaluated with random colour hints, so scores change from run to run.
+This repository provides **DHT**, which derives fixed scribble and dot hints from the regions of an illustration;
+**Hint-AUC**, one score over the whole range of hint ratios, from no hints to fully hinted; and **DetFill**, a
+pixel-space diffusion colorization model trained with these hints. The paper's checkpoints, evaluation inputs,
+per-ratio metric files and experiment scripts are released; the
+[coverage table](reproduce/README.md#coverage-what-each-paper-item-needs) says what is rebuilt exactly, what is re-run
+and what is not provided. The stored hint maps are the reference for every printed number: regeneration with the
+paper's FilFinder path can move a few pixels between runs, the `geodesic` path is bit-reproducible
+([details](docs/detail_explanation.md#what-is-exact-and-what-is-not)).
 
 ## Getting started
 
-- **Replicability Stamp** — `bash replicability/run.sh` reproduces Fig. 9 of the paper from a fresh checkout with no
-  arguments; see [replicability/README.md](replicability/README.md) and the submission sheet
-  [replicability/GRSI_SUBMISSION.txt](replicability/GRSI_SUBMISSION.txt).
-- **Ten-second demo (no data)** — `pip install hintauc && hintauc demo`: a synthetic illustration, its deterministic
-  hints, an oracle reference colorization at every hint ratio and the Hint-AUC; the numbers are recorded in
-  `examples/expected_numbers.json` and checked in CI, so a matching table means the installation works.
-- **Quick start on CPU (a few minutes; `--fast` under a minute)** — `python examples/quickstart_cpu.py` writes hint
-  images, a reference colorization at every hint ratio, the metric curves and the Hint-AUC to
-  `examples/output/quickstart/`; the expected numbers are in the script's header.
-- **Evaluate your own model** — see [Evaluate your own model](docs/evaluate_your_model.md): hand in images per hint
-  ratio (`hintauc curve`) or plug in a Python function (`hintauc.evaluate_colorizer`); the inputs are checked before
-  anything is scored (every ratio must hold the same images, the grid must be valid) and every result carries a
-  protocol record (grid, metric settings, the resize / SSIM backend in use, versions).
-- **Installation** — see [Setup](docs/setup.md). The library is one command (`pip install hintauc`); DetFill and
-  the reproduction scripts use a conda environment that the scripts create for you.
-- **Model zoo** — see [Model zoo](checkpoints/README.md): every released checkpoint and data file with its size,
-  SHA-256, download link and the paper item it belongs to.
-- **Reproducing the paper** — see [Reproducing the paper](reproduce/README.md): Fig. 9 with one command (the
-  Replicability-Stamp script), the Hint-AUC tables rebuilt from the released per-ratio metrics (322 of 324 compared
-  cells), every experiment re-run on example images, full table rows, and training; the coverage table lists, per
-  paper item, what is rebuilt exactly, what is re-run and what is not provided.
-- **API reference** — see [API reference](docs/api.md): every function and command of the library with its role,
-  arguments and an input/output example.
-- **Added features (since the paper) for improving our library** — see [Added features](docs/added_features.md).
-- **How it works** — see [Detailed explanation](docs/detail_explanation.md): each component, what is bit-exact and
-  what is not.
+- **Demo, no data (10 s)** — `pip install hintauc && hintauc demo`. The numbers are recorded in
+  `examples/expected_numbers.json` and checked in CI.
+- **Quick start on CPU** — `python examples/quickstart_cpu.py` (`--fast`: under a minute) writes hints, a reference
+  colorization per ratio, the curves and the Hint-AUC; expected numbers in the script header.
+- **Evaluate your own model** — [docs/evaluate_your_model.md](docs/evaluate_your_model.md): images per ratio
+  (`hintauc curve`) or a Python function (`hintauc.evaluate_colorizer`). Inputs are checked before scoring; every
+  result carries a protocol record (grid, metric backend, versions).
+- **Installation** — [docs/setup.md](docs/setup.md). The library is `pip install hintauc`; DetFill and the
+  reproduction scripts use a conda environment that the scripts create.
+- **Model zoo** — [checkpoints/README.md](checkpoints/README.md): every released file with size, SHA-256, link and
+  paper item.
+- **Reproducing the paper** — [reproduce/README.md](reproduce/README.md): Fig. 9 with one command, the Hint-AUC
+  tables from the released metrics (322 of 324 cells), every experiment on example images, full table rows, training.
+- **Replicability Stamp** — `bash replicability/run.sh` reproduces Fig. 9 from a fresh checkout with no arguments;
+  [replicability/README.md](replicability/README.md), submission sheet
+  [GRSI_SUBMISSION.txt](replicability/GRSI_SUBMISSION.txt).
+- **Reference** — [API reference](docs/api.md) (every function and command with an example),
+  [added features since the paper](docs/added_features.md), [how it works](docs/detail_explanation.md).
 
 ## Quick start
 
 ```bash
-pip install hintauc            # pip install "hintauc[paper]" adds torchvision + torchmetrics 1.4.0, the paper's metric backend
-hintauc demo                   # synthetic illustration -> hints -> oracle colorizer at 8 ratios -> Hint-AUC (about 10 s)
+pip install hintauc            # "hintauc[paper]" adds torchvision + torchmetrics 1.4.0, the paper's metric backend
+hintauc demo                   # synthetic illustration -> hints -> oracle colorizer at 8 ratios -> Hint-AUC
 ```
 
 ```python
@@ -75,16 +63,15 @@ hints = hintauc.generate_hints("illustration.png", size=64)        # image -> de
 color, mask = hints.at_ratio(0.10, hint_type="scribble")           # hints of the largest 10 % of the regions
 hints.save("out/illustration")                                     # files in the DetFill data layout
 
-evaluator = hintauc.Evaluator(metrics=("psnr", "lpips", "dreamsim"))  # lpips / dreamsim need pip install "hintauc[perceptual]"
+evaluator = hintauc.Evaluator(metrics=("psnr", "lpips", "dreamsim"))  # lpips / dreamsim: pip install "hintauc[perceptual]"
 print(evaluator("colorized.png", "ground_truth.png"))              # the paper's metrics
 ```
 
 - Command line: `hintauc generate image.png --ratio 0.1`, `hintauc eval pred_dir gt_dir --metrics mse psnr ssim`,
-  `hintauc curve pred_root gt_dir` (Hint-AUC from one directory of outputs per hint ratio) and `hintauc demo`.
-- DetFill inference over the hint-ratio grid: `cd detfill && GPU=0 bash run_inference.sh scribble`
-  (data layout and options in [detfill/README.md](detfill/README.md)).
-- Fig. 9 of the paper from a fresh checkout: `bash replicability/run.sh` (about 3 minutes of compute on a GPU after a
-  one-time environment setup and download of 10–20 minutes).
+  `hintauc curve pred_root gt_dir` (Hint-AUC from one directory of outputs per ratio), `hintauc demo`.
+- DetFill inference over the ratio grid: `cd detfill && GPU=0 bash run_inference.sh scribble`
+  ([detfill/README.md](detfill/README.md)).
+- Fig. 9 from a fresh checkout: `bash replicability/run.sh` (3 minutes on a GPU after a one-time setup of 10–20 minutes).
 
 ## Repository structure
 
@@ -102,10 +89,9 @@ assets/            images for this page; representative image for the Replicabil
 
 ## License
 
-MIT License ([LICENSE](LICENSE)); third-party components are listed in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+MIT License ([LICENSE](LICENSE)); third-party components in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
 `detfill/` is built on [BBDM](https://github.com/xuekt98/BBDM) (MIT). The few Danbooru2021-derived images in this
-repository and in the releases (example bundle, user-study stimuli, figure grids) are listed in
-[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) and are provided for non-commercial research use only.
+repository and in the releases are listed there and are provided for non-commercial research use only.
 
 ## Contributing
 
