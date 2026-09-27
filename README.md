@@ -2,6 +2,7 @@
 
 [![IEEE TVCG 2026](https://img.shields.io/badge/IEEE%20TVCG-2026-blue)](https://doi.org/10.1109/TVCG.2026.3738401)
 [![DOI](https://img.shields.io/badge/DOI-10.1109%2FTVCG.2026.3738401-blue)](https://doi.org/10.1109/TVCG.2026.3738401)
+[![Zenodo](https://zenodo.org/badge/DOI/10.5281/zenodo.22995102.svg)](https://doi.org/10.5281/zenodo.22995102)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Python 3.9+](https://img.shields.io/badge/python-3.9%2B-blue)](docs/setup.md)
 [![PyTorch 2.5](https://img.shields.io/badge/PyTorch-2.5-ee4c2c)](docs/setup.md)
@@ -110,3 +111,5 @@ GitHub's "Cite this repository" button uses `CITATION.cff`; the BibTeX entry:
   doi     = {10.1109/TVCG.2026.3738401}
 }
 ```
+
+The repository state reviewed for the Graphics Replicability Stamp (tag `grsi-1.0`) is archived at Zenodo, DOI [10.5281/zenodo.22995102](https://doi.org/10.5281/zenodo.22995102) (all versions; this version: [10.5281/zenodo.22995103](https://doi.org/10.5281/zenodo.22995103)).

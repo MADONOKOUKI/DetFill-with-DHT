@@ -11,6 +11,8 @@ authors:
     given-names: Edgar
 repository-code: "https://github.com/MADONOKOUKI/DetFill-with-DHT"
 license: MIT
+doi: "10.5281/zenodo.22995102"
+version: "grsi-1.0"
 preferred-citation:
   type: article
   title: "Hint-AUC: Deterministic Region-based Hint Generation for Line Art Colorization Evaluation"
