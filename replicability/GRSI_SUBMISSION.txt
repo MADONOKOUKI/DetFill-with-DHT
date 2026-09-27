@@ -23,6 +23,13 @@ Entry point
 Repository
   https://github.com/MADONOKOUKI/DetFill-with-DHT
 
+Paper PDF (direct links, authors' accepted version with the IEEE notice)
+  https://madonokouki.github.io/papers/madono2026-hintauc.pdf
+  https://madonokouki.github.io/papers/madono2026-hintauc-supp.pdf   (supplementary material)
+
+Representative image (250 x 250 PNG)
+  https://raw.githubusercontent.com/MADONOKOUKI/DetFill-with-DHT/main/assets/grsi/representative_250.png
+
 Permission
   The authors grant the Graphics Replicability Stamp Initiative committee and its reviewers permission to
   review this code and to advertise the review publicly after the stamp is approved.
