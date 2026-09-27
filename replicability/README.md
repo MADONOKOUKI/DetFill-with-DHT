@@ -12,7 +12,7 @@ bash replicability/run.sh
 
 - **Result:** `replicability/output/fig9.png`
 - **Reference:** `replicability/expected/fig9_paper.png` (the figure as printed) and `expected/paper_panels/`
-- **Time:** about 3 minutes on an RTX A6000 (4–5 minutes on an RTX 2080 Ti), about 30 minutes on 16 CPU threads, plus a one-time environment setup
+- **Time:** about 3 minutes on an RTX A6000 (4–5 minutes on an RTX 2080 Ti), about 20–30 minutes on 16 CPU threads, plus a one-time environment setup
 - **Submission sheet:** `GRSI_SUBMISSION.txt` (title, authors, operating system, entry point, permission statement)
 
 ## What the figure shows
@@ -34,11 +34,23 @@ first and the colorization is faithful and repeatable. Both the dot-hint and the
 
 ## What to expect
 
-- The colorizations are deterministic on a given machine. On another GPU generation or on CPU they differ only by
-  small floating-point noise; the panels look the same as the printed ones.
-- The hint generator is deterministic except for a tie-breaking step inside its skeleton library (FilFinder) that is
-  not seeded; a few hint pixels may move from run to run, on the same machine as well as between environments,
-  without changing the selected regions or the figure.
+- **Same machine, same software: deterministic given the hints.** For identical hint maps DetFill's output is
+  bit-identical from run to run. FilFinder's unseeded tie-breaking (below) may move a few hint pixels between runs, and
+  the colorization then changes slightly (40–60 dB PSNR, visually the same image).
+- **Different hardware: the same figure, not the same pixels.** DetFill samples for 200 steps from a fixed seed, but
+  the CUDA kernels differ between GPU generations and from the CPU path, and the sampler amplifies those rounding
+  differences into a different, equally plausible colorization of the same hints. Between an RTX 2080 Ti, an RTX A6000
+  and a CPU run, and between any of them and the printed panels, the colorizations agree to only 11–20 dB PSNR: the
+  composition and the hinted colours are the same, details such as eye or hair colour can differ. The comparison the
+  figure makes — an area-independent selection misses the large regions and gives unstable colours, the size-ordered
+  selection is faithful — holds in every run.
+- **Hints.** The regenerated region maps have the same regions as the paper's stored hint maps (1,701 and 938 regions;
+  98 % or more of the selected hint pixels coincide); the hint colours differ from the stored maps by a few levels in
+  most pixels (median 1 of 255) because the stored maps were computed by the paper's original scripts. The skeleton
+  step of the hint generator (FilFinder) breaks ties without a seed, so a few hint pixels can move between runs and
+  environments without changing the selected regions. The "random sample" column
+  uses a fixed area-independent order (ascending label order, as in Table III) rather than the paper's unrecorded random
+  draw, so its hinted regions differ from the printed ones by design.
 
 ## Requirements
 

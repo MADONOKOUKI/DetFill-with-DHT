@@ -130,7 +130,9 @@ Four layers, documented in [reproduce/README.md](../reproduce/README.md):
   fallback (scikit-image) differs, by a few 1e-4. `result["protocol"]["backend"]` names the backend of every number.
 - **Deterministic per machine, not bit-exact across machines:** DetFill inference is seeded, but CUDA kernels differ
   between GPU generations and CPU, so re-generated outputs of the same image agree with the paper's archived outputs
-  only approximately (about 25–30 dB PSNR between the two images in our checks). Per-image metrics therefore move a
+  only approximately: about 25–30 dB PSNR at the Table II hint ratios in the example suite, while at a 10 % hint ratio
+  the sampler can drift to a different, equally plausible colorization (11–20 dB PSNR between an RTX 2080 Ti, an RTX
+  A6000, a CPU run and the printed Fig. 9 panels; see `replicability/README.md`). Per-image metrics therefore move a
   little; we have not re-run a complete table row on different hardware, so expect small differences in the last printed
   digit of a re-run table.
 - **Not bit-reproducible, even in one environment:** FilFinder longest paths (the medial-axis tie-breaking is
