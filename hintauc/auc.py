@@ -8,6 +8,7 @@ integral equals the range-normalized value).
 from __future__ import annotations
 
 import math
+import os
 from typing import Dict, List, Mapping, Optional, Sequence
 
 #: the paper's front-loaded hint-ratio grid
@@ -90,6 +91,52 @@ def hint_auc_table(
     return out
 
 
+def curve_from_manifest(pred_root: str, gt_dir: str, manifest: Mapping[str, object],
+                        allow_missing: bool = False) -> Dict[float, List[tuple]]:
+    """(prediction, ground truth, name) triples per ratio, taken from the manifest of :func:`evaluate_colorizer`.
+
+    The manifest names the ratio directories and, for every prediction, the ground-truth file it was made for
+    (``sources``), so JPEG ground truths saved as PNG predictions pair correctly and a stale directory of another run
+    cannot slip in: ratio directories under ``pred_root`` that the manifest does not list raise ``ValueError``.
+    """
+    import warnings
+    from .evaluate import _ratio_subdirs
+    dirs = {str(k): float(v) for k, v in manifest["dirs"].items()}
+    on_disk = _ratio_subdirs(pred_root)
+    stale = sorted(set(on_disk) - set(dirs))
+    if stale:
+        raise ValueError(f"{pred_root} holds ratio directories that its manifest does not list ({', '.join(stale)}): "
+                         "predictions of another run. Remove them, re-run with overwrite=True, or pass "
+                         "--ignore-manifest to score every directory on disk")
+    missing_dirs = sorted(set(dirs) - set(on_disk))
+    if missing_dirs:
+        raise ValueError(f"{pred_root}: ratio directories listed in the manifest are missing: {', '.join(missing_dirs)}")
+    names = list(manifest["names"])
+    sources = manifest.get("sources") or {n: n for n in names}
+    gts = {}
+    for n in names:
+        src = sources.get(n, n)
+        candidates = ([src] if src != "<array>" else []) + [n, os.path.splitext(n)[0] + ".png"]
+        found = next((c for c in candidates if os.path.isfile(os.path.join(gt_dir, c))), None)
+        if found is None:
+            raise ValueError(f"ground truth of {n} not found in {gt_dir} (looked for {', '.join(candidates)})")
+        gts[n] = os.path.join(gt_dir, found)
+    pairs: Dict[float, List[tuple]] = {}
+    dropped = set()
+    for d, a in dirs.items():
+        missing = [n for n in names if not os.path.isfile(os.path.join(on_disk[d], n))]
+        if missing:
+            msg = f"{on_disk[d]}: {len(missing)} prediction(s) of the manifest are missing ({', '.join(missing[:3])})"
+            if not allow_missing:
+                raise ValueError(msg)
+            warnings.warn(msg + "; evaluating the common subset", stacklevel=2)
+            dropped.update(missing)
+        pairs[a] = [(os.path.join(on_disk[d], n), gts[n], n) for n in names]
+    if dropped:
+        pairs = {a: [t for t in v if t[2] not in dropped] for a, v in pairs.items()}
+    return pairs
+
+
 def evaluate_hint_curve(
     preds_by_alpha: Mapping[float, str],
     gt_dir: str,
@@ -99,6 +146,8 @@ def evaluate_hint_curve(
     limit: int = 0,
     allow_missing: bool = False,
     full_range: bool = False,
+    manifest: Optional[Mapping[str, object]] = None,
+    pred_root: Optional[str] = None,
 ) -> Dict[str, object]:
     """End-to-end Hint-AUC over per-ratio prediction directories.
 
@@ -110,15 +159,34 @@ def evaluate_hint_curve(
     the images common to all ratios are evaluated and a warning lists the rest. ``full_range=True`` additionally
     requires the grid to start at 0 and end at 1 (the Hint-AUC protocol).
 
+    With ``manifest`` (the ``manifest.json`` of :func:`evaluate_colorizer`, read with :func:`hintauc.read_manifest`)
+    and ``pred_root`` (its directory), the ratio directories, the prediction names and their ground-truth files come
+    from the manifest instead of the directory listing (:func:`curve_from_manifest`), and the result carries the
+    run's attributes under ``"run"``.
+
     Returns ``{"alphas", "n_images", "names", "per_alpha", "hint_auc"}``: the evaluated names, the per-alpha mean
     metrics and the Hint-AUC of every metric.
     """
     import warnings
     from .metrics import Evaluator, evaluate_pairs, list_pairs
 
+    ev = evaluator or Evaluator(metrics=metrics)
+    if manifest is not None:
+        if pred_root is None:
+            raise ValueError("pred_root (the directory that holds the manifest) is required with manifest")
+        pairs = curve_from_manifest(os.fspath(pred_root), gt_dir, manifest, allow_missing=allow_missing)
+        alphas = check_alphas(sorted(pairs), full_range=full_range)
+        if limit:
+            pairs = {a: pairs[a][:limit] for a in alphas}
+        names = [n for _, _, n in pairs[alphas[0]]]
+        per_alpha = {a: evaluate_pairs(pairs[a], ev) for a in alphas}
+        run = {k: manifest.get(k) for k in ("hint_type", "oracle", "tie_break", "path_method", "dot_method",
+                                            "hint_map_size", "hintauc")}
+        return {"alphas": alphas, "n_images": len(names), "names": names, "per_alpha": per_alpha,
+                "hint_auc": hint_auc_table(per_alpha), "run": run}
+
     alphas = check_alphas(sorted(float(a) for a in preds_by_alpha), full_range=full_range)
     dirs = {float(a): d for a, d in preds_by_alpha.items()}
-    ev = evaluator or Evaluator(metrics=metrics)
     pairs = {a: list_pairs(dirs[a], gt_dir, pairing=pairing, allow_missing=allow_missing) for a in alphas}
     if pairing == "name":
         common = set.intersection(*(set(n for _, _, n in pairs[a]) for a in alphas))

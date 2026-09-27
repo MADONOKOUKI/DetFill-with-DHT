@@ -19,6 +19,7 @@ import hashlib
 import json
 import os
 import platform
+import shutil
 from typing import Callable, Dict, Iterable, List, Mapping, Optional, Sequence, Tuple, Union
 
 import cv2
@@ -119,12 +120,70 @@ def _name_of(src: PathOrArray, idx: int) -> str:
     return base if base.lower().endswith(".png") else os.path.splitext(base)[0] + ".png"
 
 
+MANIFEST_NAME = "manifest.json"
+
+
+def read_manifest(pred_root: Union[str, "os.PathLike[str]"]) -> Optional[Dict[str, object]]:
+    """The ``manifest.json`` that :func:`evaluate_colorizer` wrote into ``pred_root``, or None."""
+    path = os.path.join(os.fspath(pred_root), MANIFEST_NAME)
+    if not os.path.isfile(path):
+        return None
+    with open(path) as f:
+        return json.load(f)
+
+
+def _ratio_subdirs(root: str) -> Dict[str, str]:
+    """Sub-directories of ``root`` whose names read as hint ratios (the layout written by ``save_dir``)."""
+    out = {}
+    for d in sorted(os.listdir(root)) if os.path.isdir(root) else []:
+        full = os.path.join(root, d)
+        if not os.path.isdir(full):
+            continue
+        try:
+            float(d.rstrip("%"))
+        except ValueError:
+            continue
+        out[d] = full
+    return out
+
+
+def _prepare_save_dir(save_dir: str, dir_names: Dict[float, str], overwrite: bool) -> None:
+    """Refuse to mix a new run into a directory that already holds predictions of another run.
+
+    A stale ratio directory (from a run with a different grid) would otherwise be re-scored together with the new
+    ones by ``hintauc curve``, with the right file names and counts in every directory, so no later check could see
+    it. With ``overwrite=True`` the existing ratio directories and manifest are removed first.
+    """
+    existing = _ratio_subdirs(save_dir)
+    old = read_manifest(save_dir)
+    if not existing and old is None:
+        return
+    if overwrite:
+        for d in existing.values():
+            shutil.rmtree(d)
+        if old is not None:
+            os.remove(os.path.join(save_dir, MANIFEST_NAME))
+        return
+    stale = sorted(set(existing) - set(dir_names.values()))
+    detail = []
+    if stale:
+        detail.append(f"ratio directories of another grid: {', '.join(stale)}")
+    if old is not None:
+        detail.append(f"manifest of a previous run (grid {old.get('alphas')}, {old.get('n_images')} image(s), "
+                      f"hint_type {old.get('hint_type')!r})")
+    if not detail:
+        detail.append(f"predictions in {', '.join(sorted(existing))}")
+    raise ValueError(f"save_dir {save_dir!r} already holds " + "; ".join(detail) +
+                     ". Use a new directory, or pass overwrite=True to replace the previous predictions.")
+
+
 def evaluate_colorizer(colorize: Colorizer, samples: Iterable[Tuple[PathOrArray, PathOrArray]],
                        alphas: Sequence[float] = DEFAULT_ALPHAS, hint_type: str = "scribble",
                        metrics: Sequence[str] = DEFAULT_METRICS, evaluator: Optional[Evaluator] = None,
                        size: int = 64, path_method: str = "filfinder", dot_method: str = "medoid",
                        save_dir: Optional[Union[str, "os.PathLike[str]"]] = None,
-                       oracle: bool = False, tie_break: str = "stable", verbose: bool = False) -> Dict[str, object]:
+                       oracle: bool = False, tie_break: str = "stable", overwrite: bool = False,
+                       verbose: bool = False) -> Dict[str, object]:
     """Hint-AUC of a colorization model given as a Python callable.
 
     ``samples`` yields ``(line_art, ground_truth)`` pairs (paths or arrays). For each pair the deterministic
@@ -144,16 +203,24 @@ def evaluate_colorizer(colorize: Colorizer, samples: Iterable[Tuple[PathOrArray,
     ``"default"`` (NumPy's default argsort, the DetFill loader's rule, whose order among equal areas depends on the
     NumPy build and on the CPU's SIMD sort path, so results can differ between machines). With
     ``save_dir`` the outputs are written to ``save_dir/<ratio>/<name>.png`` (``<ratio>`` from
-    :func:`hintauc.alpha_dir_name`, the layout of ``hintauc curve``) together with ``save_dir/manifest.json``
-    (exact ratios, directory names, image names, protocol); a write failure raises ``OSError``. Sample names
-    must be unique (files with the same basename would overwrite each other). Returns the per-alpha mean
-    metrics, the Hint-AUC of every metric, the evaluated names and a :func:`protocol_record`.
+    :func:`hintauc.alpha_dir_name`, the layout of ``hintauc curve``) together with ``save_dir/manifest.json``, which
+    records the run: the exact ratios and directory names, the prediction names and the ground-truth file each one
+    belongs to, ``oracle``, ``tie_break``, ``path_method``, ``dot_method`` and the protocol. ``hintauc curve`` reads
+    that manifest, so a re-scoring uses exactly these directories and pairs and keeps the run's attributes. A
+    ``save_dir`` that already holds predictions of another run is refused (``overwrite=True`` replaces them); a write
+    failure raises ``OSError``. Sample names must be unique (files with the same basename would overwrite each
+    other). Returns the per-alpha mean metrics, the Hint-AUC of every metric, the evaluated names and a
+    :func:`protocol_record`.
     """
     ev = evaluator or Evaluator(metrics=metrics)
     alphas = check_alphas(alphas, full_range=True)
     dir_names = {a: alpha_dir_name(a) for a in alphas}
+    if save_dir is not None:
+        save_dir = os.fspath(save_dir)
+        _prepare_save_dir(save_dir, dir_names, overwrite)
     sums: Dict[float, Dict[str, float]] = {a: {} for a in alphas}
     names: List[str] = []
+    sources: Dict[str, str] = {}
     for idx, (sketch_src, gt_src) in enumerate(samples):
         gt = _load_bgr(gt_src)
         h, w = gt.shape[:2]
@@ -164,6 +231,7 @@ def evaluate_colorizer(colorize: Colorizer, samples: Iterable[Tuple[PathOrArray,
             raise ValueError(f"duplicate sample name {name!r} (sample {idx}): ground-truth files must have unique "
                              "basenames, or pass arrays (named by index)")
         names.append(name)
+        sources[name] = "<array>" if isinstance(gt_src, np.ndarray) else os.path.basename(os.fspath(gt_src))
         for a in alphas:
             color, mask = hint_inputs(hints, a, hint_type, h, w, tie_break=tie_break)
             sample: Sample = {"index": idx, "name": name, "alpha": a, "hint_type": hint_type, "line_art": sketch,
@@ -175,7 +243,7 @@ def evaluate_colorizer(colorize: Colorizer, samples: Iterable[Tuple[PathOrArray,
                 raise ValueError(f"the colorizer must return an HxWx3 uint8 BGR image of shape {(h, w, 3)}, "
                                  f"got {pred.dtype} {pred.shape}")
             if save_dir is not None:
-                write_image(os.path.join(os.fspath(save_dir), dir_names[a], name), pred)
+                write_image(os.path.join(save_dir, dir_names[a], name), pred)
             scores = ev(pred[:, :, ::-1], gt[:, :, ::-1])       # the evaluator takes RGB arrays
             for k, v in scores.items():
                 sums[a][k] = sums[a].get(k, 0.0) + float(v)
@@ -190,11 +258,16 @@ def evaluate_colorizer(colorize: Colorizer, samples: Iterable[Tuple[PathOrArray,
               "protocol": protocol_record(ev, alphas, hint_type, size, path_method, dot_method, oracle=oracle,
                                           tie_break=tie_break)}
     if save_dir is not None:
-        manifest = {"protocol": PROTOCOL_VERSION, "hint_type": hint_type, "alphas": alphas,
-                    "dirs": {dir_names[a]: a for a in alphas}, "names": names, "n_images": n,
-                    "note": "one directory per hint ratio; `hintauc curve <this dir> <gt dir>` re-scores the images"}
-        with open(os.path.join(os.fspath(save_dir), "manifest.json"), "w") as f:
+        from . import __version__
+        manifest = {"protocol": PROTOCOL_VERSION, "hintauc": __version__, "hint_type": hint_type, "alphas": alphas,
+                    "dirs": {dir_names[a]: a for a in alphas}, "names": names, "sources": sources, "n_images": n,
+                    "oracle": oracle, "tie_break": tie_break, "path_method": path_method, "dot_method": dot_method,
+                    "hint_map_size": size,
+                    "note": "one directory per hint ratio; `hintauc curve <this dir> <gt dir>` re-scores exactly these "
+                            "files (sources = ground-truth file of each prediction)"}
+        with open(os.path.join(save_dir, MANIFEST_NAME), "w") as f:
             json.dump(manifest, f, indent=1)
+        result["manifest"] = os.path.join(save_dir, MANIFEST_NAME)
     return result
 
 

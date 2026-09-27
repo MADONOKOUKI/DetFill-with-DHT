@@ -62,6 +62,11 @@ GPU=0 RATIOS="0.10" TYPES="2" bash run_inference.sh dot   # one cell
 
 - Outputs: `results/dataset_name/BrownianBridge_<hint>_illust/sample_to_eval/illust/<hint>/<sketch_type>/<ratio>/200/<id>.image.png`
   (plus `ground_truth/` copies) — the layout consumed by `../reproduce/scripts/eval_per_ratio.py` and `../evaluation/`.
+  Each `<ratio>` directory carries a `run_manifest.json` (checkpoint SHA-256, seed, hint type and order, ratio, sketch
+  type, sampling steps, config hash, data root); existing images are reused only when a new run has the same
+  conditions, otherwise it stops. A resumed run draws the sampler's noise in a different order than an
+  uninterrupted one, so resumed images are not bit-identical to a fresh run. `--sample_ratio` must lie in [0, 1]; the
+  config value `eta` has no effect in this sampler (fixed-variance step).
 - `sketch_type` 0 / 1 / 2 = sketch simplification / XDoG / SketchKeras; ratios follow the paper grid
   {0, 0.01, 0.03, 0.05, 0.10, 0.25, 0.50, 1.00}; the sampler is seeded (`--seed 1234`).
 - Full row with metrics in one command: `../reproduce/scripts/run_hauc_pipeline.sh`.
@@ -73,6 +78,10 @@ bash train.sh          # the two illustration configs, 200 epochs (~4-5 days on 
 ```
 
 - Effective batch 20 (batch 1 per GPU × 10 GPUs × gradient accumulation 2), Adam 1e-4, EMA 0.995.
+- Budget: `training.n_epochs` (200) and `training.n_steps` (400,000 micro-batches *per process*; checked before every
+  batch, `--max_steps` overrides it, 0 = no step budget). 400,000 equals 200 epochs of the 20,000-image split on
+  10 GPUs; on one GPU the same value stops after 20 epochs, so pass `--max_steps 4000000` for a 200-epoch single-GPU run.
+  A training error is re-raised after the emergency checkpoint (`last_model.pth`), so a failed job exits non-zero.
 - Training-time hint sampling follows the paper: the number of hinted regions is uniform on {0, …, n−1}, so the fully
   hinted case is never seen in training. `dataset_config.include_full_hint: true` includes it. The released checkpoints
   use the paper setting.

@@ -37,6 +37,9 @@ Notes
   (`reproduce/examples/README.md`, E9), so use the stored maps whenever you want to compare with the printed numbers.
 - Metric backbones (LPIPS, OpenCLIP, DINOv2, DreamSim) are downloaded by their pip packages on first use and are not
   part of the releases.
+- The ImageNet hint maps of release v1.2 cover 2,999 of the 3,000 ids in `detfill/configs/real/test.txt`
+  (`n02667379_7324` is missing); `reproduce/scripts/check_data_root.py` reports such gaps before an inference run
+  starts, and the loader reads the whole list, so remove missing ids from the list (or add the files) first.
 
 ## v1.1 — scribble models trained with other region segmenters
 

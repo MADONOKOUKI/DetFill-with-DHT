@@ -899,6 +899,7 @@ from tqdm.autonotebook import tqdm
 # from evaluation.FID import calc_FID
 # from evaluation.LPIPS import calc_LPIPS
 from runners.base.EMA import EMA
+from runners.provenance import step_budget_reached
 from runners.utils import make_save_dirs, make_dir, get_dataset, remove_file
 
 
@@ -1261,10 +1262,14 @@ class BaseRunner(ABC):
         start_epoch = self.global_epoch
         self.logger(f"start training {self.config.model.model_name} on {self.config.data.dataset_name}, {len(train_loader)} iters per epoch")
 
+        # step budget: training.n_steps counts micro-batches of this process (None / 0 = epochs only); it is checked
+        # before every batch, so --max_steps stops inside an epoch as well
+        n_steps = getattr(self.config.training, 'n_steps', None)
+        budget_hit = False
         try:
             accumulate_grad_batches = self.config.training.accumulate_grad_batches
             for epoch in range(start_epoch, self.config.training.n_epochs):
-                if self.global_step > self.config.training.n_steps:
+                if step_budget_reached(self.global_step, n_steps):
                     break
 
                 if self.config.training.use_DDP:
@@ -1275,6 +1280,9 @@ class BaseRunner(ABC):
                 self.global_epoch = epoch
                 start_time = time.time()
                 for train_batch in pbar:
+                    if step_budget_reached(self.global_step, n_steps):
+                        budget_hit = True
+                        break
                     self.global_step += 1
                     self.net.train()
 
@@ -1334,20 +1342,13 @@ class BaseRunner(ABC):
                 elapsed_rounded = int(round((end_time-start_time)))
                 self.logger("training time: " + str(datetime.timedelta(seconds=elapsed_rounded)))
 
-                # validation
-                if (epoch + 1) % self.config.training.validation_interval == 0 or (
-                        epoch + 1) == self.config.training.n_epochs:
-                    if self.is_main_process == 0:
-                        with torch.no_grad():
-                            self.logger("validating epoch...")
-                            average_loss = self.validation_epoch(val_loader, epoch)
-                            torch.cuda.empty_cache()
-                            self.logger("validating epoch success")
+                # (validation runs inside the checkpoint block below; a separate validation block of the original
+                # code was never executed because of an inverted main-process test and has been removed)
 
                 # save checkpoint
                 if (epoch + 1) % self.config.training.save_interval == 0 or \
-                        (epoch + 1) == self.config.training.n_epochs or \
-                        self.global_step > self.config.training.n_steps:
+                        (epoch + 1) == self.config.training.n_epochs or budget_hit or \
+                        step_budget_reached(self.global_step, n_steps):
                     if self.is_main_process:
                         with torch.no_grad():
                             self.logger("validating epoch...")
@@ -1417,28 +1418,26 @@ class BaseRunner(ABC):
                                 #                    os.path.join(self.config.result.ckpt_path, model_ckpt_name))
                                 #         torch.save(optimizer_scheduler_states,
                                 #                    os.path.join(self.config.result.ckpt_path, optim_sche_ckpt_name))
-                
-                print("ssssssssssssssssssssssss")
-                # if self.config.training.use_DDP:
-                #     dist.barrier()
+
+                if budget_hit:
+                    self.logger(f"step budget reached ({self.global_step} of {n_steps} micro-batches); stopping")
+                    break
         except BaseException as e:
-            if self.is_main_process == 0:
-                print("exception save model start....")
-                print(self.__class__.__name__)
+            self.handle_training_exception(e)
+
+    def handle_training_exception(self, e):
+        """Emergency-save the model on the main process, then re-raise: a failed training job must fail."""
+        if self.is_main_process:
+            try:
+                print("exception: saving last_model.pth / last_optim_sche.pth ...")
                 model_states, optimizer_scheduler_states = self.get_checkpoint_states(stage='exception')
-                torch.save(model_states,
-                           os.path.join(self.config.result.ckpt_path, f'last_model.pth'))
-                torch.save(optimizer_scheduler_states,
-                           os.path.join(self.config.result.ckpt_path, f'last_optim_sche.pth'))
-
-                print("exception save model success!")
-
-            print('str(Exception):\t', str(Exception))
-            print('str(e):\t\t', str(e))
-            print('repr(e):\t', repr(e))
-            print('traceback.print_exc():')
-            traceback.print_exc()
-            print('traceback.format_exc():\n%s' % traceback.format_exc())
+                torch.save(model_states, os.path.join(self.config.result.ckpt_path, 'last_model.pth'))
+                torch.save(optimizer_scheduler_states, os.path.join(self.config.result.ckpt_path, 'last_optim_sche.pth'))
+                print("exception: emergency checkpoint saved")
+            except Exception as save_error:  # the original error is the one to report
+                print(f"exception: emergency save failed ({save_error!r})")
+        traceback.print_exc()
+        raise e
 
     # @torch.no_grad()
     # def test(self):

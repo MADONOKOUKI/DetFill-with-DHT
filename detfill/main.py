@@ -37,6 +37,10 @@ def parse_args_and_config():
 
     args = parser.parse_args()
 
+    if args.sample_ratio is not None and not 0.0 <= args.sample_ratio <= 1.0:
+
+        parser.error(f'--sample_ratio must lie in [0, 1], got {args.sample_ratio}')
+
     with open(args.config, 'r') as f:
         dict_config = yaml.load(f, Loader=yaml.FullLoader)
 

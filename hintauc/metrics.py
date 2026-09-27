@@ -106,23 +106,32 @@ class Evaluator:
 
     # ------------------------------------------------------------------
     @staticmethod
-    def _rgb_uint8(image: np.ndarray) -> np.ndarray:
-        """Validate an array input: uint8 (or float in [0, 1]), HxW or HxWx{1,3,4} -> HxWx3 uint8."""
-        arr = as_uint8_image(image, "image")
-        if arr.ndim == 2:
-            arr = np.stack([arr] * 3, axis=-1)
-        elif arr.shape[2] == 1:
-            arr = np.repeat(arr, 3, axis=2)
-        return np.ascontiguousarray(arr[:, :, :3])
+    def _rgb_uint8(image: ImageLike) -> np.ndarray:
+        """Decode any input to an HxWx3 uint8 RGB array.
+
+        Files are decoded with Pillow and converted to RGB, so palette (P), grayscale (L, LA), RGBA and CMYK files
+        give the colours a viewer shows; 16-bit and floating-point files are rejected (the protocol is 8-bit; convert
+        them first). Arrays are taken as RGB, uint8 or float in [0, 1] (:func:`hintauc._images.as_uint8_image`).
+        """
+        if isinstance(image, np.ndarray):
+            arr = as_uint8_image(image, "image")
+            if arr.ndim == 2:
+                arr = np.stack([arr] * 3, axis=-1)
+            elif arr.shape[2] == 1:
+                arr = np.repeat(arr, 3, axis=2)
+            return np.ascontiguousarray(arr[:, :, :3])
+        from PIL import Image
+        with Image.open(os.fspath(image)) as im:
+            if im.mode in ("I", "F") or im.mode.startswith("I;16") or im.mode in ("RGB;16", "BGR;16"):
+                raise ValueError(f"{image}: {im.mode} images (16-bit or float) are not supported; the protocol uses "
+                                 "8-bit images, convert the file first")
+            return np.array(im.convert("RGB"), dtype=np.uint8)      # a writable copy (torch.from_numpy needs one)
 
     def _to_pil(self, image: ImageLike):
-        """Paths are decoded as RGB; ndarray inputs are taken as RGB (HxWx3 or HxW), uint8 or float in [0, 1].
-        The arrays returned by ``hintauc.generate_hints`` / ``HintResult.at_ratio`` are BGR (OpenCV): pass
-        ``arr[:, :, ::-1]``."""
+        """The input as an RGB PIL image (files and arrays go through :meth:`_rgb_uint8`). The arrays returned by
+        ``hintauc.generate_hints`` / ``HintResult.at_ratio`` are BGR (OpenCV): pass ``arr[:, :, ::-1]``."""
         from PIL import Image
-        if isinstance(image, np.ndarray):
-            return Image.fromarray(self._rgb_uint8(image))
-        return Image.open(os.fspath(image)).convert("RGB")
+        return Image.fromarray(self._rgb_uint8(image))
 
     # -- backends -------------------------------------------------------------------------------------
     @property
@@ -169,25 +178,20 @@ class Evaluator:
     def _read_01(self, image: ImageLike) -> np.ndarray:
         """HxWx3 float32 in [0,1], resized to (resize, resize).
 
-        The paper's evaluator (eval_single_run.py) reads the file, converts to float in [0, 1] and applies
-        torchvision's antialiased bilinear resize; that is the ``'torchvision'`` backend, used whenever torch and
-        torchvision are installed, for files and arrays alike. Without them the ``'pillow'`` backend applies
-        Pillow's antialiased bilinear filter to the same float32 channels (not a uint8 resize, which would round
-        and use a different filter). :meth:`backend` reports which one is in use.
+        Every input is first decoded to 8-bit RGB by :meth:`_rgb_uint8` (files through Pillow's ``convert("RGB")``,
+        so palette, grayscale, RGBA and CMYK files are read as the colours they show; arrays as RGB). The paper's
+        evaluator (eval_single_run.py) converts to float in [0, 1] and applies torchvision's antialiased bilinear
+        resize; that is the ``'torchvision'`` backend, used whenever torch and torchvision are installed. Without
+        them the ``'pillow'`` backend applies Pillow's antialiased bilinear filter to the same float32 channels
+        (not a uint8 resize, which would round and use a different filter). :meth:`backend` reports which one is
+        in use.
         """
+        rgb = self._rgb_uint8(image)
         tv = self.torchvision
         if tv:
             torch = self.torch
             import torchvision.transforms.functional as TVF
-            if isinstance(image, np.ndarray):          # arrays take the same route as files (same resize)
-                img = torch.from_numpy(self._rgb_uint8(image)).permute(2, 0, 1)
-            else:
-                img = tv.io.read_image(os.fspath(image))
-            if img.shape[0] == 4:
-                img = img[:3]
-            if img.shape[0] == 1:
-                img = img.repeat(3, 1, 1)
-            img = img.float() / 255.0
+            img = torch.from_numpy(rgb).permute(2, 0, 1).float() / 255.0
             if self.resize:
                 try:
                     img = TVF.resize(img, [self.resize, self.resize], antialias=True)
@@ -195,8 +199,7 @@ class Evaluator:
                     img = TVF.resize(img, [self.resize, self.resize])
             return img.permute(1, 2, 0).numpy()
         from PIL import Image
-        pil = self._to_pil(image)
-        arr = np.asarray(pil, dtype=np.float32) / 255.0
+        arr = rgb.astype(np.float32) / 255.0
         if self.resize:
             size = (self.resize, self.resize)
             arr = np.stack([np.asarray(Image.fromarray(np.ascontiguousarray(arr[:, :, c])).resize(size, Image.BILINEAR),

@@ -67,6 +67,6 @@ first and the colorization is faithful and repeatable. Both the dot-hint and the
 
 ## Going further
 
-- Every experiment of the paper on example images: `bash reproduce/examples/run_examples.sh`
+- The example suite (eight experiments of the paper on example images): `bash reproduce/examples/run_examples.sh`
 - The Hint-AUC tables covered by released metric files rebuilt cell by cell (322 of 324 compared cells): `python reproduce/scripts/A1_tables_from_released_metrics.py`
 - Full-scale re-runs and training: [reproduce/README.md](../reproduce/README.md)

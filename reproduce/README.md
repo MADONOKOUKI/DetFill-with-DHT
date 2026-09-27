@@ -13,7 +13,7 @@ This directory is the reproduction package for
 |---|---|---|
 | **Fig. 9** end to end (the Replicability-Stamp script) | `bash replicability/run.sh` | GPU ≈ 3 min, CPU ≈ 30 min |
 | **The Hint-AUC tables covered by released metric files** rebuilt cell by cell (Table II/III DetFill scribble rows, the supplementary α-grid, segmentation-dependency, seed-sensitivity and Diffusart-retrain tables; Tables IV/V and the GLMM) | `python reproduce/scripts/A1_tables_from_released_metrics.py` (322/324 cells match)<br>`python reproduce/scripts/A2_userstudy_glmm.py` (all values match) | < 2 min, CPU |
-| **Every experiment** re-run on example illustrations (default: E1–E4 and E9 on 4 images; `EXAMPLES_MODE=full`: all eight experiments on the 9 paper-figure images) | `bash reproduce/examples/run_examples.sh` | smoke ≈ 5 min, default ≈ 45–60 min, full = hours |
+| **The example suite** (eight experiments re-run on example illustrations; default: E1–E4 and E9 on 4 images; `EXAMPLES_MODE=full`: all eight on the 9 paper-figure images; the Diffusart-retrain and natural-image models are run separately, see the coverage table) | `bash reproduce/examples/run_examples.sh` | smoke ≈ 5 min, default ≈ 45–60 min, full = hours |
 | **A whole table row** on the 3,000 test images | `DATA_ROOT=… bash reproduce/scripts/run_hauc_pipeline.sh` | ≈ 14 GPU-h per row |
 | **Training** from scratch | `bash reproduce/scripts/B9_train_detfill.sh` | days, 10 GPUs |
 
@@ -54,7 +54,7 @@ layer D.
 | Layer | What it does | Needs | Time |
 |---|---|---|---|
 | **A. Recompute the tables from the released metric files** | Rebuilds every Hint-AUC table of the paper from the per-ratio metric files and the user-study trial table shipped in `expected/` and `data/`, and checks each printed cell | numpy, pandas, statsmodels (CPU) | < 2 min |
-| **B. Example-based re-run of every experiment** | Runs the released checkpoints on example illustrations (4 by default, 12 in `full` mode) for each experiment of the paper and the supplement, writes labelled image grids and per-image metrics, and compares them with the authors' run and with the paper's archived outputs | one GPU (CPU possible but slow); assets are downloaded automatically | 5 min (smoke) / ≈ 1 h (default) / hours (full) |
+| **B. Example suite** | Runs the released checkpoints on example illustrations (4 by default, 12 in `full` mode) for each experiment of the paper and the supplement, writes labelled image grids and per-image metrics, and compares them with the authors' run and with the paper's archived outputs | one GPU (CPU possible but slow); assets are downloaded automatically | 5 min (smoke) / ≈ 1 h (default) / hours (full) |
 | **C. Verbatim experiment launchers** (`paper_experiments/`) | The scripts that were actually run for the paper and its revision, kept as example code (cluster paths hard-coded) | our cluster | days |
 | **D. Full-scale re-run of a table row** | Colorizes the 3,000 test images at every hint ratio and recomputes the seven metrics and Hint-AUC | GPU + the Danbooru2021 originals + the released line art, hint maps and checkpoints | ≈ 14 GPU-hours per row |
 
@@ -104,7 +104,7 @@ mean ± sample standard deviation over the three sources — XDoG, sketch simpli
 `expected/` also contains the analyses written for the review response that are not printed in the paper
 (`userstudy_rank_stability/`, `segmenter_sensitivity/`, `alpha_grid/A-5/`), with their scripts under `paper_experiments/`.
 
-## B. Example-based re-run of every experiment (one GPU, no data preparation)
+## B. Example suite: eight experiments on example images (one GPU, no data preparation)
 
 ```bash
 bash reproduce/examples/run_examples.sh                       # default "quick" set (≈ 1 h on one GPU)
@@ -185,8 +185,16 @@ python reproduce/paper_experiments/alpha_grid/B_auc_grid_sensitivity_7m.py \
 DATA_ROOT=/data/danbooru_small TEST_BATCH=1 TYPES="2" GPU=0 bash reproduce/scripts/run_hauc_pipeline.sh
 ```
 
-The inference loader drops the last incomplete batch (batch size 5 for the scribble config, 8 for dot), so the number
-of images must be divisible by it — 3,000 is; for other subsets set `TEST_BATCH=1`.
+The inference loader processes the last incomplete batch, so any number of images works; `TEST_BATCH` only changes
+the batch composition (the sampler is seeded per batch, so a different batch size changes the outputs slightly).
+Every output directory carries a `run_manifest.json` (checkpoint hash, seed, hint type and order, ratio, sketch type,
+sampling steps, config hash, data root); a run whose conditions differ refuses to reuse the existing images. A
+resumed run consumes the sampler's random stream differently than an uninterrupted one, so its images are not
+bit-identical to a fresh run (the metrics move within the usual sampler spread). Before the inference starts,
+`scripts/check_data_root.py` verifies that every file the loader will read exists (`ALLOW_MISSING=1` only reports).
+The evaluation step (`eval_per_ratio.py`) checks that all ratio directories hold the same images, reuses rows of an
+earlier run only when the prediction and ground-truth files are unchanged (SHA-256) and the metric settings match its
+`run_manifest.json`, and writes those hashes into `per_image.csv`.
 
 `run_hauc_pipeline.sh` = `detfill/main.py --sample_to_eval` for every (ratio, line-art source) followed by
 `scripts/eval_per_ratio.py`, which uses the released evaluator `hintauc.metrics.Evaluator` (the paper's

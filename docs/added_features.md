@@ -32,9 +32,25 @@ Everything below was added after the paper's experiments and does not change any
 - **Exact geodesic diameter** — `path_method="geodesic"` now searches all pixels of a skeleton component that contains a
   cycle (the diameter of such a component can end away from every endpoint).
 - **Release gate** — the PyPI workflow installs the built wheel into fresh environments (with and without PyTorch) and
-  runs the tests, the demo and the quick start before publishing.
+  runs the tests, the demo and the quick start before publishing; the number checker requires finite values and the
+  expected backend.
+- **Image decoding** — every input (file or array) is decoded to 8-bit RGB by one routine: palette, grayscale, LA,
+  RGBA and CMYK files are read as the colours they show on both backends; 16-bit and float files are rejected.
+- **Run identity** — `evaluate_colorizer` writes a manifest with the ratio grid, the prediction names and their
+  ground-truth files, `oracle`, `tie_break` and the path method; `hintauc curve` scores exactly those files (stale
+  directories of another run are refused, JPEG ground truths pair with their PNG predictions) and a `save_dir` that
+  holds another run is refused unless `overwrite=True`. `eval_per_ratio.py` checks the image sets of all ratio
+  directories, reuses rows only for unchanged files (SHA-256) and matching metric settings, and DetFill's
+  `sample_to_eval` refuses to reuse outputs whose `run_manifest.json` (checkpoint hash, seed, hint settings, data)
+  differs.
+- **Training loop** — a failed training job re-raises after the emergency checkpoint; the step budget
+  (`training.n_steps` / `--max_steps`, micro-batches per process) stops inside an epoch.
+- **Batch hint generation** — `hint_generation/generate_hints.py` and `danbooregion_hints.py` use the library's
+  generator: deterministic region ids, re-encoded DanbooRegion colours, checked writes and a resume that only skips
+  complete outputs.
+- **Example comparison** — `compare_with_expected.py` compares image by image on the ids present in both runs.
 - **Reproduction tooling** — the one-command Fig. 9 script (`replicability/`), the reproduction package (`reproduce/`)
-  with example-based re-runs of every experiment, and the additional releases (v1.1–v1.4) with all remaining
+  with the example suite (eight experiments on example images), and the additional releases (v1.1–v1.4) with all remaining
   checkpoints and data.
 
 We also fixed a few minor issues in the original implementation to make the library more usable.

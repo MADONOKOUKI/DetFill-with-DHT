@@ -27,9 +27,11 @@ shipped with the repository (about a minute with `--fast`). Both print numbers t
   interpolation (4 × 4 blocks at 256 px, as DetFill was trained).
 - **Inputs to the model.** The line art (the paper reports the mean over three extractors: sketch simplification,
   XDoG, SketchKeras), the hint colour image and the hint mask. Arrays from `hintauc` are BGR (OpenCV order).
-- **Scoring.** Prediction and ground truth are read as uint8 images (float arrays only in [0, 1]; anything else is
-  rejected), converted to float in [0, 1] and resized to 256 × 256 with an antialiased bilinear filter; then MSE, PSNR,
-  SSIM (torchmetrics 1.4.0), LPIPS-AlexNet, OpenCLIP ViT-B/32, DINOv2-base, DreamSim. The resize is torchvision's
+- **Scoring.** Prediction and ground truth are decoded to 8-bit RGB (files of any mode through Pillow — palette,
+  grayscale, CMYK, RGBA — on both backends; arrays as uint8 or float in [0, 1]; 16-bit and float files are rejected),
+  converted to float in [0, 1] and resized to 256 × 256 with an antialiased bilinear filter; then MSE, PSNR,
+  SSIM (torchmetrics 1.4.0), LPIPS-AlexNet on that image, and OpenCLIP ViT-B/32, DINOv2-base, DreamSim with their own
+  preprocessing of the decoded image. The resize is torchvision's
   when torch and torchvision are installed (the paper's evaluator) and Pillow's float32 bilinear filter otherwise; the
   two agree to about 1e-6 per pixel, so MSE and PSNR do not depend on which one is present. SSIM falls back to
   scikit-image without torchmetrics (a few 1e-4 away from torchmetrics 1.4.0, with a warning).
@@ -92,9 +94,13 @@ cannot use them by accident; `oracle=True` adds `sample["ground_truth"]`, `sampl
 `sample["n_regions"]` for reference baselines. `hintauc.hint_fill_colorizer` is such an oracle baseline (hinted
 *regions* filled with their hint colour, which needs the ground-truth region map): it shows the expected shape of a
 curve, and its scores must not be compared with a real model's. `alphas` must be strictly increasing from 0 to 1
-(`hintauc.check_alphas`); `save_dir` gets one directory per ratio plus `manifest.json` (exact ratios, names); a
-write failure is an error. Repeat with `hint_type="dot"` for the dot protocol, and with the three line-art sources to
-report the paper's mean ± SD.
+(`hintauc.check_alphas`). `save_dir` gets one directory per ratio plus `manifest.json`, which records the run (exact
+ratios, prediction names and their ground-truth files, `oracle`, `tie_break`, path method); `hintauc curve` on that
+directory re-scores exactly those files, so a JPEG ground truth saved as a PNG prediction still pairs, and the `oracle`
+flag stays visible in the result. A `save_dir` that already holds another run is refused (`overwrite=True` replaces
+it), because a stale ratio directory would otherwise be scored together with the new ones; a write failure is an
+error. Repeat with `hint_type="dot"` for the dot protocol, and with the three line-art sources to report the paper's
+mean ± SD.
 
 Signatures and examples of every function used above: [API reference](api.md).
 

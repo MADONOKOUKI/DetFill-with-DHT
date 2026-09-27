@@ -51,11 +51,13 @@ from .evaluate import (
     hint_inputs,
     plot_curves,
     protocol_record,
+    read_manifest,
 )
 from .auc import (
     DEFAULT_ALPHAS,
     alpha_dir_name,
     check_alphas,
+    curve_from_manifest,
     evaluate_hint_curve,
     hint_auc,
     hint_auc_table,
@@ -63,7 +65,7 @@ from .auc import (
 )
 from .demo import run_demo, synthetic_illustration
 
-__version__ = "0.3.2"
+__version__ = "0.3.3"
 
 __all__ = [
     "ALL_METRICS",
@@ -96,6 +98,8 @@ __all__ = [
     "trapz",
     "alpha_dir_name",
     "check_alphas",
+    "curve_from_manifest",
+    "read_manifest",
     "evaluate_pairs",
     "list_pairs",
     "reencode_region_map",

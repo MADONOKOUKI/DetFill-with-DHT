@@ -275,6 +275,8 @@ class HintColorizationDataset(Dataset):
         self.image_size = (dataset_config.image_size, dataset_config.image_size)
 
         self.stage = stage
+        if sample_ratio is not None and not 0.0 <= float(sample_ratio) <= 1.0:
+            raise ValueError(f"sample_ratio (hint ratio) must lie in [0, 1], got {sample_ratio}")
         self.sample_ratio = sample_ratio
         self.sketch_type = sketch_type
 

@@ -18,7 +18,7 @@ os.environ.setdefault("OMP_NUM_THREADS", "1")
 import sys, argparse, glob, time, traceback
 import cv2
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from generate_hints import make_scribbling, SEG_SUBDIR  # reuse exact hint logic + GT layout
+from generate_hints import make_scribbling, SEG_SUBDIR, outputs_complete, write_outputs  # reuse exact hint logic + GT layout
 
 
 def main():
@@ -42,18 +42,15 @@ def main():
         fn = os.path.basename(rpath).replace(".region.png", "")
         out_dir = os.path.join(args.out_root, dn)
         prefix = os.path.join(out_dir, f"{fn}.image")
-        if os.path.isfile(prefix + "_scribble_mask64.png"):
+        if outputs_complete(prefix):
             skip += 1; continue
         gt = os.path.join(args.src_root, SEG_SUBDIR, dn, f"{fn}.image.png")
         img = cv2.imread(gt); region = cv2.imread(rpath)
         if img is None or region is None:
             err += 1; print(f"  MISS {gt if img is None else rpath}", flush=True); continue
         try:
-            region64, mask64, col64 = make_scribbling(img, region)
-            os.makedirs(out_dir, exist_ok=True)
-            cv2.imwrite(prefix + "_region64.png", region64)
-            cv2.imwrite(prefix + "_scribble_mask64.png", mask64.astype('uint8'))
-            cv2.imwrite(prefix + "_scribble_col64.png", col64)
+            region64, mask64, col64 = make_scribbling(img, region)   # DanbooRegion colours are re-encoded by the library
+            write_outputs(prefix, region64, mask64, col64)
             done += 1
         except Exception:
             err += 1; print(f"  ERR {dn}/{fn}\n{traceback.format_exc()}", flush=True); continue
@@ -63,6 +60,8 @@ def main():
                   f"{done/(time.time()-t0+1e-9):.2f} img/s", flush=True)
     print(f"[DONE danboo-hints shard {args.shard}/{args.nshards}] done={done} skip={skip} "
           f"err={err} elapsed={time.time()-t0:.0f}s", flush=True)
+    if err:
+        sys.exit(2)
 
 
 if __name__ == "__main__":

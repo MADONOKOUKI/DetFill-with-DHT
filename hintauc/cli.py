@@ -69,6 +69,8 @@ def main(argv=None):
     c.add_argument("--pairing", default="name", choices=["name", "sorted"])
     c.add_argument("--allow-missing", action="store_true",
                    help="evaluate the images common to all ratio directories instead of stopping when one is missing")
+    c.add_argument("--ignore-manifest", action="store_true",
+                   help="score every ratio directory on disk even if pred_root holds a manifest.json of evaluate_colorizer")
     c.add_argument("--resize", type=int, default=256)
     c.add_argument("--device", default=None)
     c.add_argument("--limit", type=int, default=0)
@@ -123,25 +125,28 @@ def main(argv=None):
 
     if args.cmd == "curve":
         from .auc import evaluate_hint_curve
-        from .evaluate import plot_curves, protocol_record
+        from .evaluate import plot_curves, protocol_record, read_manifest
         from .metrics import Evaluator
         preds = _ratio_dirs(args.pred_root)
         if not preds:
             p.error(f"no ratio sub-directories found under {args.pred_root}")
+        manifest = None if args.ignore_manifest else read_manifest(args.pred_root)
         alphas = sorted(preds)
         if alphas[0] != 0.0 or alphas[-1] != 1.0:
             print(f"[warn] the ratio grid {alphas} does not span [0, 1]; the Hint-AUC is not comparable with the paper", flush=True)
         ev = Evaluator(metrics=args.metrics, device=args.device, resize=args.resize)
         try:
             res = evaluate_hint_curve(preds, args.gt, evaluator=ev, pairing=args.pairing, limit=args.limit,
-                                      allow_missing=args.allow_missing)
+                                      allow_missing=args.allow_missing, manifest=manifest, pred_root=args.pred_root)
         except ValueError as err:
             print(f"error: {err}", file=sys.stderr)
             return 1
+        extra = {"pairing": "manifest" if manifest is not None else args.pairing, "allow_missing": args.allow_missing,
+                 "pred_root": os.path.abspath(args.pred_root)}
+        if manifest is not None:
+            extra["run"] = res["run"]
         out = {"alphas": res["alphas"], "n_images": res["n_images"], "per_alpha": res["per_alpha"],
-               "hint_auc": res["hint_auc"],
-               "protocol": protocol_record(ev, res["alphas"], pairing=args.pairing, allow_missing=args.allow_missing,
-                                           pred_root=os.path.abspath(args.pred_root))}
+               "hint_auc": res["hint_auc"], "protocol": protocol_record(ev, res["alphas"], **extra)}
         print(json.dumps(out, indent=1))
         if args.json:
             out["images"] = res["names"]

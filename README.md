@@ -42,7 +42,8 @@ paper's FilFinder path can move a few pixels between runs, the `geodesic` path i
 - **Model zoo** — [checkpoints/README.md](checkpoints/README.md): every released file with size, SHA-256, link and
   paper item.
 - **Reproducing the paper** — [reproduce/README.md](reproduce/README.md): Fig. 9 with one command, the Hint-AUC
-  tables from the released metrics (322 of 324 cells), every experiment on example images, full table rows, training.
+  tables from the released metrics (322 of 324 cells), the example suite (eight of the paper's experiments on the
+  nine example images; the coverage table lists what each item needs), full table rows, training.
 - **Replicability Stamp** — `bash replicability/run.sh` reproduces Fig. 9 from a fresh checkout with no arguments;
   [replicability/README.md](replicability/README.md), submission sheet
   [GRSI_SUBMISSION.txt](replicability/GRSI_SUBMISSION.txt).

@@ -29,6 +29,9 @@ class BrownianBridgeModel(nn.Module):
         self.num_timesteps = model_params.num_timesteps
         self.mt_type = model_params.mt_type
         self.max_var = model_params.max_var if model_params.__contains__("max_var") else 1
+        # `eta` is read for config compatibility only: the sampling step below draws its noise with `sigma_root`
+        # (equation (11) of the Brownian Bridge paper) and does not scale it by eta, so the released configs and the
+        # paper's results correspond to the fixed-variance sampler regardless of this value.
         self.eta = model_params.eta if model_params.__contains__("eta") else 1
         self.skip_sample = model_params.skip_sample
         self.sample_type = model_params.sample_type

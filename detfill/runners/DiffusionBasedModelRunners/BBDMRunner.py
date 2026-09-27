@@ -251,10 +251,32 @@ class BBDMRunner(DiffusionBaseRunner):
 
             
     @torch.no_grad()
+    def run_manifest(self, test_loader):
+        """The conditions that identify this inference run (see runners/provenance.py)."""
+        from runners.provenance import file_sha256
+        ds = test_loader.dataset
+        dc = self.config.data.dataset_config
+        ckpt = getattr(self.config.model, 'model_load_path', None)
+        cfg_file = getattr(self.config.args, 'config', None)
+        data_root = getattr(dc, 'scratch_root', None) or getattr(dc, 'dataset_path', None)
+        return {"checkpoint": ckpt, "checkpoint_sha256": file_sha256(ckpt), "seed": getattr(self.config.args, 'seed', None),
+                "hint_type": getattr(dc, 'hint_type', None), "hint_order": getattr(ds, 'hint_order', 'area'),
+                "sample_ratio": getattr(ds, 'sample_ratio', None), "sketch_type": getattr(ds, 'sketch_type', None),
+                "sample_step": self.config.model.BB.params.sample_step, "domain": getattr(dc, 'domain', None),
+                "model_name": self.config.model.model_name, "config_file": cfg_file, "config_sha256": file_sha256(cfg_file),
+                "data_root": data_root, "n_images": len(ds),
+                "note": "outputs in this directory were produced under these conditions; a run with different "
+                        "conditions refuses to reuse them (runners/provenance.py)"}
+
     def sample_to_eval(self, net, test_loader, sample_path):
+        from runners.provenance import check_run_manifest, write_run_manifest
         condition_path = make_dir(os.path.join(sample_path, f'condition'))
         gt_path = make_dir(os.path.join(sample_path, 'ground_truth'))
         result_path = make_dir(os.path.join(sample_path, str(self.config.model.BB.params.sample_step)))
+        manifest = self.run_manifest(test_loader)
+        has_outputs = any(n.endswith('.png') for n in os.listdir(result_path))
+        check_run_manifest(sample_path, manifest, has_outputs)
+        write_run_manifest(sample_path, manifest)
 
         pbar = tqdm(test_loader, total=len(test_loader), smoothing=0.01)
         batch_size = self.config.data.test.batch_size

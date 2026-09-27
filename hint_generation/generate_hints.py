@@ -10,8 +10,9 @@ SAME make_scribbling logic. Outputs use the felz-identical naming so the BBDM da
 can read them unchanged.
 
 Segmentation params  : ported verbatim from canonical/all_segmentations.py
-Hint (make_scribbling): ported verbatim from
-    canonical/hint_dot_generation.py (same logic)
+Hint (make_scribbling): hintauc.generate_hints (the library's port of canonical/hint_dot_generation.py);
+    region ids are assigned deterministically, so the label order used by `hint_order: label` and by the
+    region tie-break is reproducible (an earlier version of this script drew random colours)
 
 GT/sketch are segmenter-independent and reused from fixdot (NOT regenerated here).
 Only region64 / scribble_mask64 / scribble_col64 are produced (training-needed, 64px).
@@ -21,23 +22,21 @@ Deps: cv2, scikit-image 0.19, astropy, fil_finder (see requirements.txt).
 Usage:
   python generate_hints.py --segmenter slic --split all \
        --src_root /path/to/gt_images --txt_dir /path/to/split_lists --out_root /path/to/output
-Resume-safe: skips an id whose _scribble_mask64.png already exists.
+Resume-safe: skips an id whose three output files all exist; writes are checked (a failed write is an error).
 """
 import os
-import sys, sys, argparse, copy, time, traceback
+import sys, argparse, time, traceback
 import numpy as np
 import cv2
 cv2.setNumThreads(1)  # avoid thread oversubscription when many shards share a node
-from skimage.morphology import skeletonize
 from skimage.segmentation import slic, quickshift
 from skimage.util import img_as_float
-from fil_finder import FilFinder2D
 try:
-    from hintauc.longest_path import geodesic_longest_path
+    import hintauc
 except ImportError:  # run from a checkout without installing the package
     sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
-    from hintauc.longest_path import geodesic_longest_path
-import astropy.units as u
+    import hintauc
+from hintauc.hints import _id_to_color
 
 SIZE = 64  # hint resolution (training reads *_mask64 / *_col64 / *_region64)
 
@@ -59,82 +58,40 @@ def run_segmenter(img_bgr, seg, p):
 
 
 def colorize_regions(segments):
-    """One unique random RGB per label (the color is only a region id; boundaries are
-    what matter after NEAREST resize). Matches all_segmentations.py's color_sets idea."""
+    """One unique colour per label, assigned deterministically (the library's collision-free base-255 encoding of
+    the label index). The colour is only a region id, but it also fixes the label order that `hint_order: label`
+    and the region tie-break use, so it must not be random."""
     h, w = segments.shape
     region = np.zeros((h, w, 3), np.uint8)
-    rng = np.random.default_rng()
-    used = set()
-    for lab in np.unique(segments):
-        while True:
-            c = (int(rng.integers(1, 255)), int(rng.integers(1, 255)), int(rng.integers(1, 255)))
-            if c not in used:
-                used.add(c)
-                break
-        region[segments == lab] = c
+    for i, lab in enumerate(np.unique(segments)):
+        region[segments == lab] = _id_to_color(i)
     return region
 
 
-# ------------------- hint generation (verbatim make_scribbling) -------------------
+# ------------------- hint generation (the library's port of make_scribbling) -------------------
 def make_scribbling(img_bgr, region_bgr, path_method="filfinder"):
-    """Port of canonical/hint_dot_generation.py::make_scribbling (verbatim for path_method="filfinder").
-    Returns (region64_bgr, scribble_mask64, scribble_col64) as the felz pipeline did."""
-    img = cv2.resize(img_bgr, (SIZE, SIZE))
-    region = cv2.resize(region_bgr, (SIZE, SIZE), interpolation=cv2.INTER_NEAREST)
-    cand_vals = np.unique(region.reshape((-1, 3)), axis=0)
+    """(region64_bgr, scribble_mask64, scribble_col64) for one image and its region map, computed by
+    ``hintauc.generate_hints`` (the maintained port of canonical/hint_dot_generation.py): nearest-neighbour
+    resize of the region map to 64 px, deterministic re-colouring of disconnected components, skeleton, longest
+    path (FilFinder or geodesic), region-mean colours. Region maps whose colours would collide under the loader's
+    base-255 ids (DanbooRegion maps) are re-encoded by the library first."""
+    res = hintauc.generate_hints(img_bgr, size=SIZE, region_map=region_bgr, path_method=path_method)
+    return res.region, res.scribble_mask, res.scribble_color
 
-    scribble_img = np.zeros(region.shape)
-    scribbles_single = np.zeros((SIZE, SIZE))
-    rng = np.random.default_rng()
 
-    # split disconnected components that share a colour into fresh unique colours
-    for i in range(len(cand_vals)):
-        mask = np.all(region == cand_vals[i], axis=2).astype(np.uint8) * 255
-        _, labeled = cv2.connectedComponents(mask, connectivity=4)
-        lbs = np.unique(labeled)
-        if lbs.shape[0] > 2:
-            for j in range(2, lbs.shape[0]):
-                while True:
-                    val = np.array([(255 * rng.random()) // 1,
-                                    (255 * rng.random()) // 1,
-                                    (255 * rng.random()) // 1]).astype(np.uint8)
-                    if not any(np.all(v == val) for v in cand_vals):
-                        region[labeled == j, :] = val
-                        break
-    cand_vals = np.unique(region.reshape((-1, 3)), axis=0)
+OUTPUT_SUFFIXES = (f"_region{SIZE}.png", f"_scribble_mask{SIZE}.png", f"_scribble_col{SIZE}.png")
 
-    for i in range(len(cand_vals)):
-        skeleton_tmp = np.zeros((SIZE, SIZE))
-        idx = np.argwhere(np.all(region == cand_vals[i], axis=2))
-        skeleton_tmp[idx[:, 0], idx[:, 1]] = 1
-        skeleton_s = skeletonize(skeleton_tmp)
 
-        mval = copy.deepcopy(img[idx[:, 0], idx[:, 1]].mean(axis=0).astype(np.uint8))
-        scribble_img[idx[:, 0], idx[:, 1]] = mval
+def outputs_complete(prefix):
+    """Resume only skips an id whose three output files all exist (a partial write is redone)."""
+    return all(os.path.isfile(prefix + suf) for suf in OUTPUT_SUFFIXES)
 
-        if path_method == "geodesic":
-            longpath = geodesic_longest_path(skeleton_s).mask.astype(np.uint8)
-            if not longpath.any():
-                continue
-            scribbles_single += longpath * skeleton_tmp
-            continue
-        kernel = np.ones((3, 3), np.uint8)
-        skeleton_s = cv2.dilate(skeleton_s.astype(np.uint8), kernel, iterations=1) * 255
-        fil = FilFinder2D(skeleton_s, distance=250 * u.pc, mask=skeleton_s)
-        fil.preprocess_image(flatten_percent=85)
-        fil.create_mask(border_masking=True, verbose=False, use_existing_mask=True)
-        fil.medskel(verbose=False)
-        try:
-            fil.analyze_skeletons(branch_thresh=3 * u.pix, skel_thresh=3 * u.pix,
-                                  prune_criteria='length')
-        except Exception:
-            continue
-        scribbles_single += (fil.skeleton_longpath * skeleton_tmp)
 
-    region_out = region
-    mask_out = (scribbles_single.astype(np.uint8) * 255)
-    col_out = (scribble_img * scribbles_single[:, :, np.newaxis])
-    return region_out, mask_out, col_out
+def write_outputs(prefix, region64, mask64, col64):
+    """Write the three files through hintauc.write_image (creates the directory, raises on failure)."""
+    hintauc.write_image(prefix + OUTPUT_SUFFIXES[0], region64)
+    hintauc.write_image(prefix + OUTPUT_SUFFIXES[1], np.asarray(mask64).astype(np.uint8))
+    hintauc.write_image(prefix + OUTPUT_SUFFIXES[2], np.asarray(col64).astype(np.uint8))
 
 
 # --------------------------------- driver ----------------------------------------
@@ -186,8 +143,7 @@ def main():
         seg_dir = args.segmenter if args.path_method == "filfinder" else f"{args.segmenter}_{args.path_method}"
         out_dir = os.path.join(args.out_root, seg_dir, dname)
         prefix = os.path.join(out_dir, f"{fname}.image")
-        mask_path = prefix + f"_scribble_mask{SIZE}.png"
-        if os.path.isfile(mask_path):
+        if outputs_complete(prefix):
             skip += 1
             continue
         gt_path = os.path.join(args.src_root, SEG_SUBDIR, dname, f"{fname}.image.png")
@@ -200,10 +156,7 @@ def main():
             segments = run_segmenter(img, args.segmenter, args)
             region = colorize_regions(segments)
             region64, mask64, col64 = make_scribbling(img, region, args.path_method)
-            os.makedirs(out_dir, exist_ok=True)
-            cv2.imwrite(prefix + f"_region{SIZE}.png", region64)
-            cv2.imwrite(prefix + f"_scribble_mask{SIZE}.png", mask64.astype(np.uint8))
-            cv2.imwrite(prefix + f"_scribble_col{SIZE}.png", col64)
+            write_outputs(prefix, region64, mask64, col64)
             done += 1
         except Exception:
             err += 1
@@ -218,6 +171,8 @@ def main():
 
     print(f"[DONE {args.segmenter} shard {args.shard}/{args.nshards}] "
           f"done={done} skip={skip} err={err} elapsed={time.time()-t0:.0f}s", flush=True)
+    if err:
+        sys.exit(2)
 
 
 if __name__ == "__main__":

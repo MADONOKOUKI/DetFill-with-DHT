@@ -9,7 +9,7 @@
   "torch": "2.5.1",
   "torchvision": "0.20.1",
   "torchmetrics": "1.4.0",
-  "hintauc": "0.3.2"
+  "hintauc": "0.3.3"
  },
  "demo": {
   "command": "hintauc demo --out <dir>   (synthetic illustration, path_method=geodesic, metrics mse psnr ssim)",

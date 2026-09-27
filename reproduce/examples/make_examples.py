@@ -77,8 +77,8 @@ def write_config(template, data_root, out_path, hint_order="area", model_channel
         s = re.sub(r"^(\s*model_channels:).*$", rf"\1 {model_channels}", s, flags=re.M)
     if sample_step is not None:
         s = re.sub(r"^(\s*sample_step:).*$", rf"\1 {sample_step}", s, flags=re.M)
-    # test batch size 1: the runner's test loader drops the last incomplete batch (drop_last=True), so with the
-    # released batch sizes (scribble 5, dot 8) a handful of example images would be silently skipped
+    # test batch size 1: the same batch composition as the authors' reference run for any number of example images
+    # (the sampler is seeded per batch, so the batch size changes the outputs slightly)
     s = re.sub(r"^(\s*batch_size:) \d+\s*$", r"\1 1", s, flags=re.M)
     os.makedirs(os.path.dirname(out_path), exist_ok=True)
     open(out_path, "w").write(s)

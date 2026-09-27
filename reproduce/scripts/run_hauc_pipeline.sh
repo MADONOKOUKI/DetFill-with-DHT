@@ -33,9 +33,13 @@
 #   METRICS="mse psnr ..."       subset of mse psnr ssim lpips openclip dino dreamsim (default all)
 #   LIMIT=<n>                    evaluate only the first n images per cell (smoke test)
 #   SKIP_INFER=1                 only evaluate existing samples
-#   TEST_BATCH=<n>               inference batch size (default: the config's 5 for scribble / 8 for dot). The test loader
-#                                drops the last incomplete batch, so the number of images must be divisible by it
-#                                (3,000 is); set TEST_BATCH=1 for arbitrary subsets.
+#   TEST_BATCH=<n>               inference batch size (default: the config's 5 for scribble / 8 for dot; the last
+#                                incomplete batch is processed, so any number of images works). Note: the outputs
+#                                of a run are tied to its conditions (checkpoint, seed, hint settings, data) by a
+#                                run_manifest.json in every output directory; a run with other conditions refuses
+#                                to reuse them, and a resumed run consumes the sampler's random stream differently
+#                                than an uninterrupted one (its images are not bit-identical to a fresh run).
+#   ALLOW_MISSING=1              only report missing data files instead of stopping (the loader reads the whole split list)
 #
 # Examples
 #   DATA_ROOT=/data/danbooru_test GPU=0 bash reproduce/scripts/run_hauc_pipeline.sh                 # Table II scribble row
@@ -90,6 +94,13 @@ if [ "${SKIP_INFER:-0}" != 1 ]; then
   [ -f "$CKPT" ] || { echo "[error] checkpoint not found: $CKPT  (see checkpoints/README.md; DOMAIN=real uses the release v1.4 files)" >&2; exit 1; }
 fi
 mkdir -p "$RESULT_PATH" "$OUT_DIR"
+
+# ---- data preflight: every file the loader will read must exist before the GPU hours start --------------------
+if [ "${SKIP_INFER:-0}" != 1 ]; then
+  PRE=(--data_root "$DATA_ROOT" --domain "$DOMAIN" --hint "$HINT" --types $TYPES)
+  [ -n "${ALLOW_MISSING:-}" ] && PRE+=(--allow_missing)
+  $PY "$HERE/check_data_root.py" "${PRE[@]}"
+fi
 
 # ---- config: released config with the data root and the region order filled in ---------------------
 CFG="$OUT_DIR/${HINT}_${DOMAIN}_${HINT_ORDER}.yaml"
