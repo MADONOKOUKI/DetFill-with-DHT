@@ -1,0 +1,52 @@
+{
+  "upload_type": "software",
+  "title": "DetFill-with-DHT: Deterministic Hints and Hint-AUC for Line Art Colorization (code, reproduction package)",
+  "description": "<p>Code accompanying the paper <em>Hint-AUC: Deterministic Region-based Hint Generation for Line Art Colorization Evaluation</em> (IEEE Transactions on Visualization and Computer Graphics, 2026, DOI 10.1109/TVCG.2026.3738401): the deterministic hint generator DHT and the <code>hintauc</code> evaluation library, the DetFill diffusion colorization model, the per-ratio metric files and scripts that rebuild the paper's tables, and the one-command replicability script for Figure 9 (<code>bash replicability/run.sh</code>).</p><p>This archive holds the repository at tag <code>grsi-1.0</code>, the state reviewed for the Graphics Replicability Stamp. Model checkpoints and the released data files are distributed through the GitHub releases v1.0-v1.4 of the repository and are not part of this archive.</p>",
+  "creators": [
+    {
+      "name": "Madono, Koki",
+      "affiliation": "Waseda University",
+      "orcid": "0000-0002-5214-8539"
+    },
+    {
+      "name": "Mingcheng, Yuan",
+      "affiliation": "Waseda University"
+    },
+    {
+      "name": "Simo-Serra, Edgar",
+      "affiliation": "Waseda University"
+    }
+  ],
+  "license": "mit",
+  "access_right": "open",
+  "language": "eng",
+  "version": "grsi-1.0",
+  "keywords": [
+    "line art colorization",
+    "hint-based colorization",
+    "evaluation metric",
+    "Hint-AUC",
+    "deterministic hints",
+    "diffusion models",
+    "replicability",
+    "computer graphics"
+  ],
+  "related_identifiers": [
+    {
+      "identifier": "10.1109/TVCG.2026.3738401",
+      "relation": "isSupplementTo",
+      "resource_type": "publication-article",
+      "scheme": "doi"
+    },
+    {
+      "identifier": "https://madonokouki.github.io/projects/hintauc/",
+      "relation": "isDocumentedBy",
+      "scheme": "url"
+    },
+    {
+      "identifier": "https://pypi.org/project/hintauc/",
+      "relation": "isSupplementedBy",
+      "scheme": "url"
+    }
+  ]
+}
