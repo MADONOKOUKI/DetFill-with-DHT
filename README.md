@@ -30,25 +30,14 @@ paper's FilFinder path can move a few pixels between runs, the `geodesic` path i
 
 ## Getting started
 
-- **Demo, no data (10 s)** — `pip install hintauc && hintauc demo`. The numbers are recorded in
-  `examples/expected_numbers.json` and checked in CI.
-- **Quick start on CPU** — `python examples/quickstart_cpu.py` (`--fast`: under a minute) writes hints, a reference
-  colorization per ratio, the curves and the Hint-AUC; expected numbers in the script header.
-- **Evaluate your own model** — [docs/evaluate_your_model.md](docs/evaluate_your_model.md): images per ratio
-  (`hintauc curve`) or a Python function (`hintauc.evaluate_colorizer`). Inputs are checked before scoring; every
-  result carries a protocol record (grid, metric backend, versions).
-- **Installation** — [docs/setup.md](docs/setup.md). The library is `pip install hintauc`; DetFill and the
-  reproduction scripts use a conda environment that the scripts create.
-- **Model zoo** — [checkpoints/README.md](checkpoints/README.md): every released file with size, SHA-256, link and
-  paper item.
-- **Reproducing the paper** — [reproduce/README.md](reproduce/README.md): Fig. 9 with one command, the Hint-AUC
-  tables from the released metrics (322 of 324 cells), the example suite (eight of the paper's experiments on the
-  nine example images; the coverage table lists what each item needs), full table rows, training.
-- **Replicability Stamp** — `bash replicability/run.sh` reproduces Fig. 9 from a fresh checkout with no arguments;
-  [replicability/README.md](replicability/README.md), submission sheet
-  [GRSI_SUBMISSION.txt](replicability/GRSI_SUBMISSION.txt).
-- **Reference** — [API reference](docs/api.md) (every function and command with an example),
-  [added features since the paper](docs/added_features.md), [how it works](docs/detail_explanation.md).
+- **Demo, no data** — `pip install hintauc && hintauc demo` (about 10 s; the numbers are checked in CI).
+- **Quick start on CPU** — `python examples/quickstart_cpu.py` (`--fast`: under a minute); expected numbers in the script header.
+- **Evaluate your own model** — [docs/evaluate_your_model.md](docs/evaluate_your_model.md): images per ratio (`hintauc curve`) or a Python function (`hintauc.evaluate_colorizer`).
+- **Install** — [docs/setup.md](docs/setup.md).
+- **Model zoo** — [checkpoints/README.md](checkpoints/README.md): every released file, its hash and its paper item.
+- **Reproduce the paper** — [reproduce/README.md](reproduce/README.md): Fig. 9 in one command, tables from the released metrics, the example suite, full table rows, training; a coverage table per paper item.
+- **Replicability Stamp** — `bash replicability/run.sh` ([replicability/README.md](replicability/README.md), [submission sheet](replicability/GRSI_SUBMISSION.txt)).
+- **Reference** — [API](docs/api.md) · [added features since the paper](docs/added_features.md) · [how it works](docs/detail_explanation.md).
 
 ## Quick start
 
@@ -77,15 +66,15 @@ print(evaluator("colorized.png", "ground_truth.png"))              # the paper's
 ## Repository structure
 
 ```
-docs/              setup, evaluate your own model, API reference, added features, detailed explanation
-replicability/     one-command reproduction of Fig. 9 (Replicability-Stamp entry point)
-reproduce/         reproduction package: scripts/, examples/, expected/ (released metrics), data/, paper_experiments/
-hintauc/           the library: hints.py, longest_path.py, metrics.py, auc.py, evaluate.py, demo.py, cli.py
-detfill/           the DetFill model (BBDM fork): training, inference, configs
-hint_generation/   original research scripts behind the library
+hintauc/           the library (hints, metrics, Hint-AUC, evaluation, CLI)
+detfill/           the DetFill model: training, inference, configs (BBDM fork)
+reproduce/         reproduction package: scripts, example suite, released metrics, data, paper launchers
+replicability/     one-command Fig. 9 (Replicability Stamp entry point)
+checkpoints/       model zoo
+hint_generation/   original hint-generation scripts
 evaluation/        original evaluation scripts
-checkpoints/       model zoo: inventory of all released files with hashes
-assets/            images for this page; representative image for the Replicability Stamp
+docs/              documentation
+assets/            images
 ```
 
 ## License

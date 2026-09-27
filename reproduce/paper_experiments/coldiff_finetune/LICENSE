@@ -11,4 +11,4 @@ license of the rest of this repository. Changes: deterministic region-based hint
 hint simulation, fixed-seed inference, and output paths for the Hint-AUC evaluation. They must be placed
 inside the upstream code base and used with the upstream weights, which are not included here.
 
-`run_coldiff_finetune_eval_naga1.sh` and `EXPERIMENT_coldiff_finetune.md` are our own launcher and notes (MIT).
+`run_coldiff_finetune_eval.sh` and `EXPERIMENT_coldiff_finetune.md` are our own launcher and notes (MIT).

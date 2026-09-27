@@ -36,8 +36,9 @@ first and the colorization is faithful and repeatable. Both the dot-hint and the
 
 - The colorizations are deterministic on a given machine. On another GPU generation or on CPU they differ only by
   small floating-point noise; the panels look the same as the printed ones.
-- The hint generator is deterministic except for a tie-breaking step inside its skeleton library that is not seeded;
-  a few hint pixels may move between environments without changing the selected regions or the figure.
+- The hint generator is deterministic except for a tie-breaking step inside its skeleton library (FilFinder) that is
+  not seeded; a few hint pixels may move from run to run, on the same machine as well as between environments,
+  without changing the selected regions or the figure.
 
 ## Requirements
 
