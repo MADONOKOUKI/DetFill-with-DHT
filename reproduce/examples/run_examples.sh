@@ -41,7 +41,7 @@ fetch v1.0        detfill_scribble_illust_200ep.pth               fa85d6838a28b8
 fetch v1.0        detfill_dot_illust_200ep.pth                    b4779946f24b5f52cdf640418c73bef67925c845e50c8f36610aeac7d50f212b
 fetch v1.1        detfill_scribble_illust_danbooregion_200ep.pth  1770cd61bb496060b4ff9bd8c2ec2e72b549fa99187a0429912100628cad9a78
 fetch v1.1        detfill_scribble_illust_slic_200ep.pth          eb25667c1955584f46f34abf98db10eef6d702e4c1078fe3cff388f646cf4217
-fetch v1.3        examples_data.tar.gz                            3d7f699da9f8de5a5def35a997e7bb42461abd56babd3ce6c30adfbee9f71c87
+fetch v1.3        examples_data.tar.gz                            d6e5e33862ecc8f1d3c604456c92207c8a87e17a62d2966ab9459cd748776a1b
 if [ "$MODE" = full ]; then
   while read -r tag file sha; do fetch "$tag" "$file" "$sha"; done <<'LIST'
 v1.4        detfill_scribble_illust_32ch_200ep.pth 4eef804755b9adc4fc0b5234501666138a4a6ecddfbdb28245fd7fc32443ecda

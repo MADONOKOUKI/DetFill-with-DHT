@@ -90,8 +90,9 @@ assets/            images for this page; representative image for the Replicabil
 ## License
 
 MIT License ([LICENSE](LICENSE)); third-party components in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
-`detfill/` is built on [BBDM](https://github.com/xuekt98/BBDM) (MIT). The few Danbooru2021-derived images in this
-repository and in the releases are listed there and are provided for non-commercial research use only.
+`detfill/` is built on [BBDM](https://github.com/xuekt98/BBDM) (MIT). The Danbooru2021 illustrations are not
+redistributed except the nine that appear in the paper's figures (listed there, non-commercial research use only);
+all other images are fetched by id from Danbooru with `reproduce/scripts/fetch_originals.py`.
 
 ## Contributing
 

@@ -13,7 +13,7 @@ This directory is the reproduction package for
 |---|---|---|
 | **Fig. 9** end to end (the Replicability-Stamp script) | `bash replicability/run.sh` | GPU ≈ 3 min, CPU ≈ 30 min |
 | **The Hint-AUC tables covered by released metric files** rebuilt cell by cell (Table II/III DetFill scribble rows, the supplementary α-grid, segmentation-dependency, seed-sensitivity and Diffusart-retrain tables; Tables IV/V and the GLMM) | `python reproduce/scripts/A1_tables_from_released_metrics.py` (322/324 cells match)<br>`python reproduce/scripts/A2_userstudy_glmm.py` (all values match) | < 2 min, CPU |
-| **Every experiment** re-run on example illustrations (default: E1–E4 and E9 on 4 images; `EXAMPLES_MODE=full`: all eight experiments on 12 images) | `bash reproduce/examples/run_examples.sh` | smoke ≈ 5 min, default ≈ 45–60 min, full = hours |
+| **Every experiment** re-run on example illustrations (default: E1–E4 and E9 on 4 images; `EXAMPLES_MODE=full`: all eight experiments on the 9 paper-figure images) | `bash reproduce/examples/run_examples.sh` | smoke ≈ 5 min, default ≈ 45–60 min, full = hours |
 | **A whole table row** on the 3,000 test images | `DATA_ROOT=… bash reproduce/scripts/run_hauc_pipeline.sh` | ≈ 14 GPU-h per row |
 | **Training** from scratch | `bash reproduce/scripts/B9_train_detfill.sh` | days, 10 GPUs |
 
@@ -26,7 +26,7 @@ reference run; the full-scale and training scripts expect the data and checkpoin
 
 | Paper item | Rebuilt from released metrics (bit-exact) | Re-run from the released checkpoints | External data needed for a full re-run | Not provided |
 |---|---|---|---|---|
-| Table II, DetFill scribble row (7 metrics) | yes (A1 part 1) | E1 (12 example images); layer D for the 3,000 images | Danbooru2021 test originals (D) | — |
+| Table II, DetFill scribble row (7 metrics) | yes (A1 part 1) | E1 (9 example images); layer D for the 3,000 images | Danbooru2021 test originals (D) | — |
 | Table II, DetFill dot row | no per-ratio record (original submission) | E1; layer D (`HINT=dot`; 300-image check: PSNR Hint-AUC 17.46 vs 17.94 printed) | Danbooru2021 test originals | the archived per-ratio record |
 | Table II/III baseline rows (PaintsTorch, Diffusart, ColorizeDiffusion v1/v2) | no | with the respective official code (`paper_experiments/`); Diffusart-retrain: v1.2 checkpoints | the baselines' code and weights | ColorizeDiffusion fine-tuned weights (not preserved) |
 | Table III, DetFill scribble row | yes (A1 part 4) | E2; layer D (`HINT_ORDER=label`) | Danbooru2021 test originals | — |
@@ -109,11 +109,11 @@ mean ± sample standard deviation over the three sources — XDoG, sketch simpli
 ```bash
 bash reproduce/examples/run_examples.sh                       # default "quick" set (≈ 1 h on one GPU)
 EXAMPLES_MODE=smoke bash reproduce/examples/run_examples.sh   # 1 image, 2 ratios, scribble model only (≈ 5 min)
-EXAMPLES_MODE=full  bash reproduce/examples/run_examples.sh   # all experiments, 12 images, 8 ratios (several GPU-hours)
+EXAMPLES_MODE=full  bash reproduce/examples/run_examples.sh   # all experiments, 9 images, 8 ratios (several GPU-hours)
 ```
 
 The script creates (or reuses) the conda environment of `replicability/run.sh`, downloads the checkpoints and the
-12-image example bundle from the releases (SHA-256 verified), runs each experiment with the same `detfill/main.py`
+9-image example bundle from the releases (SHA-256 verified), runs each experiment with the same `detfill/main.py`
 entry point and the same `hintauc` evaluator as the full-scale experiments, and writes:
 
 - `reproduce/examples/output/grids/*.png` — one labelled image grid per experiment (ground truth, line art, hints,
@@ -147,9 +147,11 @@ runnable equivalents are the scripts in `scripts/` and `examples/`.
 ### D.1 Data
 
 1. **Test images.** The test split is the 3,000 Danbooru2021 images listed in `data/splits/test.txt` (ids ending in
-   `016`). Obtain them from the Danbooru2021 distribution (https://gwern.net/danbooru2021 — the page documents the rsync
-   mirror; we do not redistribute the images) and store them as
-   `<DATA_ROOT>/segmentations/originals/<id>.image.png` (512 × 512 copies: the ground truth of training and metrics).
+   `016`); we do not redistribute them. The Danbooru2021 ids are Danbooru post ids, and the original Danbooru2021
+   mirror is offline, so fetch them from Danbooru by id:
+   `python reproduce/scripts/fetch_originals.py --id_file reproduce/data/splits/test.txt --out <DATA_ROOT>/segmentations/originals`
+   writes the 512 × 512 copies (`<id>.image.png`, bilinear resize of the file; bit-exact with the dataset's ground truth
+   of training and metrics). Deleted posts and posts that need an account are reported.
    The stored hint maps (step 3) were computed from the files at their original resolution, so they must be used as
    shipped, not regenerated from the 512 × 512 copies.
 2. **Line art.** Release v1.3 ships the exact line-art files used for every reported number
@@ -257,7 +259,8 @@ not re-run a complete table row on different hardware; expect small differences 
   ImageNet test hint maps are in v1.2; without the archived per-image record those tables remain "same protocol",
   not bit-exact, reproductions.
 - **User study.** The released trial table is anonymised and reproduces Tables IV/V and the GLMM exactly; the stimuli
-  of three of the four methods are released (v1.3), the ColorizeDiffusion-v2 stimuli were not preserved. The
+  of three of the four methods are released (v1.3; line art, hints and colorizations — the original illustrations are
+  fetched by id from the archive's `index.csv`), the ColorizeDiffusion-v2 stimuli were not preserved. The
   response-letter analyses in `paper_experiments/userstudy_rank_stability/` read the raw per-participant CSVs through
   `common/ab_loader.py`, which are not released.
 

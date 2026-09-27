@@ -31,8 +31,9 @@ ROOT = os.path.abspath(os.path.join(HERE, "..", ".."))
 sys.path.insert(0, ROOT)
 from hintauc.auc import trapz  # noqa: E402
 
-ALL_IDS = ["514016", "4262016", "1625016", "3421016", "4417016", "1019016", "1023016", "4731016", "4942016",
-           "100016", "1001016", "10016"]
+# the nine test illustrations that appear in the paper's figures; only their originals are redistributed (release v1.3
+# example bundle). Other test ids can be added with --ids after fetching their originals (reproduce/scripts/fetch_originals.py).
+ALL_IDS = ["514016", "4262016", "1625016", "3421016", "4417016", "1019016", "1023016", "4731016", "4942016"]
 PAPER_GRID = [0.0, 0.01, 0.03, 0.05, 0.10, 0.25, 0.50, 1.00]
 SKETCH_DIR = {0: "pysimp", 1: "XDoG", 2: "sketchkeras"}
 METRICS = ["mse", "psnr", "ssim", "lpips", "openclip", "dino", "dreamsim"]
@@ -449,7 +450,7 @@ def _fullres_source(args, i):
     holds the 512 x 512 copies used as ground truth. Felzenszwalb's region count depends on the input resolution,
     so the comparison of E9 is only like-for-like when the original file is used. Looked up as
     ``<fullres_dir>/<id>.{png,jpg,jpeg}`` (``--fullres_dir``, default ``<data>/originals_fullres``), then in the
-    repository's ``replicability/data`` (which ships two of the twelve).
+    repository's ``replicability/data`` (which ships two of the nine).
     """
     dirs = [args.fullres_dir or os.path.join(args.data, "originals_fullres"),
             os.path.join(ROOT, "replicability", "data")]

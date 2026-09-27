@@ -44,7 +44,9 @@ pip install -e .                                     # the library from this che
 - `replicability/fetch_checkpoints.sh` downloads the two paper models and verifies their hashes;
   `reproduce/examples/run_examples.sh` downloads what each experiment needs.
 - The illustrations come from [Danbooru2021](https://gwern.net/danbooru2021) and the natural images from an
-  [ImageNet](https://www.image-net.org/download.php) subset; neither is redistributed. The split lists are in
+  [ImageNet](https://www.image-net.org/download.php) subset; neither is redistributed (except the nine illustrations
+  that appear in the paper's figures, see `THIRD_PARTY_NOTICES.md`). `reproduce/scripts/fetch_originals.py` fetches
+  illustrations by id from Danbooru and writes the dataset's 512 × 512 copies (bit-exact). The split lists are in
   `reproduce/data/splits/` and `detfill/configs/{illust,real}/`, the data layout in [detfill/README.md](../detfill/README.md).
 
 ## 4. Hardware and run times

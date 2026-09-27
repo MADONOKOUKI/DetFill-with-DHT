@@ -33,7 +33,7 @@ Notes
 - The hint maps in `test_split_hint_maps_64.tar.gz` are the reference inputs. They were generated from the
   Danbooru2021 files at their original resolution (not from the 512 × 512 ground-truth copies); regenerating them from
   those files with the `hintauc` library reproduces the region count and almost all scribble pixels (mean mask IoU
-  0.991 over the 12 example images), but FilFinder's unseeded tie-breaking moves a few pixels per run
+  0.992 over the 9 example images), but FilFinder's unseeded tie-breaking moves a few pixels per run
   (`reproduce/examples/README.md`, E9), so use the stored maps whenever you want to compare with the printed numbers.
 - Metric backbones (LPIPS, OpenCLIP, DINOv2, DreamSim) are downloaded by their pip packages on first use and are not
   part of the releases.
@@ -91,8 +91,8 @@ research use).
 | `test_split_hint_maps_64_danbooregion.tar.gz` | 37 MB | `d11217a11467ad4cb1aec85d4914be751d7e18d90d4d18d9dc6004b8e2693756` | DanbooRegion scribble hint maps + region maps of the test split (segmentation-dependency study, evaluation segmenter DanbooRegion) |
 | `test_split_hint_maps_64_slic.tar.gz` | 38 MB | `01d6443c9069e23323e5afc98490c5a95bf34056f4d97da3b4111b1967ad9e51` | SLIC scribble hint maps + region maps of the test split |
 | `test_split_hint_maps_64_felz.tar.gz` | 44 MB | `1933b97cd7c92e0651db4839da75e324cc4048bd6fced480c1f2bc512f2d0507` | Felzenszwalb maps regenerated for that study (main results use the v1.0 maps) |
-| `examples_data.tar.gz` | 8 MB | `3d7f699da9f8de5a5def35a997e7bb42461abd56babd3ce6c30adfbee9f71c87` | 12 example illustrations with originals, three line-art versions, the paper's hint maps and the DanbooRegion/SLIC maps — input of `reproduce/examples/run_examples.sh` |
-| `userstudy_stimuli.tar.gz` | 623 MB | `7bf1cc36999ef200edf48d8e2749338d990da3a4fb6323b021b26f007aef359d` | The images shown in the user study (192 images × 8 hint ratios: line art, hint image, DetFill / PaintsTorch / Diffusart colorizations, ground truth, `index.csv`); keyed like `reproduce/data/userstudy/glmm_trials.csv`. The ColorizeDiffusion-v2 stimuli were not preserved. |
+| `examples_data.tar.gz` | 5 MB | `d6e5e33862ecc8f1d3c604456c92207c8a87e17a62d2966ab9459cd748776a1b` | the 9 example illustrations that appear in the paper's figures (originals, three line-art versions, the paper's hint maps and the DanbooRegion/SLIC maps) — input of `reproduce/examples/run_examples.sh`; other test images are fetched by id (`reproduce/scripts/fetch_originals.py`) |
+| `userstudy_stimuli.tar.gz` | 606 MB | `6ab02c1db6da4ccb0cbc3111a765dc8d2629d4b0fe5b0a4beab52cfa756cc0a3` | The images shown in the user study (192 images × 8 hint ratios: line art, hint image, DetFill / PaintsTorch / Diffusart colorizations) and `index.csv` (imageId → Danbooru id); keyed like `reproduce/data/userstudy/glmm_trials.csv`. The original illustrations are not included (fetch them by id: `reproduce/scripts/fetch_originals.py --id_file index.csv`); the ColorizeDiffusion-v2 stimuli were not preserved. |
 
 ## v1.4 — the natural-image models of the paper, the earlier-submission scribble model and the channel-ablation models
 

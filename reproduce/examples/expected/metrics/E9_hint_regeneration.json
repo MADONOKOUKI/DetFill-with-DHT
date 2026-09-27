@@ -8,14 +8,11 @@
     "1019016",
     "1023016",
     "4731016",
-    "4942016",
-    "100016",
-    "1001016",
-    "10016"
+    "4942016"
   ],
   "per_image": {
     "514016": {
-      "seconds": 52.86467742919922,
+      "seconds": 51.33222579956055,
       "input_source": "original resolution",
       "input_size": [
         1000,
@@ -24,13 +21,13 @@
       "regions_stored": 1223,
       "regions_regenerated": 1223,
       "scribble_pixels_stored": 2570,
-      "scribble_pixels_regenerated": 2570,
-      "scribble_mask_iou_vs_stored": 0.9914761720263464,
+      "scribble_pixels_regenerated": 2569,
+      "scribble_mask_iou_vs_stored": 0.9910887253002713,
       "dot_pixels_stored": 1218,
       "dot_pixels_regenerated": 1218
     },
     "4262016": {
-      "seconds": 78.60405087471008,
+      "seconds": 80.57755494117737,
       "input_source": "original resolution",
       "input_size": [
         1378,
@@ -39,13 +36,13 @@
       "regions_stored": 1834,
       "regions_regenerated": 1834,
       "scribble_pixels_stored": 3072,
-      "scribble_pixels_regenerated": 3071,
-      "scribble_mask_iou_vs_stored": 0.99189364461738,
+      "scribble_pixels_regenerated": 3072,
+      "scribble_mask_iou_vs_stored": 0.9935107073329007,
       "dot_pixels_stored": 1823,
-      "dot_pixels_regenerated": 1822
+      "dot_pixels_regenerated": 1823
     },
     "1625016": {
-      "seconds": 30.400638580322266,
+      "seconds": 28.795781135559082,
       "input_source": "original resolution",
       "input_size": [
         1275,
@@ -54,13 +51,13 @@
       "regions_stored": 664,
       "regions_regenerated": 664,
       "scribble_pixels_stored": 1850,
-      "scribble_pixels_regenerated": 1852,
-      "scribble_mask_iou_vs_stored": 0.9860515021459227,
+      "scribble_pixels_regenerated": 1853,
+      "scribble_mask_iou_vs_stored": 0.9802139037433155,
       "dot_pixels_stored": 654,
       "dot_pixels_regenerated": 654
     },
     "3421016": {
-      "seconds": 64.82126545906067,
+      "seconds": 63.91879081726074,
       "input_source": "original resolution",
       "input_size": [
         1700,
@@ -69,13 +66,13 @@
       "regions_stored": 1049,
       "regions_regenerated": 1049,
       "scribble_pixels_stored": 1947,
-      "scribble_pixels_regenerated": 1944,
-      "scribble_mask_iou_vs_stored": 0.9872318692543411,
+      "scribble_pixels_regenerated": 1946,
+      "scribble_mask_iou_vs_stored": 0.9862244897959184,
       "dot_pixels_stored": 1049,
       "dot_pixels_regenerated": 1049
     },
     "4417016": {
-      "seconds": 6.1656670570373535,
+      "seconds": 6.28386378288269,
       "input_source": "original resolution",
       "input_size": [
         1200,
@@ -90,7 +87,7 @@
       "dot_pixels_regenerated": 112
     },
     "1019016": {
-      "seconds": 21.919944524765015,
+      "seconds": 22.190441846847534,
       "input_source": "original resolution",
       "input_size": [
         595,
@@ -100,12 +97,12 @@
       "regions_regenerated": 543,
       "scribble_pixels_stored": 1473,
       "scribble_pixels_regenerated": 1475,
-      "scribble_mask_iou_vs_stored": 0.9918918918918919,
+      "scribble_mask_iou_vs_stored": 0.9945872801082544,
       "dot_pixels_stored": 543,
       "dot_pixels_regenerated": 543
     },
     "1023016": {
-      "seconds": 44.168612480163574,
+      "seconds": 45.290398597717285,
       "input_source": "original resolution",
       "input_size": [
         750,
@@ -114,13 +111,13 @@
       "regions_stored": 1130,
       "regions_regenerated": 1130,
       "scribble_pixels_stored": 2184,
-      "scribble_pixels_regenerated": 2190,
-      "scribble_mask_iou_vs_stored": 0.9863760217983651,
+      "scribble_pixels_regenerated": 2187,
+      "scribble_mask_iou_vs_stored": 0.9913439635535307,
       "dot_pixels_stored": 1125,
-      "dot_pixels_regenerated": 1126
+      "dot_pixels_regenerated": 1125
     },
     "4731016": {
-      "seconds": 67.45938539505005,
+      "seconds": 68.74525094032288,
       "input_source": "original resolution",
       "input_size": [
         800,
@@ -130,12 +127,12 @@
       "regions_regenerated": 1701,
       "scribble_pixels_stored": 2927,
       "scribble_pixels_regenerated": 2925,
-      "scribble_mask_iou_vs_stored": 0.9925093632958801,
+      "scribble_mask_iou_vs_stored": 0.994546693933197,
       "dot_pixels_stored": 1698,
       "dot_pixels_regenerated": 1698
     },
     "4942016": {
-      "seconds": 37.121180057525635,
+      "seconds": 37.65851807594299,
       "input_source": "original resolution",
       "input_size": [
         800,
@@ -144,55 +141,10 @@
       "regions_stored": 938,
       "regions_regenerated": 938,
       "scribble_pixels_stored": 1961,
-      "scribble_pixels_regenerated": 1963,
-      "scribble_mask_iou_vs_stored": 0.9928897917724734,
+      "scribble_pixels_regenerated": 1961,
+      "scribble_mask_iou_vs_stored": 0.9928861788617886,
       "dot_pixels_stored": 934,
       "dot_pixels_regenerated": 934
-    },
-    "100016": {
-      "seconds": 44.382386445999146,
-      "input_source": "original resolution",
-      "input_size": [
-        800,
-        600
-      ],
-      "regions_stored": 1136,
-      "regions_regenerated": 1136,
-      "scribble_pixels_stored": 2239,
-      "scribble_pixels_regenerated": 2242,
-      "scribble_mask_iou_vs_stored": 0.9889036839769196,
-      "dot_pixels_stored": 1127,
-      "dot_pixels_regenerated": 1127
-    },
-    "1001016": {
-      "seconds": 36.178234577178955,
-      "input_source": "original resolution",
-      "input_size": [
-        600,
-        835
-      ],
-      "regions_stored": 826,
-      "regions_regenerated": 826,
-      "scribble_pixels_stored": 2154,
-      "scribble_pixels_regenerated": 2153,
-      "scribble_mask_iou_vs_stored": 0.9967547519703291,
-      "dot_pixels_stored": 826,
-      "dot_pixels_regenerated": 826
-    },
-    "10016": {
-      "seconds": 20.54557752609253,
-      "input_source": "original resolution",
-      "input_size": [
-        480,
-        567
-      ],
-      "regions_stored": 484,
-      "regions_regenerated": 484,
-      "scribble_pixels_stored": 1694,
-      "scribble_pixels_regenerated": 1694,
-      "scribble_mask_iou_vs_stored": 0.9859320046893317,
-      "dot_pixels_stored": 483,
-      "dot_pixels_regenerated": 483
     }
   },
   "note": "stored maps were generated from the original-resolution files; rows with input_source='512px copy' are not like-for-like"
