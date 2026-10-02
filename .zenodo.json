@@ -1,7 +1,7 @@
 {
   "upload_type": "software",
   "title": "DetFill-with-DHT: Deterministic Hints and Hint-AUC for Line Art Colorization (code, reproduction package)",
-  "description": "<p>Code accompanying the paper <em>Hint-AUC: Deterministic Region-based Hint Generation for Line Art Colorization Evaluation</em> (IEEE Transactions on Visualization and Computer Graphics, 2026, DOI 10.1109/TVCG.2026.3738401): the deterministic hint generator DHT and the <code>hintauc</code> evaluation library, the DetFill diffusion colorization model, the per-ratio metric files and scripts that rebuild the paper's tables, and the one-command replicability script for Figure 9 (<code>bash replicability/run.sh</code>).</p><p>This archive holds the repository at tag <code>grsi-1.0</code>, the state reviewed for the Graphics Replicability Stamp. Model checkpoints and the released data files are distributed through the GitHub releases v1.0-v1.4 of the repository and are not part of this archive.</p>",
+  "description": "<p>Code accompanying the paper <em>Hint-AUC: Deterministic Region-based Hint Generation for Line Art Colorization Evaluation</em> (IEEE Transactions on Visualization and Computer Graphics, 2026, DOI 10.1109/TVCG.2026.3738401): the deterministic hint generator DHT and the <code>hintauc</code> evaluation library, the DetFill diffusion colorization model, the per-ratio metric files and scripts that rebuild the paper's tables, and the one-command replicability script for Figure 9 (<code>bash replicability/run.sh</code>).</p><p>Each version archives the repository at the release tag named in its version field. The state reviewed for the Graphics Replicability Stamp is tag <code>grsi-1.0</code> (DOI 10.5281/zenodo.22995103). Model checkpoints and released data files are distributed as assets of the GitHub releases and are not part of these archives.</p>",
   "creators": [
     {
       "name": "Madono, Koki",
@@ -20,7 +20,6 @@
   "license": "mit",
   "access_right": "open",
   "language": "eng",
-  "version": "grsi-1.0",
   "keywords": [
     "line art colorization",
     "hint-based colorization",
