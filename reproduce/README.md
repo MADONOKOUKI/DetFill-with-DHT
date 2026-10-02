@@ -28,7 +28,7 @@ reference run; the full-scale and training scripts expect the data and checkpoin
 |---|---|---|---|---|
 | Table II, DetFill scribble row (7 metrics) | yes (A1 part 1) | E1 (9 example images); layer D for the 3,000 images | Danbooru2021 test originals (D) | — |
 | Table II, DetFill dot row | no per-ratio record (original submission) | E1; layer D (`HINT=dot`; 300-image check: PSNR Hint-AUC 17.46 vs 17.94 printed) | Danbooru2021 test originals | the archived per-ratio record |
-| Table II/III baseline rows (PaintsTorch, Diffusart, ColorizeDiffusion v1/v2) | no | with the respective official code (`paper_experiments/`); Diffusart-retrain: v1.2 checkpoints | the baselines' code and weights | ColorizeDiffusion fine-tuned weights (not preserved) |
+| Table II/III baseline rows (PaintsTorch, Diffusart, ColorizeDiffusion v1/v2) | no | with the respective official code (`paper_experiments/`); ColorizeDiffusion: the fine-tuned weights of v1.5; Diffusart-retrain: v1.2 checkpoints | the baselines' official code | the trained PaintsTorch and Diffusart baseline weights |
 | Table III, DetFill scribble row | yes (A1 part 4) | E2; layer D (`HINT_ORDER=label`) | Danbooru2021 test originals | — |
 | Tables IV and V, GLMM statistics (user study) | yes (A2, all values) | — | — | the raw per-participant files and the ColorizeDiffusion-v2 stimuli |
 | Fig. 9 | — | `replicability/run.sh` (same protocol; sampler not bit-exact across GPUs) | — | — |
@@ -230,7 +230,7 @@ not re-run a complete table row on different hardware; expect small differences 
   training loop, deterministic-hint loader, inference and evaluation; README inside) with the two released EMA
   checkpoints of release v1.2.
 - **ColorizeDiffusion fine-tuning (Table II/III "200ep", supp. "7ep")** — `paper_experiments/coldiff_finetune/`
-  (launchers for the official ColorizeDiffusion v1/v2 code; the fine-tuned weights were not preserved).
+  (launchers for the official ColorizeDiffusion v1/v2 code; the fine-tuned weights are in release v1.5).
 
 ## Known deviations and gaps (honest list)
 
@@ -261,7 +261,7 @@ not re-run a complete table row on different hardware; expect small differences 
 - **Not covered by released per-ratio data:** the Table II/III *dot* rows of DetFill, all baseline rows
   (PaintsTorch, Diffusart, ColorizeDiffusion v1/v2), the natural-image (ImageNet) tables and the legacy per-source
   tables of the supplement (earlier checkpoints). The dot row and the baselines can be regenerated with layer D and the
-  respective official code (the ColorizeDiffusion fine-tuned weights were not preserved). The natural-image DetFill
+  respective official code (the ColorizeDiffusion fine-tuned weights are in release v1.5). The natural-image DetFill
   models behind the printed ImageNet tables are the 64-channel models of release v1.4 (our re-evaluation on 24 test
   images matches the printed Hint-AUC within 0.7 dB; the 96-channel models of v1.2 are a later generation), and the
   ImageNet test hint maps are in v1.2; without the archived per-image record those tables remain "same protocol",

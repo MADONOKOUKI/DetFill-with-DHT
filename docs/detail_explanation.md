@@ -142,7 +142,7 @@ Four layers, documented in [reproduce/README.md](../reproduce/README.md):
   every evaluation repeatable.
 - **Not covered by released per-ratio data:** baseline rows (PaintsTorch, Diffusart, ColorizeDiffusion), the DetFill
   dot rows of Tables II/III, the ImageNet tables and the earlier per-source tables; they can be regenerated with layer D
-  and the respective code, except the ColorizeDiffusion fine-tuned weights, which were not preserved.
+  and the respective code; the ColorizeDiffusion fine-tuned weights are in release v1.5.
 
 ## Environment
 

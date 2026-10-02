@@ -112,6 +112,35 @@ channel ablation and are **not** behind the main tables (those are v1.0).
 | `detfill_dot_imagenet_64ch_200ep.pth` | 485 MB | `41089d46313943fdac66aaf5a022c0aa365cff47c0bbaed581436e040d122a9e` | **The natural-image dot model behind the supplementary ImageNet tables** (64 base channels; `dot_real.yaml`, 3-channel conditioning stage as released). Re-evaluated on 24 test images: PSNR Hint-AUC 15.0 (printed: 15.7) |
 | `earlier_run_configs.tar.gz` | 2 KB | `1e3944bcb9aafa45d9359ee2ab12f0a2a1dffd03d404c65d6e8353224588b275` | The archived training configs of the earlier-submission scribble and natural-image models and of the 32/64-channel models |
 
+## v1.5 — ColorizeDiffusion fine-tuned baselines (200ep and 7ep)
+
+Release: https://github.com/MADONOKOUKI/DetFill-with-DHT/releases/tag/v1.5. The ColorizeDiffusion v1/v2 models of the
+paper's comparisons, fine-tuned from the official weights: `*_200ep` with the common 200-epoch protocol (the ColDiff
+rows of Tables II/III and of the ImageNet tables), `*_7ep` with the authors' original 7-epoch schedule (supplementary
+Table X and the ImageNet tables). Each file is split into parts below 2 GiB; restore it with
+`cat <file>.part-* > <file>` and check the SHA-256 below. Run them with the official ColorizeDiffusion code and the
+wrappers in `reproduce/paper_experiments/coldiff_finetune/`. **License: CC BY-NC-SA 4.0** (adapted from the official
+ColorizeDiffusion weights), not the repository's MIT license.
+
+| File | Size | Parts | SHA-256 | What it is |
+|---|---|---|---|---|
+| `coldiff_v1_illust_dot_200ep.safetensors` | 6.6 GB | 4 | `2bdc79e90d3f407bbda68d1f6367a0b7b7b9073e121d51fc429cfa1c42ea0d4f` | ColorizeDiffusion v1, Danbooru2021 illustrations, dot hints; Table II/III and the ImageNet tables, ColDiff (200ep) |
+| `coldiff_v2_illust_dot_200ep.safetensors` | 7.3 GB | 4 | `6fa87a0f62537256fee11257386be5737cc77c1cd0b82fc960a2732972a597a7` | ColorizeDiffusion v2, Danbooru2021 illustrations, dot hints; Table II/III and the ImageNet tables, ColDiff (200ep) |
+| `coldiff_v1_real_dot_200ep.safetensors` | 6.6 GB | 4 | `950a132204863b46c63d03f72cfe0da9361ed312564e8c5de0754c20c2cdd216` | ColorizeDiffusion v1, ImageNet (natural images), dot hints; Table II/III and the ImageNet tables, ColDiff (200ep) (the last saved state of the completed 200-epoch run) |
+| `coldiff_v2_real_dot_200ep.safetensors` | 7.3 GB | 4 | `4e28f1d7ffc09e6aa2ba1fc2683141a9d92d016ebe727d3a1b074bc2b993b078` | ColorizeDiffusion v2, ImageNet (natural images), dot hints; Table II/III and the ImageNet tables, ColDiff (200ep) |
+| `coldiff_v1_illust_scr_200ep.safetensors` | 6.6 GB | 4 | `3d6cb551f7117d43973dc2c6f3576259d3c09682ed13db3b69ad1d8b42b475c5` | ColorizeDiffusion v1, Danbooru2021 illustrations, scribble hints; Table II/III and the ImageNet tables, ColDiff (200ep) |
+| `coldiff_v2_illust_scr_200ep.safetensors` | 7.3 GB | 4 | `e21c5004c8f62da0113b124de84627e0deddfcb098e74ee7ef008b8dae79c336` | ColorizeDiffusion v2, Danbooru2021 illustrations, scribble hints; Table II/III and the ImageNet tables, ColDiff (200ep) |
+| `coldiff_v1_real_scr_200ep.safetensors` | 6.6 GB | 4 | `9b2fb387bbf6c2bf5a518724b0c81100bc6ccfe7e2c3509e8e351de8827964c9` | ColorizeDiffusion v1, ImageNet (natural images), scribble hints; Table II/III and the ImageNet tables, ColDiff (200ep) |
+| `coldiff_v2_real_scr_200ep.safetensors` | 7.3 GB | 4 | `8b61fd7941c5f84e6a77fa1cd8bd5c9e34c89a3b78743c7159e1e555a602d6cd` | ColorizeDiffusion v2, ImageNet (natural images), scribble hints; Table II/III and the ImageNet tables, ColDiff (200ep) |
+| `coldiff_v1_illust_dot_7ep.safetensors` | 6.6 GB | 4 | `df3b91d16b2d361bf75f8906c2a5d1ddabfa96de1ae9b531c1e64b387fbe8230` | ColorizeDiffusion v1, Danbooru2021 illustrations, dot hints; supplementary Table X and the ImageNet tables, ColDiff (7ep) |
+| `coldiff_v2_illust_dot_7ep.safetensors` | 7.3 GB | 4 | `3bc6afde184a45cf73f184c8fc89a651395b34153091e970a8b00736fcb17097` | ColorizeDiffusion v2, Danbooru2021 illustrations, dot hints; supplementary Table X and the ImageNet tables, ColDiff (7ep) |
+| `coldiff_v1_real_dot_7ep.safetensors` | 6.6 GB | 4 | `dcd3fe9124ab5ce89998d208edc75f8107d911367874061c4a9a364663a5fde0` | ColorizeDiffusion v1, ImageNet (natural images), dot hints; supplementary Table X and the ImageNet tables, ColDiff (7ep) |
+| `coldiff_v2_real_dot_7ep.safetensors` | 7.3 GB | 4 | `fb3445bb922a07daf417b1989ebf09c28ff50eec8556b436871914d514387134` | ColorizeDiffusion v2, ImageNet (natural images), dot hints; supplementary Table X and the ImageNet tables, ColDiff (7ep) |
+| `coldiff_v1_illust_scr_7ep.safetensors` | 6.6 GB | 4 | `488eebe7724246750352089569c6380d42c4842126d7516df8f5b6e03cd89f81` | ColorizeDiffusion v1, Danbooru2021 illustrations, scribble hints; supplementary Table X and the ImageNet tables, ColDiff (7ep) |
+| `coldiff_v2_illust_scr_7ep.safetensors` | 7.3 GB | 4 | `1d4afd3611c3ad13507ba526183922560d0ca3f6943771a0c67c8c3a21e8961d` | ColorizeDiffusion v2, Danbooru2021 illustrations, scribble hints; supplementary Table X and the ImageNet tables, ColDiff (7ep) |
+| `coldiff_v1_real_scr_7ep.safetensors` | 6.6 GB | 4 | `97eedbbf071154d320ef02ded7df6fa277af89360ab8abe021e66c9d5cf01946` | ColorizeDiffusion v1, ImageNet (natural images), scribble hints; supplementary Table X and the ImageNet tables, ColDiff (7ep) |
+| `coldiff_v2_real_scr_7ep.safetensors` | 7.3 GB | 4 | `a570e5f641e75fde47cdd56bf59914ffbfbf55164f4340b7cb8e9bb1b48d0fab` | ColorizeDiffusion v2, ImageNet (natural images), scribble hints; supplementary Table X and the ImageNet tables, ColDiff (7ep) |
+
 ## Which release do I need?
 
 | I want to … | Download |
@@ -122,3 +151,4 @@ channel ablation and are **not** behind the main tables (those are v1.0).
 | re-run a whole table row on the 3,000 test images | v1.0 models + v1.0 hint maps + v1.3 line art + the Danbooru2021 originals (`reproduce/README.md`, part B) |
 | re-run the segmentation-dependency study | v1.1 models + v1.3 segmenter hint maps |
 | look at the user-study stimuli | v1.3 `userstudy_stimuli.tar.gz` |
+| re-run the ColorizeDiffusion rows | v1.5 (200ep: Tables II/III and the ImageNet tables; 7ep: supplementary Table X), with the official ColorizeDiffusion code |
