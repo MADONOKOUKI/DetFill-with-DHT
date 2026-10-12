@@ -20,6 +20,8 @@ reproduce/output/
 
 # dreamsim downloads its weights into ./models by default
 models/
+# ...but this models/ is the network code of the Diffusart retraining experiment
+!reproduce/paper_experiments/diffusart_retrain/code/models/
 
 # replicability script downloads and outputs
 replicability/checkpoints/
