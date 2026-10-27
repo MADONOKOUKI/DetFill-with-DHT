@@ -59,7 +59,7 @@ hintauc demo                   # synthetic illustration -> hints -> oracle color
 ```python
 import hintauc
 
-hints = hintauc.generate_hints("illustration.png", size=64)        # image -> deterministic hints
+hints = hintauc.generate_hints("illustration.png", size=64)        # paper hint resolution; see below
 color, mask = hints.at_ratio(0.10, hint_type="scribble")           # hints of the largest 10 % of the regions
 hints.save("out/illustration")                                     # files in the DetFill data layout
 
@@ -72,6 +72,39 @@ print(evaluator("colorized.png", "ground_truth.png"))              # the paper's
 - DetFill inference over the ratio grid: `cd detfill && GPU=0 bash run_inference.sh scribble`
   ([detfill/README.md](detfill/README.md)).
 - Fig. 9 from a fresh checkout: `bash replicability/run.sh` (3 minutes on a GPU after a one-time setup of 10–20 minutes).
+
+## Choosing the hint resolution
+
+**DHT does not require reducing the input's width and height to one quarter.** Keep these three resolutions separate:
+
+- **Segmentation input:** `generate_hints` segments the image at the resolution you supply.
+- **Hint generation:** `size` sets the hint grid: the input image and region map are resized to this grid before
+  skeletons, scribbles and region-mean colours are computed. Its default is `64`, matching the paper's released hint maps.
+- **Model input:** hints may then be resized to the resolution expected by the colorization model.
+
+For fair comparison with existing methods, the paper generates **64 × 64 hints** and upsamples them with
+nearest-neighbour interpolation to **256 × 256** when required, including for DetFill
+([main paper, Sec. VI-A](https://madonokouki.github.io/papers/madono2026-hintauc.pdf#page=8)).
+This is the paper's experimental setting, not a required step of DHT. In particular, a 512 × 512 input does **not**
+require generating hints at 128 × 128. The [supplementary material, Sec. II-B, “Influence of Hint Resolution”](https://madonokouki.github.io/papers/madono2026-hintauc-supp.pdf#page=3)
+compares models trained with 64 × 64 and 256 × 256 hints and shows finer details with the higher-resolution hints.
+
+To segment a **512 × 512 input** and generate scribbles at that same resolution, set `size=512` explicitly:
+
+```python
+import hintauc
+
+hints = hintauc.generate_hints("image_512.png", size=512)  # image_512.png is already 512 × 512
+color, mask = hints.at_ratio(0.10, hint_type="scribble")   # 512 × 512 hints; no 128 × 128 intermediate
+```
+
+Setting `at_ratio(..., resize_to=512)` alone only resizes previously generated hints; it does not extract scribbles
+at 512 × 512. Choose `size` during generation. Higher-resolution generation avoids this downsampling step, but each
+scribble still uses its region's mean colour; it does not preserve every within-region colour variation.
+
+For paper reproduction, keep the released maps and original resolution settings. For a new task, choose the hint
+resolution for that task and use it consistently in training and evaluation. See the [API reference](docs/api.md)
+and [pipeline details](docs/detail_explanation.md#pipeline).
 
 ## Repository structure
 
