@@ -1,0 +1,76 @@
+{
+ "what": "wall-clock seconds of hintauc.generate_hints(image, size=64, path_method=...) per run",
+ "machine": {
+  "label": "Apple M2 (MacBook Air, 16 GB), macOS",
+  "platform": "macOS-26.5.2-arm64-arm-64bit",
+  "processor": "arm",
+  "threads": 2
+ },
+ "versions": {
+  "python": "3.12.16",
+  "numpy": "1.26.4",
+  "opencv": "4.11.0",
+  "scikit-image": "0.24.0",
+  "fil_finder": "1.7.2",
+  "astropy": "5.3.4",
+  "hintauc": "0.3.3"
+ },
+ "images": {
+  "4942016.image.png": {
+   "height": 800,
+   "width": 800,
+   "filfinder": {
+    "seconds": [
+     31.449,
+     31.573
+    ],
+    "median": 31.511,
+    "n_regions": 938,
+    "scribble_pixels": 1962,
+    "dots": 934,
+    "failed_regions": 0
+   },
+   "geodesic": {
+    "seconds": [
+     2.592,
+     2.495,
+     2.567
+    ],
+    "median": 2.567,
+    "n_regions": 938,
+    "scribble_pixels": 1961,
+    "dots": 938,
+    "failed_regions": 0
+   },
+   "speedup_median": 12.28
+  },
+  "4731016.image.png": {
+   "height": 1200,
+   "width": 800,
+   "filfinder": {
+    "seconds": [
+     52.908,
+     57.811
+    ],
+    "median": 55.359,
+    "n_regions": 1701,
+    "scribble_pixels": 2927,
+    "dots": 1698,
+    "failed_regions": 0
+   },
+   "geodesic": {
+    "seconds": [
+     7.341,
+     7.335,
+     7.304
+    ],
+    "median": 7.335,
+    "n_regions": 1701,
+    "scribble_pixels": 2920,
+    "dots": 1701,
+    "failed_regions": 0
+   },
+   "speedup_median": 7.55
+  }
+ }
+}

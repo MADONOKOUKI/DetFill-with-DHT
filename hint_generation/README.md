@@ -56,6 +56,7 @@ hints.save("out/image")                                # the file set above
 | `generate_hints.py` | batch generator for the alternative segmenters (SLIC / Quickshift; sharding; resume-safe); contains the verbatim `make_scribbling` port. Felzenszwalb maps: `hintauc.generate_hints` |
 | `danbooregion_hints.py` | DanbooRegion-segmenter variant (needs the upstream DanbooRegion code and weights) |
 | `compare_path_methods.py` | compares the FilFinder and geodesic longest paths on stored region maps |
+| `time_path_methods.py` | times `hintauc.generate_hints` with `path_method="filfinder"` (paper) and `"geodesic"` on the Fig. 9 illustrations on one machine; result on an Apple M2: `time_path_methods_m2.json` |
 | `canonical/hint_dot_generation_fixdot.py` | archival copy of the script that produced the paper's stored maps |
 | `canonical/hint_dot_generation.py` | archival copy of the earlier version (dot = truncated mean of the path; not the rule of the released maps) |
 | `canonical/all_segmentations.py` | archival copy of the segmentation stage |
