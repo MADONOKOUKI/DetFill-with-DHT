@@ -138,7 +138,7 @@ GitHub's "Cite this repository" button uses `CITATION.cff`; the BibTeX entry:
 ```bibtex
 @article{madono2026hintauc,
   title   = {Hint-AUC: Deterministic Region-based Hint Generation for Line Art Colorization Evaluation},
-  author  = {Madono, Koki and Mingcheng, Yuan and Simo-Serra, Edgar},
+  author  = {Koki, Madono and Mingcheng, Yuan and Simo-Serra, Edgar},
   journal = {IEEE Transactions on Visualization and Computer Graphics},
   year    = {2026},
   doi     = {10.1109/TVCG.2026.3738401}
