@@ -8,6 +8,7 @@
 [![Python 3.9+](https://img.shields.io/badge/python-3.9%2B-blue)](docs/setup.md)
 [![PyTorch 2.5](https://img.shields.io/badge/PyTorch-2.5-ee4c2c)](docs/setup.md)
 [![PyPI](https://img.shields.io/pypi/v/hintauc)](https://pypi.org/project/hintauc/)
+[![Hugging Face Space](https://img.shields.io/badge/%F0%9F%A4%97%20Space-online%20demo-yellow)](https://huggingface.co/spaces/madorin0130/Hint-AUC)
 [![Releases](https://img.shields.io/github/v/release/MADONOKOUKI/DetFill-with-DHT)](https://github.com/MADONOKOUKI/DetFill-with-DHT/releases)
 [![tests](https://github.com/MADONOKOUKI/DetFill-with-DHT/actions/workflows/tests.yml/badge.svg)](https://github.com/MADONOKOUKI/DetFill-with-DHT/actions/workflows/tests.yml)
 
@@ -16,7 +17,7 @@ Evaluation"**, IEEE Transactions on Visualization and Computer Graphics (TVCG), 
 
 [Koki Madono](https://madonokouki.github.io/) · [Yuan Mingcheng](https://esslab.jp/en/members/) · [Edgar Simo-Serra](https://esslab.jp/~ess/) — Waseda University
 
-[Paper](https://doi.org/10.1109/TVCG.2026.3738401) · [Library on PyPI](https://pypi.org/project/hintauc/) · [Checkpoints and data](https://github.com/MADONOKOUKI/DetFill-with-DHT/releases) · [Documentation](https://madonokouki.github.io/projects/hintauc/docs/)
+[Paper](https://doi.org/10.1109/TVCG.2026.3738401) · [Online demo](https://huggingface.co/spaces/madorin0130/Hint-AUC) · [Library on PyPI](https://pypi.org/project/hintauc/) · [Checkpoints and data](https://github.com/MADONOKOUKI/DetFill-with-DHT/releases) · [Documentation](https://madonokouki.github.io/projects/hintauc/docs/)
 
 ![Deterministic hint generation pipeline](assets/readme/dht_pipeline.png)
 
@@ -41,6 +42,7 @@ few pixels between runs, the `geodesic` path is bit-reproducible
 
 ## Getting started
 
+- **Try it in the browser** — [Hugging Face Space](https://huggingface.co/spaces/madorin0130/Hint-AUC): deterministic hints from your own illustration and the Hint-AUC demo, nothing to install (`hintauc` runs in the browser with Pyodide).
 - **Demo, no data** — `pip install hintauc && hintauc demo` (about 10 s; the numbers are checked in CI).
 - **Quick start on CPU** — `python examples/quickstart_cpu.py` (`--fast`: under a minute); expected numbers in the script header.
 - **Evaluate your own model** — [docs/evaluate_your_model.md](docs/evaluate_your_model.md): images per ratio (`hintauc curve`) or a Python function (`hintauc.evaluate_colorizer`).
