@@ -3,6 +3,7 @@
 [![IEEE TVCG 2026](https://img.shields.io/badge/IEEE%20TVCG-2026-blue)](https://doi.org/10.1109/TVCG.2026.3738401)
 [![DOI](https://img.shields.io/badge/DOI-10.1109%2FTVCG.2026.3738401-blue)](https://doi.org/10.1109/TVCG.2026.3738401)
 [![Zenodo](https://zenodo.org/badge/DOI/10.5281/zenodo.22995102.svg)](https://doi.org/10.5281/zenodo.22995102)
+[![Replicability Stamp](https://img.shields.io/badge/Replicability%20Stamp-GRSI-brightgreen)](https://www.replicabilitystamp.org/index.html#https-github-com-madonokouki-detfill-with-dht)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Python 3.9+](https://img.shields.io/badge/python-3.9%2B-blue)](docs/setup.md)
 [![PyTorch 2.5](https://img.shields.io/badge/PyTorch-2.5-ee4c2c)](docs/setup.md)
@@ -46,7 +47,7 @@ few pixels between runs, the `geodesic` path is bit-reproducible
 - **Install** — [docs/setup.md](docs/setup.md).
 - **Model zoo** — [checkpoints/README.md](checkpoints/README.md): every released file, its hash and its paper item.
 - **Reproduce the paper** — [reproduce/README.md](reproduce/README.md): Fig. 9 in one command, tables from the released metrics, the example suite, full table rows, training; a coverage table per paper item.
-- **Replicability Stamp** — `bash replicability/run.sh` ([replicability/README.md](replicability/README.md), [submission sheet](replicability/GRSI_SUBMISSION.txt)).
+- **Replicability Stamp** — awarded ([GRSI entry](https://www.replicabilitystamp.org/index.html#https-github-com-madonokouki-detfill-with-dht)); `bash replicability/run.sh` ([replicability/README.md](replicability/README.md), [submission sheet](replicability/GRSI_SUBMISSION.txt)).
 - **Reference** — [API](docs/api.md) · [added features since the paper](docs/added_features.md) · [how it works](docs/detail_explanation.md).
 
 ## Quick start
