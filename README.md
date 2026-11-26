@@ -32,8 +32,11 @@ checkpoints, evaluation inputs, metric files and experiment scripts are released
 > (800 × 800, **12×**) and **7.3 s instead of 55.4 s** (800 × 1200, **7.6×**) on the paper's Fig. 9 illustrations
 > (one Apple M2, 2 threads, the paper's FilFinder 1.7.2, astropy 5.3.4 and NumPy 1.26.4; median of 2–3 runs;
 > [script](hint_generation/time_path_methods.py), [record](hint_generation/time_path_methods_m2.json)). It also drops
-> the `fil_finder`/`astropy` dependency and is bit-reproducible. The paper's numbers and the released hint maps use
-> FilFinder, which stays the default (`path_method="filfinder"`); on 20 stored test maps the two paths coincide in
+> the `fil_finder`/`astropy` dependency, is bit-reproducible and **never misses a region**: on 20 stored test maps
+> FilFinder returns no path for 414 of the 16,098 regions (2.6 %), which then get no scribble hint, while geodesic
+> returns one for every region ([comparison](hint_generation/compare_path_methods_20imgs.json); on the two Fig. 9
+> illustrations, 4 and 3 regions also got no dot with FilFinder). The paper's numbers and the released hint maps use
+> FilFinder, which stays the default (`path_method="filfinder"`); where both return a path, the two coincide in
 > 91.8 % of the regions (mean IoU 0.969), so use one method per evaluation
 > ([details](docs/detail_explanation.md#library)).
 
