@@ -65,7 +65,7 @@ from .auc import (
 )
 from .demo import run_demo, synthetic_illustration
 
-__version__ = "0.3.3"
+__version__ = "0.3.4"
 
 __all__ = [
     "ALL_METRICS",

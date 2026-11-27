@@ -357,9 +357,13 @@ def _require_filfinder():
         import fil_finder  # noqa: F401
         import astropy  # noqa: F401
     except ImportError as e:  # pragma: no cover
+        import sys
+        hint = (" They are not installed on Python 3.13+ (astropy < 6 has no wheels there);"
+                if sys.version_info >= (3, 13) else "")
         raise ImportError(
-            "path_method='filfinder' needs the fil_finder and astropy packages "
-            "(pip install 'fil_finder>=1.7' astropy), or use path_method='geodesic'.") from e
+            "path_method='filfinder' (the paper's setting) needs the fil_finder and astropy packages "
+            "(pip install 'fil_finder>=1.7,<1.8' 'astropy>=5,<6')." + hint +
+            " Use path_method='geodesic' (command line: --path_method geodesic), which needs only NumPy.") from e
 
 
 def _longest_path(skeleton_dilated: np.ndarray):
