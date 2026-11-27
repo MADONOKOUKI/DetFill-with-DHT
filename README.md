@@ -5,6 +5,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![PyPI](https://img.shields.io/pypi/v/hintauc)](https://pypi.org/project/hintauc/)
 [![Hugging Face Space](https://img.shields.io/badge/%F0%9F%A4%97%20Space-online%20demo-yellow)](https://huggingface.co/spaces/madorin0130/Hint-AUC)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/MADONOKOUKI/DetFill-with-DHT/blob/main/examples/quickstart_colab.ipynb)
 [![tests](https://github.com/MADONOKOUKI/DetFill-with-DHT/actions/workflows/tests.yml/badge.svg)](https://github.com/MADONOKOUKI/DetFill-with-DHT/actions/workflows/tests.yml)
 
 Official implementation of **"Hint-AUC: Deterministic Region-based Hint Generation for Line Art Colorization
@@ -48,6 +49,7 @@ few pixels between runs, the `geodesic` path is bit-reproducible
 ## Getting started
 
 - **Try it in the browser** — [Hugging Face Space](https://huggingface.co/spaces/madorin0130/Hint-AUC): deterministic hints from your own illustration and the Hint-AUC demo, nothing to install (`hintauc` runs in the browser with Pyodide).
+- **Notebook** — [quick start in Google Colab](https://colab.research.google.com/github/MADONOKOUKI/DetFill-with-DHT/blob/main/examples/quickstart_colab.ipynb) (`examples/quickstart_colab.ipynb`): install, hints for an example or your own upload, scoring and Hint-AUC, on CPU.
 - **Demo, no data** — `pip install hintauc && hintauc demo` (about 10 s; the numbers are checked in CI).
 - **Quick start on CPU** — `python examples/quickstart_cpu.py` (`--fast`: under a minute); expected numbers in the script header.
 - **Evaluate your own model** — [docs/evaluate_your_model.md](docs/evaluate_your_model.md): images per ratio (`hintauc curve`) or a Python function (`hintauc.evaluate_colorizer`).
