@@ -25,6 +25,8 @@ checkpoints, evaluation inputs, metric files and experiment scripts are released
 
 **What's new**
 
+- `hintauc` 0.3.4 installs on **Python 3.9–3.14**. On 3.13 and later the paper's FilFinder path is not available
+  (its `astropy < 6` dependency has no wheels there); use `path_method="geodesic"`.
 - Hint generation is **7.6–12× faster** with `path_method="geodesic"` (2.6 s instead of 31.5 s on an
   800 × 800 illustration), drops the `fil_finder`/`astropy` dependency, is bit-reproducible and never misses a region.
   The paper's FilFinder path stays the default ([numbers and caveats](docs/added_features.md#faster-hint-generation-path_methodgeodesic)).
