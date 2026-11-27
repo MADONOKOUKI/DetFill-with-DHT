@@ -4,20 +4,22 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "hintauc"
-version = "0.3.3"
+version = "0.3.4"
 description = "Deterministic region-based hint generation (DHT) and Hint-AUC evaluation for line-art colorization"
 readme = "docs/pypi_readme.md"
 license = "MIT"
 license-files = ["LICENSE"]
 authors = [{ name = "Koki Madono" }]
 keywords = ["line art", "colorization", "evaluation", "hint generation", "Hint-AUC", "diffusion"]
-requires-python = ">=3.9,<3.13"
+requires-python = ">=3.9"
 dependencies = [
   "numpy",
   "opencv-python",
   "scikit-image>=0.19",
-  "fil_finder>=1.7,<1.8",   # longest-path extraction used for the paper results
-  "astropy>=5.0,<6",        # fil_finder 1.7 is not compatible with astropy 6
+  # FilFinder longest path (path_method="filfinder", the paper's results). astropy < 6 has no wheels for Python 3.13+,
+  # so there the package installs without them and path_method="geodesic" (NumPy only) is used instead.
+  "fil_finder>=1.7,<1.8; python_version < '3.13'",
+  "astropy>=5.0,<6; python_version < '3.13'",   # fil_finder 1.7 is not compatible with astropy 6
   "pillow",
 ]
 classifiers = [
@@ -28,6 +30,8 @@ classifiers = [
   "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
   "Topic :: Scientific/Engineering :: Image Processing",
   "Topic :: Scientific/Engineering :: Artificial Intelligence",
 ]

@@ -11,7 +11,9 @@ pip install "hintauc[paper]"        # + torchvision and torchmetrics 1.4.0: the 
 pip install "hintauc[perceptual]"   # + the perceptual metrics (LPIPS / OpenCLIP / DINOv2 / DreamSim)
 ```
 
-- Python 3.9–3.12; wheels exist for all dependencies, no compiler is needed.
+- Python 3.9–3.14; wheels exist for all dependencies, no compiler is needed. On Python 3.13 and later, `fil_finder`
+  and `astropy < 6` are not installed (astropy 5 has no wheels there), so use `path_method="geodesic"`
+  (`--path_method geodesic`); the paper's `path_method="filfinder"` needs Python 3.9–3.12.
 - Latest development version: `pip install git+https://github.com/MADONOKOUKI/DetFill-with-DHT.git`
   (or `pip install -e .` inside a checkout).
 - The perceptual metrics download their weights on first use (DreamSim into `~/.cache/hintauc`, override with

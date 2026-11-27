@@ -1,5 +1,5 @@
 # Continuous tests (free for public repositories on GitHub-hosted runners).
-# library: the hintauc package alone (no PyTorch), on three Python versions.
+# library: the hintauc package alone (no PyTorch), on Python 3.9-3.14 (3.13+ without fil_finder/astropy).
 # full:    hintauc + PyTorch (CPU wheels) — perceptual-metric registry checks and the DetFill data loader.
 name: tests
 
@@ -19,7 +19,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.9", "3.11", "3.12"]
+        python-version: ["3.9", "3.11", "3.12", "3.13", "3.14"]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -28,7 +28,8 @@ jobs:
           cache: pip
       - run: python -m pip install --upgrade pip && python -m pip install -e . pytest
       - run: python -c "import hintauc; print(hintauc.__version__)" && hintauc --help > /dev/null
-      - run: pytest tests -q -k "not detfill"
+      # not -k "not detfill": the checkout directory DetFill-with-DHT matches that keyword and deselects every test
+      - run: pytest tests -q --ignore=tests/test_detfill_loader.py
       - name: shell scripts parse (one bash -n per file; a single call only checks the first argument)
         run: |
           for f in replicability/run.sh replicability/conda_env.sh replicability/fetch_checkpoints.sh reproduce/examples/run_examples.sh reproduce/scripts/*.sh detfill/*.sh; do
