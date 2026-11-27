@@ -1,15 +1,10 @@
 # DetFill-with-DHT: Deterministic Hints and Hint-AUC for Line Art Colorization
 
 [![IEEE TVCG 2026](https://img.shields.io/badge/IEEE%20TVCG-2026-blue)](https://doi.org/10.1109/TVCG.2026.3738401)
-[![DOI](https://img.shields.io/badge/DOI-10.1109%2FTVCG.2026.3738401-blue)](https://doi.org/10.1109/TVCG.2026.3738401)
-[![Zenodo](https://zenodo.org/badge/DOI/10.5281/zenodo.22995102.svg)](https://doi.org/10.5281/zenodo.22995102)
 [![Replicability Stamp](https://img.shields.io/badge/Replicability%20Stamp-GRSI-brightgreen)](https://www.replicabilitystamp.org/index.html#https-github-com-madonokouki-detfill-with-dht)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![Python 3.9+](https://img.shields.io/badge/python-3.9%2B-blue)](docs/setup.md)
-[![PyTorch 2.5](https://img.shields.io/badge/PyTorch-2.5-ee4c2c)](docs/setup.md)
 [![PyPI](https://img.shields.io/pypi/v/hintauc)](https://pypi.org/project/hintauc/)
 [![Hugging Face Space](https://img.shields.io/badge/%F0%9F%A4%97%20Space-online%20demo-yellow)](https://huggingface.co/spaces/madorin0130/Hint-AUC)
-[![Releases](https://img.shields.io/github/v/release/MADONOKOUKI/DetFill-with-DHT)](https://github.com/MADONOKOUKI/DetFill-with-DHT/releases)
 [![tests](https://github.com/MADONOKOUKI/DetFill-with-DHT/actions/workflows/tests.yml/badge.svg)](https://github.com/MADONOKOUKI/DetFill-with-DHT/actions/workflows/tests.yml)
 
 Official implementation of **"Hint-AUC: Deterministic Region-based Hint Generation for Line Art Colorization
@@ -19,26 +14,21 @@ Evaluation"**, IEEE Transactions on Visualization and Computer Graphics (TVCG), 
 
 [Paper](https://doi.org/10.1109/TVCG.2026.3738401) · [Online demo](https://huggingface.co/spaces/madorin0130/Hint-AUC) · [Library on PyPI](https://pypi.org/project/hintauc/) · [Checkpoints and data](https://github.com/MADONOKOUKI/DetFill-with-DHT/releases) · [Documentation](https://madonokouki.github.io/projects/hintauc/docs/)
 
-![Deterministic hint generation pipeline](assets/readme/dht_pipeline.png)
+![Line art, deterministic hints at 1/10/50/100 % and the DetFill colorization at each ratio](assets/readme/teaser.png)
 
 **DHT** turns an illustration into fixed scribble and dot hints, **Hint-AUC** scores a colorization model over the whole
 range of hint ratios, and **DetFill** is the diffusion colorization model trained with these hints; the paper's
 checkpoints, evaluation inputs, metric files and experiment scripts are released.
 
-> [!IMPORTANT]
-> **Hint generation is now much faster than in the paper.** Since publication, `hintauc` offers
-> `path_method="geodesic"`, an exact geodesic-diameter longest path in NumPy that replaces the paper's FilFinder step:
-> a whole `hintauc.generate_hints(image, size=64, path_method="geodesic")` call takes **2.6 s instead of 31.5 s**
-> (800 × 800, **12×**) and **7.3 s instead of 55.4 s** (800 × 1200, **7.6×**) on the paper's Fig. 9 illustrations
-> (one Apple M2, 2 threads, the paper's FilFinder 1.7.2, astropy 5.3.4 and NumPy 1.26.4; median of 2–3 runs;
-> [script](hint_generation/time_path_methods.py), [record](hint_generation/time_path_methods_m2.json)). It also drops
-> the `fil_finder`/`astropy` dependency, is bit-reproducible and **never misses a region**: on 20 stored test maps
-> FilFinder returns no path for 414 of the 16,098 regions (2.6 %), which then get no scribble hint, while geodesic
-> returns one for every region ([comparison](hint_generation/compare_path_methods_20imgs.json); on the two Fig. 9
-> illustrations, 4 and 3 regions also got no dot with FilFinder). The paper's numbers and the released hint maps use
-> FilFinder, which stays the default (`path_method="filfinder"`); where both return a path, the two coincide in
-> 91.8 % of the regions (mean IoU 0.969), so use one method per evaluation
-> ([details](docs/detail_explanation.md#library)).
+![Deterministic hint generation pipeline](assets/readme/dht_pipeline.png)
+
+**What's new**
+
+- Hint generation is **7.6–12× faster** with `path_method="geodesic"` (2.6 s instead of 31.5 s on an
+  800 × 800 illustration), drops the `fil_finder`/`astropy` dependency, is bit-reproducible and never misses a region.
+  The paper's FilFinder path stays the default ([numbers and caveats](docs/added_features.md#faster-hint-generation-path_methodgeodesic)).
+- [Online demo](https://huggingface.co/spaces/madorin0130/Hint-AUC): `hintauc` in the browser, nothing to install.
+- Graphics Replicability Stamp awarded; paper published in IEEE TVCG.
 
 <details markdown="1">
 <summary>Why deterministic hints, what is released, and what is exact</summary>
