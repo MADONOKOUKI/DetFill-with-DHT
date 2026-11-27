@@ -65,7 +65,9 @@ jobs:
   test-wheel:
     needs: [check, build]
     if: needs.check.outputs.publish == 'true'
-    runs-on: ubuntu-latest
+    # Python 3.9 (the replicability environment) is not available for ubuntu-latest (Ubuntu 26.04) runners, so the
+    # 3.9 job runs on ubuntu-24.04.
+    runs-on: ${{ matrix.python-version == '3.9' && 'ubuntu-24.04' || 'ubuntu-latest' }}
     strategy:
       fail-fast: true
       matrix:
